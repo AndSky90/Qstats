@@ -17,7 +17,63 @@ ________________________________________________________________________________
  class NetQstatsWork {
     private static final String TAG = "qStats";
 
-     byte[] getUrlBytes(String urlQuake) throws IOException {
+
+
+
+
+     void fetchDataGlobal(String path) {
+         DataGlobal dataGlobal = new DataGlobal();
+        try {
+            Uri.Builder url = Uri.parse(path).buildUpon();
+            url.build();
+            String jsonString = getUrlString(url.toString());
+            Log.i(TAG, "Received JSON: " + jsonString);
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            dataGlobal = gson.fromJson(jsonString,DataGlobal.class);
+            Log.i(TAG, "Received Object: " + dataGlobal );
+            Log.i(TAG, "String Object: " + dataGlobal.getTotal_championusage() +"\n" );
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch items", ioe);
+        }
+         MyViewModel.setDataGlobal(dataGlobal);
+    }
+
+
+
+  void fetchTDMLeads(String path) {
+    }
+
+  void fetchDuelLeads(String path) {
+    }
+
+  void fetchPlayerStats(String path) {
+    }
+
+  void fetchPlayerSummary(String path, String value) {
+          DataGlobal dataGlobal = new DataGlobal();
+        try {
+            Uri.Builder url = Uri.parse(path).buildUpon();
+            if (value!=null) url.appendQueryParameter("name", value);
+            url.build();
+
+            String jsonString = getUrlString(url.toString());
+            Log.i(TAG, "Received JSON: " + jsonString);
+
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            dataGlobal = gson.fromJson(jsonString,DataGlobal.class);
+            Log.i(TAG, "Received Object: " + dataGlobal );
+            Log.i(TAG, "String Object: " + dataGlobal.getTotal_championusage() +"\n" );
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch items", ioe);
+        }
+         MyViewModel.setDataGlobal(dataGlobal);
+    }
+
+
+
+    private String getUrlString(String urlQuake) throws IOException {
         URL url = new URL(urlQuake);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         try {
@@ -28,40 +84,19 @@ ________________________________________________________________________________
                         ": with " +
                         urlQuake);
             }
-            int bytesRead = 0;
+            int bytesRead;
             byte[] buffer = new byte[1024];
             while ((bytesRead = in.read(buffer)) > 0) {
                 out.write(buffer, 0, bytesRead);
             }
             out.close();
-            return out.toByteArray();
+            //  return out.toByteArray();
+            return new String(out.toByteArray());
         } finally {
             connection.disconnect();
         }
     }
 
-     String getUrlString(String urlQuake) throws IOException {
-        return new String(getUrlBytes(urlQuake));
-    }
 
-     DataGlobal fetchItems(String path, String param, String value) {
-         DataGlobal dataGlobal = new DataGlobal();
-        try {
-            Uri.Builder url = Uri.parse(path).buildUpon();
-            if (param!=null) url.appendQueryParameter(param, value);
-            url.build();
-            String jsonString = getUrlString(url.toString());
-            Log.i(TAG, "Received JSON: " + jsonString);
 
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-           // DataGlobal.getDataGlobalInstance().setDataGlobal(gson.fromJson(jsonString,DataGlobal.class));
-            dataGlobal = gson.fromJson(jsonString,DataGlobal.class);
-            Log.i(TAG, "Received Object: " + dataGlobal );
-            Log.i(TAG, "String Object: " + dataGlobal.getTotal_championusage() +"\n" );
-        } catch (IOException ioe) {
-            Log.e(TAG, "Failed to fetch items", ioe);
-        }
-        return dataGlobal;
-    }
 }

@@ -1,6 +1,5 @@
 package com.i550.qstats;
 
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
 import android.support.design.widget.AppBarLayout;
@@ -15,6 +14,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "qStats";
+    private static String profileName = "XF8ShaggyStoned";
     private TabLayout tabLayout;
     private ViewPager viewPager;
     public ViewPagerAdapter vpa;
@@ -27,22 +27,29 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_matches,
             R.drawable.ic_compare};
 
+    void configureTabLayout(){
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
+            // tabLayout. TODO посмотреть разные методы, с иконкой намутить
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FragmentManager fm = getSupportFragmentManager();
-        vpa = new ViewPagerAdapter(fm);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FragmentManager fm = getSupportFragmentManager();
+        vpa = new ViewPagerAdapter(fm);
+
+
         viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(vpa);
-       // viewPager.updateViewLayout();
+        // viewPager.updateViewLayout();
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
-           // tabLayout. TODO посмотреть разные методы, с иконкой намутить
-        }
+        configureTabLayout();
+
 
         TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
         //  MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
@@ -52,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         Test te = new Test();
         te.setJopa("aage2324geg");
         testModel.setTest(te);
-
 
 
 
@@ -81,39 +87,26 @@ TODO: public void getStartFragment(){
 */
 //__________________________________________________________________________________________________
 
-    public class AsyncTaskGlobal extends AsyncTask<Void, Void, DataGlobal> {
+    public class AsyncTaskGlobal extends AsyncTask<Void, Void, Void> {
         @Override
-        protected DataGlobal doInBackground(Void... voids) {
+        protected Void doInBackground(Void... voids) {
 
-            DataGlobal dg = new NetQstatsWork().fetchItems(getApplication().getString(R.string.url_global), null, null);
-            return dg;
-            //  new NetQstatsWork().fetchItems(getString(R.string.url_duel_leads), null, null);
-            // new NetQstatsWork().fetchItems(getString(R.string.url_tdm_leads), null, null);
+            NetQstatsWork background = new NetQstatsWork();
+                    background.fetchDataGlobal(getApplication().getString(R.string.url_global));
 
-            // new NetQstatsWork().fetchItems(getString(R.string.url_player_stats), "name", "XF8ShaggyStoned");
-            //  new NetQstatsWork().fetchItems(getString(R.string.url_player_summary), "name", "XF8ShaggyStoned");
+            return null;
+           // background.fetchTDMLeads(getString(R.string.url_tdm_leads));
+           // background.fetchDuelLeads(getString(R.string.url_duel_leads));
+
+            // background.fetchPlayerStats(getString(R.string.url_player_stats), profileName);
+            // background.fetchPlayerSummary(getString(R.string.url_player_summary), profileName);
         }
 
         @Override
-        protected void onPostExecute(DataGlobal dg) {
-         //   setDataGlobal(dg);
-            MyViewModel.setDataGlobal(dg);
-         vpa.notifyDataSetChanged();
+        protected void onPostExecute(Void r) {
+            vpa.notifyDataSetChanged();
+            configureTabLayout();
         }
     }
 
 }
-    /*  private class SearchAsyncTask extends AsyncTask<String,Void,Void> {
-
-          @Override
-          protected Void doInBackground(String... strings) {
-              return null;
-          }
-      }
-    private class GameSummaryAsyncTask extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            return null;
-        }
-    }*/
