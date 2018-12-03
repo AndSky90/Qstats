@@ -27,12 +27,12 @@ public class TestViewModel extends AndroidViewModel {
             TestViewModel.test = test;
         }
 
-        public static void updateTest (){
+       /* public static void updateTest (){
             String u = test.getJopa();
             test.setJopa(u + "14");
             setTest(test);
             Log.i(TAG, "update14" +"\n" );
 
-        }
+        }*/
     }
 

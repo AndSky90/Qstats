@@ -1,17 +1,15 @@
-package com.i550.qstats;
+package com.i550.qstats.Model;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.databinding.Observable;
-import android.util.Log;
 
 public class DataGlobal extends BaseObservable {
-    DataGlobal(){}
+    public DataGlobal(){}
     private static final String TAG = "qS";
     private TotalChampionusage total_championusage = new TotalChampionusage();
     private TotalDeaths total_deaths = new TotalDeaths();
-    private  ChangeChampionusage change_championusage = new ChangeChampionusage();
-    private  ChangeDeaths change_deaths = new ChangeDeaths();
+    private ChangeChampionusage change_championusage = new ChangeChampionusage();
+    private ChangeDeaths change_deaths = new ChangeDeaths();
 
 
 /*    public void NotifyDataGlobalChanged(){
@@ -32,16 +30,16 @@ public class DataGlobal extends BaseObservable {
     }*/
 
 
-    public TotalDeaths getTotal_deaths() {
-        return total_deaths;
+    public String  getTotal_deaths() {
+        return total_deaths.toString();
     }
 
-    public ChangeChampionusage getChange_championusage() {
-        return change_championusage;
+    public String getChange_championusage() {
+        return change_championusage.toString();
     }
 
-    public ChangeDeaths getChange_deaths() {
-        return change_deaths;
+    public String  getChange_deaths() {
+        return change_deaths.toString();
     }
 
     public void setTotal_championusage(TotalChampionusage total_championusage) {
@@ -59,10 +57,11 @@ public class DataGlobal extends BaseObservable {
     public void setChange_deaths(ChangeDeaths change_deaths) {
         this.change_deaths = change_deaths;
     }
-    /*
-      String getDataGlobalString() { return total_championusage.toString(); }
-*/
+
+
     }
+
+
 
     class ChangeChampionusage {
         private String KEEL;
@@ -81,9 +80,6 @@ public class DataGlobal extends BaseObservable {
         private String VISOR;
         private String ATHENA;
 
-        public void setDOOM_SLAYER(String DOOM_SLAYER) {
-            this.DOOM_SLAYER = DOOM_SLAYER;
-        }
 
         public String getKEEL() {
             return KEEL;
@@ -148,24 +144,6 @@ public class DataGlobal extends BaseObservable {
         ChangeChampionusage() {
         }
 
-        public ChangeChampionusage(String KEEL, String DEATH_KNIGHT, String DOOM_SLAYER, String STROGG, String ANARKI, String BJ_BLAZKOWICZ, String CLUTCH, String SCALEBEARER, String SLASH, String NYX, String GALENA, String RANGER, String SORLAG, String VISOR, String ATHENA) {
-            this.KEEL = KEEL;
-            this.DEATH_KNIGHT = DEATH_KNIGHT;
-            this.DOOM_SLAYER = DOOM_SLAYER;
-            this.STROGG = STROGG;
-            this.ANARKI = ANARKI;
-            this.BJ_BLAZKOWICZ = BJ_BLAZKOWICZ;
-            this.CLUTCH = CLUTCH;
-            this.SCALEBEARER = SCALEBEARER;
-            this.SLASH = SLASH;
-            this.NYX = NYX;
-            this.GALENA = GALENA;
-            this.RANGER = RANGER;
-            this.SORLAG = SORLAG;
-            this.VISOR = VISOR;
-            this.ATHENA = ATHENA;
-        }
-
         @Override
         public String toString() {
             return "ChangeChampionusage{" +
@@ -213,8 +191,7 @@ public class DataGlobal extends BaseObservable {
         private String ROCKET_LAUNCHER;
         private String GrapplingHook;
 
-        ChangeDeaths() {
-        }
+        ChangeDeaths() {}
 
         public ChangeDeaths(String grenadeSwarm, String direOrb, String wallOfFire, String SHOTGUN,
                             String vendetta, String bullRush, String LAGBOLT, String GAUNTLET, String RAILGUN,

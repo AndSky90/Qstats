@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
 //__________________________________________________________________________________________________
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         vpa = new ViewPagerAdapter(fm);
 
-
         viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(vpa);
         // viewPager.updateViewLayout();
@@ -50,30 +50,30 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         configureTabLayout();
 
+        updateGlobalDataFromServer();
+
+
+
+      /*
+            headerLayout = findViewById(R.id.headerLayout);
+            headerLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i(TAG, "Click header");
+
+                }
+            });
 
         TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
-        //  MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
-        updateGlobalDataFromServer();
-        //model.ge
-
         Test te = new Test();
         te.setJopa("aage2324geg");
-        testModel.setTest(te);
+        testModel.setTest(te);*/
 
-
-
-        headerLayout = findViewById(R.id.headerLayout);
-        headerLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "Click header");
-                // TODO: getStartFragment();
-            }});
     }
 
-    public void updateView(){
+    /*public void updateView(){
         viewPager.invalidate();
-    }
+    }*/
 
     public void updateGlobalDataFromServer() {
         new AsyncTaskGlobal().execute();
@@ -83,30 +83,51 @@ TODO: public void getStartFragment(){
         fm.beginTransaction();
         fm.replace()
         fragmentTransaction.addToBackStack(BACKSTACK_TAG)
-        // getLayoutInflater().inflate(R.layout.f_profile_summary,null);
+        // getLayoutInflater().inflate(R.layout.f_champions,null);
 */
+
 //__________________________________________________________________________________________________
 
-    public class AsyncTaskGlobal extends AsyncTask<Void, Void, Void> {
+     class AsyncTaskGlobal extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-
             NetQstatsWork background = new NetQstatsWork();
-                    background.fetchDataGlobal(getApplication().getString(R.string.url_global));
+
+            background.fetchDataGlobal(getString(R.string.url_global));
+            background.fetchLeaderBoard(getString(R.string.url_tdm_leads), false);
+            background.fetchLeaderBoard(getString(R.string.url_duel_leads), true);
+            background.fetchPlayerStats(getString(R.string.url_player_stats), profileName);
+            background.fetchPlayerSummary(getString(R.string.url_player_summary), profileName);
 
             return null;
-           // background.fetchTDMLeads(getString(R.string.url_tdm_leads));
-           // background.fetchDuelLeads(getString(R.string.url_duel_leads));
-
-            // background.fetchPlayerStats(getString(R.string.url_player_stats), profileName);
-            // background.fetchPlayerSummary(getString(R.string.url_player_summary), profileName);
         }
 
         @Override
-        protected void onPostExecute(Void r) {
+        protected void onPostExecute(Void v) {
             vpa.notifyDataSetChanged();
             configureTabLayout();
         }
     }
+
+
+
+/*
+    public class AsyncTaskNameSearch extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            NetQstatsWork background = new NetQstatsWork();
+
+            background.fetchNames(getApplication().getString(R.string.url_global), input);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void r) {
+
+        }
+    }*/
+
+
 
 }

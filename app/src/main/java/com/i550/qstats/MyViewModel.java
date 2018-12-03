@@ -2,73 +2,68 @@ package com.i550.qstats;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.databinding.Observable;
-import android.databinding.PropertyChangeRegistry;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.i550.qstats.Model.DataGlobal;
+import com.i550.qstats.Model.LeaderBoard;
+import com.i550.qstats.Model.PlayerStats;
+import com.i550.qstats.Model.PlayerSummary;
 
+//__________________________________________________________________________________________________
 
-public class MyViewModel extends AndroidViewModel /*implements Observable */{
-
-    private static final String TAG = "qS";
-
+public class MyViewModel extends AndroidViewModel {
     public MyViewModel(@NonNull Application application) {
         super(application);
     }
+    private static final String TAG = "qS";
 
-    public static DataGlobal dataGlobal = new DataGlobal();
+    private static DataGlobal dataGlobal = new DataGlobal();
+    private static LeaderBoard tdmLeads = new LeaderBoard();
+    private static LeaderBoard duelLeads = new LeaderBoard();
+    private static PlayerStats playerStats = new PlayerStats();
+    private static PlayerSummary playerSummary = new PlayerSummary();
 
     public static DataGlobal getDataGlobal() {
         return dataGlobal;
     }
-
     public static void setDataGlobal(DataGlobal dataGlobal) {
         MyViewModel.dataGlobal = dataGlobal;
         Log.i(TAG, "Set Object: " + MyViewModel.dataGlobal.getTotal_championusage() +"\n" );
-        ChangeChampionusage cc = MyViewModel.getDataGlobal().getChange_championusage();
-        cc.setDOOM_SLAYER("sdfg");
-        MyViewModel.getDataGlobal().setChange_championusage(cc);
-      // notifyChange();
-
     }
 
-
-/*    private transient PropertyChangeRegistry mCallbacks;
-    @Override
-    public void addOnPropertyChangedCallback(OnPropertyChangedCallback callback) {
-        synchronized (this) {
-            if (mCallbacks == null) {
-                mCallbacks = new PropertyChangeRegistry();
-            }
-        }
-        mCallbacks.add(callback);
+    public static LeaderBoard getTdmLeads() {
+        return tdmLeads;
+    }
+    public static void setTDMLeads(LeaderBoard tdmLeads) {
+        MyViewModel.tdmLeads = tdmLeads;
     }
 
-    @Override
-    public void removeOnPropertyChangedCallback(OnPropertyChangedCallback callback) {
-        synchronized (this) {
-            if (mCallbacks == null) {
-                return;
-            }
-        }
-        mCallbacks.remove(callback);
+    public static LeaderBoard getDuelLeads() {
+        return duelLeads;
+    }
+    public static void setDuelLeads(LeaderBoard duelLeads) {
+        MyViewModel.duelLeads = duelLeads;
     }
 
-    public void notifyChange() {
-        synchronized (this) {
-            if (mCallbacks == null) {
-                return;
-            }
-        }
-        mCallbacks.notifyCallbacks(this, 0, null);
-    }*/
+    public static PlayerStats getPlayerStats() {
+        return playerStats;
+    }
+    public static void setPlayerStats(PlayerStats playerStats) {
+        MyViewModel.playerStats = playerStats;
+    }
 
-
-
-
-
-
+    public static PlayerSummary getPlayerSummary() {
+        return playerSummary;
+    }
+    public static void setPlayerSummary(PlayerSummary playerSummary) {
+        MyViewModel.playerSummary = playerSummary;
+    }
 }
+
+
+
+
+
 /*
   public LiveData<DataGlobal> getData() {
         if (data == null) {
@@ -78,49 +73,4 @@ public class MyViewModel extends AndroidViewModel /*implements Observable */{
         }
         return data;
     }
-
-
-    public void loadDataFromServer() {
-        new AsyncTaskGlobal().execute();
-    }
-    private void loadData() {
-        new AsyncTask<Void, Void, List<String>>() {
-            @Override
-            protected List<String> doInBackground(Void... voids) {
-                ArrayList<String> result = new ArrayList<>(0);
-                String myFeed = getApplication().getString(R.string.my_feed);
-                try {
-                    URL url = new URL(myFeed);
-                    // Create a new HTTP URL connection
-                    URLConnection connection = url.openConnection();
-                    HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                    int responseCode = httpConnection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        InputStream in = httpConnection.getInputStream();
-                        // Process the input stream to generate our result list
-                        // result = processStream(in);
-                    }
-                    httpConnection.disconnect();
-                } catch (MalformedURLException e) {
-                    Log.e(TAG, "Malformed URL Exception.", e);
-                } catch (IOException e) {
-                    Log.e(TAG, "IO Exception.", e);
-                }
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(List<String> data) {
-                // Update the Live Data data value.
-                data.setValue(data);
-            }
-        }.execute();
-    }
-
-
-
-
-
-
-
-}*/
+*/

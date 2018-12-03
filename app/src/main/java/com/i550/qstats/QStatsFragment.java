@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.i550.qstats.databinding.TestDataBind;
+import com.i550.qstats.databinding.GlobalDataBind;
 import java.util.Arrays;
 import java.util.List;
+
+//__________________________________________________________________________________________________
 
 public class QStatsFragment extends Fragment {
     public QStatsFragment() {
@@ -18,7 +20,7 @@ public class QStatsFragment extends Fragment {
 
     private static final String TAG = "qStats";
     private int pageNumber;
-    private final List<Integer> mFragmentList = Arrays.asList(R.layout.f_champions, R.layout.f_medals, R.layout.f_modes, R.layout.f_weapons, R.layout.f_matches, R.layout.f_profile_summary);
+    private final List<Integer> mFragmentList = Arrays.asList(R.layout.f_global, R.layout.f_medals, R.layout.f_modes, R.layout.f_weapons, R.layout.f_matches, R.layout.f_champions);
 
     public static QStatsFragment newStatsFragment(int page) {
         QStatsFragment fragment = new QStatsFragment();
@@ -40,10 +42,10 @@ public class QStatsFragment extends Fragment {
         View result = inflater.inflate(mFragmentList.get(pageNumber), container, false);
 
         if (pageNumber==0) {
-            TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
+        //    TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
             MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
-            TestDataBind binding = DataBindingUtil.bind(result);
-            binding.setTvm(testModel);
+            GlobalDataBind binding = DataBindingUtil.bind(result);
+        //    binding.setTvm(testModel);
             binding.setVm(model);
             //binding.notify();
 

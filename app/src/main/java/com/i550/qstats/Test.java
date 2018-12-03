@@ -6,6 +6,7 @@ import android.databinding.Bindable;
 public class Test extends BaseObservable {
     Test(){}
 
+/*
     private static String jopa = "kgkgy";
 
     void setJopa(String jopa) {
@@ -18,6 +19,7 @@ public class Test extends BaseObservable {
         return jopa;
     }
 
+*/
 
 
 }
