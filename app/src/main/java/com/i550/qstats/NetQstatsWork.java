@@ -15,7 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
  class NetQstatsWork {
-     private static final String TAG = "qStats";
+     private static final String TAG = "qStatserNetwork";
 
      private String getUrlString(String urlQuake) throws IOException {
          URL url = new URL(urlQuake);
@@ -44,7 +44,7 @@ import java.net.URL;
             Uri.Builder url = Uri.parse(path).buildUpon();
             url.build();
             String jsonString = getUrlString(url.toString());
-            Log.i(TAG, "Received JSON: " + jsonString);
+            Log.i(TAG, "Received global JSON: " + jsonString);
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             data = gson.fromJson(jsonString,DataGlobal.class);
@@ -62,7 +62,7 @@ import java.net.URL;
             Uri.Builder url = Uri.parse(path).buildUpon();
             url.build();
             String jsonString = getUrlString(url.toString());
-            Log.i(TAG, "Received JSON: " + jsonString);
+            Log.i(TAG, "Received LeaderBoard JSON: " + jsonString);
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             data = gson.fromJson(jsonString,LeaderBoard.class);
@@ -82,7 +82,7 @@ import java.net.URL;
             url.build();
 
             String jsonString = getUrlString(url.toString());
-            Log.i(TAG, "Received JSON: " + jsonString);
+            Log.i(TAG, "Received Summary JSON: " + jsonString);
 
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
@@ -102,7 +102,7 @@ import java.net.URL;
             url.build();
 
             String jsonString = getUrlString(url.toString());
-            Log.i(TAG, "Received JSON: " + jsonString);
+            Log.i(TAG, "Received Stats JSON: " + jsonString);
 
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
@@ -110,6 +110,8 @@ import java.net.URL;
             Log.i(TAG, "String Object stats: "  + data.toString()  );
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
+        } catch (Exception e) {
+            Log.e(TAG, "Fuck!!!!!!!!!!!!", e);
         }
         MyViewModel.setPlayerStats(data);
     }

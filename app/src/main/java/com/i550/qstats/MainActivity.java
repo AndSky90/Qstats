@@ -1,7 +1,9 @@
 package com.i550.qstats;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -14,8 +16,9 @@ import android.view.View;
 //__________________________________________________________________________________________________
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "qStats";
-    private static String profileName = "XF8ShaggyStoned";
+    private static final String TAG = "qStatser";
+    private static String profileName = "XF8ShaggyStoned";      //TODO потом удалить!
+    SharedPreferences sp;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     public ViewPagerAdapter vpa;
@@ -28,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_matches,
             R.drawable.ic_compare};
 
-    void configureTabLayout(){
+    protected void configureTabLayout(){
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             tabLayout.getTabAt(i).setIcon(tabIcons[i]);
             // tabLayout. TODO посмотреть разные методы, с иконкой намутить
@@ -36,9 +39,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle sis) {
+        super.onSaveInstanceState(sis);
+        sis.putString("profileName", profileName);
+        Log.d(TAG, "onSaveInstanceState profileName");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle sis) {
+        super.onRestoreInstanceState(sis);
+        profileName = sis.getString("profileName");
+        Log.d(TAG, "onRestoreInstanceState");
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+
 
         FragmentManager fm = getSupportFragmentManager();
         vpa = new ViewPagerAdapter(fm);
@@ -96,8 +116,8 @@ TODO: public void getStartFragment(){
             background.fetchDataGlobal(getString(R.string.url_global));
             background.fetchLeaderBoard(getString(R.string.url_tdm_leads), false);
             background.fetchLeaderBoard(getString(R.string.url_duel_leads), true);
-            background.fetchPlayerStats(getString(R.string.url_player_stats), profileName);
             background.fetchPlayerSummary(getString(R.string.url_player_summary), profileName);
+     //       background.fetchPlayerStats(getString(R.string.url_player_stats), profileName);
 
             return null;
         }

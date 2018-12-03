@@ -1,92 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data class="GlobalDataBind">
-
+    <data>
         <variable
             name="vm"
             type="com.i550.qstats.MyViewModel" />
     </data>
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/viewRoot"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Global data" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Champions Usage:" />
-
-        <TextView
-            android:id="@+id/textview_global_tc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text='@{vm.dataGlobal.total_championusage}' />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Deaths:" />
-
-        <TextView
-            android:id="@+id/textview_global_td"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text='@{vm.dataGlobal.total_deaths}' />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Change Championsusage" />
-
-        <TextView
-            android:id="@+id/textview_global_cc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text='@{vm.dataGlobal.change_championusage}' />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Change Deaths:" />
-
-        <TextView
-            android:id="@+id/textview_global_cd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text='@{vm.dataGlobal.change_deaths}' />
-
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/viewRoot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textview_tdm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text='@{vm.tdmLeads.toString()}' />
+                android:text="Global data" />
 
             <TextView
-                android:id="@+id/textview_duel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text='@{vm.duelLeads.toString()}' />
+                android:text="Total Champions Usage:" />
+
+            <TextView
+                android:id="@+id/textview_global_tc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{vm.dataGlobal.total_championusage}' />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Deaths:" />
+
+            <TextView
+                android:id="@+id/textview_global_td"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{vm.dataGlobal.total_deaths}' />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change Championsusage" />
+
+            <TextView
+                android:id="@+id/textview_global_cc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{vm.dataGlobal.change_championusage}' />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change Deaths:" />
+
+            <TextView
+                android:id="@+id/textview_global_cd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{vm.dataGlobal.change_deaths}' />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textview_tdm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text='@{vm.tdmLeads.toString()}' />
+
+                <TextView
+                    android:id="@+id/textview_duel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text='@{vm.duelLeads.toString()}' />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
 </layout>

@@ -8,17 +8,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.i550.qstats.databinding.GlobalDataBind;
+
+import com.i550.qstats.databinding.FChampionsBinding;
+import com.i550.qstats.databinding.FGlobalBinding;
+import com.i550.qstats.databinding.FMatchesBinding;
+import com.i550.qstats.databinding.FMedalsBinding;
+import com.i550.qstats.databinding.FModesBinding;
+import com.i550.qstats.databinding.FWeaponsBinding;
 import java.util.Arrays;
 import java.util.List;
 
 //__________________________________________________________________________________________________
 
 public class QStatsFragment extends Fragment {
-    public QStatsFragment() {
-    }
+    public QStatsFragment() {}
 
-    private static final String TAG = "qStats";
     private int pageNumber;
     private final List<Integer> mFragmentList = Arrays.asList(R.layout.f_global, R.layout.f_medals, R.layout.f_modes, R.layout.f_weapons, R.layout.f_matches, R.layout.f_champions);
 
@@ -40,38 +44,50 @@ public class QStatsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View result = inflater.inflate(mFragmentList.get(pageNumber), container, false);
-
-        if (pageNumber==0) {
-        //    TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
-            MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
-            GlobalDataBind binding = DataBindingUtil.bind(result);
-        //    binding.setTvm(testModel);
-            binding.setVm(model);
-            //binding.notify();
-
-            /*
-            binding.notifyPropertyChanged();
-            можно в onResume вписать notifyDataSetChanged(у адаптера)
-
-            какое событие произошло? модель поменялась! надо листенер изменения модели ->
-           binding.executePendingBindings();
-
-            может быть что похуй, биндинг узнал но не перерисовал, а надо перерисовать и надо нотифай для адаптера
-
-           myViewModel.getData()
-                    .observe(this, new Observer<DataGlobal>() {
-                        @Override
-                        public void onChanged(@Nullable DataGlobal data) {
-                            if (data!=null){}
-                            // Update your UI with the loaded data.
-                            // Returns cached data automatically after a configuration change,
-                            // and will be fired again if underlying Live Data object is modified.
-                            invalidate()
-                        }
-                    });
-*/
-          }
-                // ProfileActivityBinding binding = ProfileActivityBinding.inflate(layoutInflater, viewGroup, false);
-                return result;
+        MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
+        switch (pageNumber) {
+            case 0: {
+                FGlobalBinding binding0 = DataBindingUtil.bind(result);
+                binding0.setVm(model);
+            }
+          /*  case 1: {
+                FMedalsBinding binding1 = DataBindingUtil.bind(result);
+                binding1.setVm(model);
+            }
+            case 2: {
+                FModesBinding binding2 = DataBindingUtil.bind(result);
+                binding2.setVm(model);
+            }
+            case 3: {
+                FWeaponsBinding binding3 = DataBindingUtil.bind(result);
+                binding3.setVm(model);
+            }
+            case 4: {
+                FMatchesBinding binding4 = DataBindingUtil.bind(result);
+                binding4.setVm(model);
+            }
+            case 5: {
+                FChampionsBinding binding5 = DataBindingUtil.bind(result);
+                binding5.setVm(model);
+            }*/
+        }
+            //    TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
+            //    binding.setTvm(testModel);
+       // }
+        return result;
     }
 }
+
+
+
+        /*
+        можно в onResume вписать notifyDataSetChanged(у адаптера)
+        какое событие произошло? модель поменялась! надо листенер изменения модели ->
+        binding.executePendingBindings()
+        binding.notifyPropertyChanged();
+        binding.notify();
+        может быть что похуй, биндинг узнал но не перерисовал, а надо перерисовать и надо нотифай для адаптера
+        ProfileActivityBinding binding = ProfileActivityBinding.inflate(layoutInflater, viewGroup, false);
+        */
+
+

@@ -5,14 +5,12 @@ import java.util.List;
 public class PlayerSummary {
     public PlayerSummary() {}
 
+    public List<Match> matches = null;
+
     @Override
     public String toString() {
-        return "PlayerSummary{" +
-                "matches=" + matches +
-                '}';
+        return "PlayerSummary{" + "matches=" + matches + '}';
     }
-
-    public List<Match> matches = null;
 }
 
 
@@ -43,3 +41,6 @@ class WeaponAccuracy {
     public Float rAILGUN;
     public Float lAGBOLT;
 }
+
+
+

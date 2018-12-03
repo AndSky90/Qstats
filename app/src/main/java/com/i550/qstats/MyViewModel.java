@@ -15,7 +15,7 @@ public class MyViewModel extends AndroidViewModel {
     public MyViewModel(@NonNull Application application) {
         super(application);
     }
-    private static final String TAG = "qS";
+    private static final String TAG = "qStatserViewModel";
 
     private static DataGlobal dataGlobal = new DataGlobal();
     private static LeaderBoard tdmLeads = new LeaderBoard();
@@ -28,7 +28,7 @@ public class MyViewModel extends AndroidViewModel {
     }
     public static void setDataGlobal(DataGlobal dataGlobal) {
         MyViewModel.dataGlobal = dataGlobal;
-        Log.i(TAG, "Set Object: " + MyViewModel.dataGlobal.getTotal_championusage() +"\n" );
+        Log.i(TAG, "setDataGlobal: " + MyViewModel.dataGlobal.getTotal_championusage() +"\n" );
     }
 
     public static LeaderBoard getTdmLeads() {
@@ -36,6 +36,7 @@ public class MyViewModel extends AndroidViewModel {
     }
     public static void setTDMLeads(LeaderBoard tdmLeads) {
         MyViewModel.tdmLeads = tdmLeads;
+        Log.i(TAG, "setTDMLeads : " + MyViewModel.dataGlobal.getTotal_championusage() +"\n" );
     }
 
     public static LeaderBoard getDuelLeads() {
@@ -43,6 +44,7 @@ public class MyViewModel extends AndroidViewModel {
     }
     public static void setDuelLeads(LeaderBoard duelLeads) {
         MyViewModel.duelLeads = duelLeads;
+        Log.i(TAG, "setDuelLeads : " + MyViewModel.dataGlobal.getTotal_championusage() +"\n" );
     }
 
     public static PlayerStats getPlayerStats() {
@@ -50,6 +52,7 @@ public class MyViewModel extends AndroidViewModel {
     }
     public static void setPlayerStats(PlayerStats playerStats) {
         MyViewModel.playerStats = playerStats;
+        Log.i(TAG, "setPlayerStats : " + MyViewModel.dataGlobal.getTotal_championusage() +"\n" );
     }
 
     public static PlayerSummary getPlayerSummary() {
@@ -57,6 +60,7 @@ public class MyViewModel extends AndroidViewModel {
     }
     public static void setPlayerSummary(PlayerSummary playerSummary) {
         MyViewModel.playerSummary = playerSummary;
+        Log.i(TAG, "setPlayerSummary : " + MyViewModel.dataGlobal.getTotal_championusage() +"\n" );
     }
 }
 
