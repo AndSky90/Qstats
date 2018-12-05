@@ -1,6 +1,5 @@
 package com.i550.qstats;
 
-
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.support.v4.app.Fragment;
@@ -17,8 +16,6 @@ import com.i550.qstats.databinding.FModesBinding;
 import com.i550.qstats.databinding.FWeaponsBinding;
 import java.util.Arrays;
 import java.util.List;
-
-//__________________________________________________________________________________________________
 
 public class QStatsFragment extends Fragment {
     public QStatsFragment() {}
@@ -44,12 +41,24 @@ public class QStatsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View result = inflater.inflate(mFragmentList.get(pageNumber), container, false);
-        MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
-        switch (pageNumber) {
-            case 0: {
+    //    MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
+       // switch (pageNumber) {
+       //     case 0: {
+          //      View result = inflater.inflate(mFragmentList.get(pageNumber), container, false);
+
+        if(pageNumber==0) {
+            MyViewModel model0 = ViewModelProviders.of(this).get(MyViewModel.class);
                 FGlobalBinding binding0 = DataBindingUtil.bind(result);
-                binding0.setVm(model);
+                binding0.setVm(model0);}
+
+
+            //case 4: {
+           //     View result = inflater.inflate(mFragmentList.get(pageNumber), container, false);
+               if(pageNumber==4) {MyViewModel model4 = ViewModelProviders.of(this).get(MyViewModel.class);
+                FMatchesBinding binding4 = DataBindingUtil.bind(result);
+                binding4.setVm(model4);
             }
+
           /*  case 1: {
                 FMedalsBinding binding1 = DataBindingUtil.bind(result);
                 binding1.setVm(model);
@@ -62,15 +71,12 @@ public class QStatsFragment extends Fragment {
                 FWeaponsBinding binding3 = DataBindingUtil.bind(result);
                 binding3.setVm(model);
             }
-            case 4: {
-                FMatchesBinding binding4 = DataBindingUtil.bind(result);
-                binding4.setVm(model);
-            }
+
             case 5: {
                 FChampionsBinding binding5 = DataBindingUtil.bind(result);
                 binding5.setVm(model);
             }*/
-        }
+
             //    TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
             //    binding.setTvm(testModel);
        // }

@@ -5,7 +5,7 @@ import java.util.List;
 public class PlayerSummary {
     public PlayerSummary() {}
 
-    public List<Match> matches = null;
+    private List<Match> matches = null;
 
     @Override
     public String toString() {
