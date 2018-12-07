@@ -1,5 +1,6 @@
-package com.i550.qstats.Model;
+package com.i550.qstats.Model.PlayerStats;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -27,7 +28,7 @@ public class PlayerRatings {
         public Float volitility;
         @SerializedName("lastUpdated")
         @Expose
-        public Integer lastUpdated;
+        public String lastUpdated;
         @SerializedName("gamesCount")
         @Expose
         public Integer gamesCount;
@@ -36,7 +37,7 @@ public class PlayerRatings {
         public Integer lastChange;
         @SerializedName("history")
         @Expose
-        public List<History> history = null;
+        public List<History> history = new ArrayList<>();
  /*   @Override
     public String toString() {
         return new ToStringBuilder(this).append("rating", rating).append("deviation", deviation).append("volitility", volitility).append("lastUpdated", lastUpdated).append("gamesCount", gamesCount).append("lastChange", lastChange).append("history", history).toString();
@@ -56,7 +57,7 @@ public class PlayerRatings {
         public Float volitility;
         @SerializedName("lastUpdated")
         @Expose
-        public Integer lastUpdated;
+        public String lastUpdated;
         @SerializedName("gamesCount")
         @Expose
         public Integer gamesCount;
@@ -65,7 +66,7 @@ public class PlayerRatings {
         public Integer lastChange;
         @SerializedName("history")
         @Expose
-        public List<History> history = null;
+        public List<History> history = new ArrayList<>();
      /*   @Override
         public String toString() {
             return new ToStringBuilder(this).append("rating", rating).append("deviation", deviation).append("volitility", volitility).append("lastUpdated", lastUpdated).append("gamesCount", gamesCount).append("lastChange", lastChange).append("history", history).toString();
@@ -95,7 +96,6 @@ public class PlayerRatings {
         return new ToStringBuilder(this).append("gamesPlayed", gamesPlayed).append("eloRating", eloRating).append("time", time).append("result", result).append("sessionId", sessionId).toString();
     }*/
     }
-
 
 }
 

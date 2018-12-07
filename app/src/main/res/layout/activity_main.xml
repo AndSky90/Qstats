@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +10,8 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.design.widget.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/headerLayout"
@@ -67,6 +70,7 @@
     </android.support.design.widget.AppBarLayout>
 
 
+
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
@@ -87,5 +91,7 @@
             android:background="?attr/colorPrimaryDark"
             app:tabRippleColor="@color/colorAccent" />
     </android.support.design.widget.AppBarLayout>
+
+
 
 </LinearLayout>

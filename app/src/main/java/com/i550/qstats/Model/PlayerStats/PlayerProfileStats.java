@@ -1,23 +1,29 @@
-package com.i550.qstats.Model;
+package com.i550.qstats.Model.PlayerStats;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+
+import java.util.HashMap;
+
+import java.util.Map;
 
 public class PlayerProfileStats {
-    List<Champions> champions = null;
-}
+    @SerializedName("champions")
+        Map<String, Champions> champions = new HashMap<>();
+    }
 
-class Champions{
-    List<GameModes> gameModes = null;
-    List<DamageStatusList> damageStatusList = null;
+
+class Champions {
+    @SerializedName("gameModes")
+    Map<String, GameModes> gameModes = new HashMap<>();
+    @SerializedName("damageStatusList")
+    Map<String, DamageStatusList> damageStatusList = new HashMap<>();
+    @SerializedName("medals")
     String medals;
-
-    // RANGER,SCALEBEARER,VISOR,ANARKI ,NYX   , SORLAG  ,CLUTCH    ,GALENA     ,SLASH   ,DOOM_SLAYER   ,BJ_BLAZKOWICZ     ,KEEL   , STROGG     ,DEATH_KNIGHT    ,ATHENA,EISEN
 }
 
-class DamageStatusList{
+class DamageStatusList {
     int hits;
     int shots;
     int kills;
@@ -25,9 +31,7 @@ class DamageStatusList{
     int damage;
 }
 
-class GameModes{
-
-//GameModeFFA,GameModeTeamDeathmatch,GameModeDuel	,GameModeObelisk	,GameModeObeliskPro	,GameModeTeamDeathmatch2vs2	, GameModeInstagib	,GameModeDuelPro	,GameModeSlipgate	,GameModeCtf
+class GameModes {
 
     @SerializedName("won")
     @Expose
@@ -73,7 +77,7 @@ class GameModes{
     public Integer defended;
     @SerializedName("scoringEvents")
     @Expose
-    public ScoringEvents scoringEvents;
+    public ScoringEvents scoringEvents = new ScoringEvents();
     @SerializedName("healed")
     @Expose
     public Integer healed;
@@ -101,7 +105,7 @@ class GameModes{
 }
 
 
- class ScoringEvents {
+class ScoringEvents {
 
     @SerializedName("SCORING_EVENT_KILL")
     @Expose
@@ -123,13 +127,13 @@ class GameModes{
     public Integer sCORINGEVENTDIEHARD;
     @SerializedName("SCORING_EVENT_FIRSTBLOOD")
     @Expose
-    public Integer sCORINGEVENTFIRSTBLOOD;
+    public Integer SCORING_EVENT_FIRSTBLOOD;
     @SerializedName("SCORING_EVENT_ABILITYKILL")
     @Expose
-    public Integer sCORINGEVENTABILITYKILL;
+    public Integer SCORING_EVENT_ABILITYKILL;
     @SerializedName("SCORING_EVENT_EXCELENT")
     @Expose
-    public Integer sCORINGEVENTEXCELENT;
+    public Integer SCORING_EVENT_EXCELENT;
     @SerializedName("SCORING_EVENT_TRIPLEKILL")
     @Expose
     public Integer sCORINGEVENTTRIPLEKILL;

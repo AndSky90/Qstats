@@ -2,11 +2,13 @@ package com.i550.qstats;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
+import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.i550.qstats.databinding.FChampionsBinding;
 import com.i550.qstats.databinding.FGlobalBinding;
@@ -19,6 +21,8 @@ import java.util.List;
 
 public class QStatsFragment extends Fragment {
     public QStatsFragment() {}
+
+
 
     private int pageNumber;
     private final List<Integer> mFragmentList = Arrays.asList(R.layout.f_global, R.layout.f_medals, R.layout.f_modes, R.layout.f_weapons, R.layout.f_matches, R.layout.f_champions);
@@ -40,6 +44,7 @@ public class QStatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(),"Roboto-Black.ttf");
         View result = inflater.inflate(mFragmentList.get(pageNumber), container, false);
     //    MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
        // switch (pageNumber) {
@@ -49,7 +54,12 @@ public class QStatsFragment extends Fragment {
         if(pageNumber==0) {
             MyViewModel model0 = ViewModelProviders.of(this).get(MyViewModel.class);
                 FGlobalBinding binding0 = DataBindingUtil.bind(result);
-                binding0.setVm(model0);}
+                binding0.setVm(model0);
+        TextView duelHeader = result.findViewById(R.id.duels_header);
+        TextView tdmHeader = result.findViewById(R.id.tdm_header);
+        duelHeader.setTypeface(font);
+        tdmHeader.setTypeface(font);
+        }
 
 
             //case 4: {

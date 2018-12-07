@@ -2,16 +2,21 @@ package com.i550.qstats;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -40,13 +45,14 @@ public class MainActivity extends AppCompatActivity {
     private Set<String> profileNamesList;
     private Boolean ADDED_NEW_PROFILE = false;
     private Boolean DATA_IS_ACTUAL = false;
+
     MyViewModel mViewModel = new MyViewModel(getApplication());
     SharedPreferences.Editor editor;
     private SharedPreferences mSharedPreferences;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     public ViewPagerAdapter vpa;
-    private AppBarLayout headerLayout;
+    public AppBarLayout headerLayout;
     public ImageView statusBar;
     private int[] tabIcons = {
             R.drawable.ic_champions,
@@ -55,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_weapons,
             R.drawable.ic_matches,
             R.drawable.ic_compare};
+
 
 
 
@@ -96,10 +103,14 @@ public class MainActivity extends AppCompatActivity {
         return;
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         FragmentManager fm = getSupportFragmentManager();
         vpa = new ViewPagerAdapter(fm);
         viewPager = findViewById(R.id.viewpager);
@@ -108,12 +119,21 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         configureTabLayout();
         statusBar = findViewById(R.id.status_bar_colored);
+        headerLayout = findViewById(R.id.headerLayout);
+        headerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "Click header");
+                if (CheckInternet()) new AsyncTaskGlobal().execute();
+            }
+        });
 
         readSharedPreferences();
 
         queryNewProfile();
 
         if (CheckInternet()) new AsyncTaskGlobal().execute();
+
     }
 
     private Boolean CheckInternet() {
@@ -123,16 +143,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-/*
-            headerLayout = findViewById(R.id.headerLayout);
-            headerLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.i(TAG, "Click header");
 
-                }
-            });
 
+    /*
         TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
         Test te = new Test();
         te.setJopa("aage2324geg");
@@ -155,33 +168,46 @@ public class MainActivity extends AppCompatActivity {
             profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
         } else queryNewProfile();
         Log.i(TAG, "Prefs: PROFILE_NAMES_LIST: " + profileName + " LAST_PROFILE_NAME: " + profileNamesList);
-        if (mSharedPreferences.contains("DataGlobal")) {
+      /*  if (mSharedPreferences.contains("DataGlobal")) {
             mViewModel.fetchDataGlobal(mSharedPreferences.getString("DataGlobal", null));
             mViewModel.fetchLeaderBoard(mSharedPreferences.getString("TdmLeads", null), false);
             mViewModel.fetchLeaderBoard(mSharedPreferences.getString("DuelLeads", null), true);
             mViewModel.fetchPlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
-            //     mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
-        }
+            mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
+        }*/
+    }
+    public void setHeaderColorActualData(){
+        if(DATA_IS_ACTUAL)             statusBar.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        else             statusBar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
     }
 
 //__________________________________________________________________________________________________
 
     class AsyncTaskGlobal extends AsyncTask<Void, Void, Void> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            DATA_IS_ACTUAL = false;
+            setHeaderColorActualData();
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
+
+
             NetQstatsWork background = new NetQstatsWork();
             String dg = background.fetch(getString(R.string.url_global));
             String tdm = background.fetch(getString(R.string.url_tdm_leads));
             String duel = background.fetch(getString(R.string.url_duel_leads));
             String summary = background.fetch(getString(R.string.url_player_summary) + "?name=" + profileName);
-            //  String stats = background.fetch(getString(R.string.url_player_stats) + "?name=" + profileName);
+            String stats = background.fetch(getString(R.string.url_player_stats) + "?name=" + profileName);
 
 
             mViewModel.fetchDataGlobal(dg);
             mViewModel.fetchLeaderBoard(tdm, false);
             mViewModel.fetchLeaderBoard(duel, true);
             mViewModel.fetchPlayerSummary(summary);
-            //  mViewModel.fetchPlayerStats(stats);
+            mViewModel.fetchPlayerStats(stats);
 
             editor = mSharedPreferences.edit();
 
@@ -189,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("TdmLeads", tdm);
             editor.putString("DuelLeads", duel);
             editor.putString("PlayerSummary", summary);
-            // editor.putString("PlayerStats", stats);
+            editor.putString("PlayerStats", stats);
             editor.apply();
 
             return null;
@@ -200,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
             vpa.notifyDataSetChanged();
             configureTabLayout();
             DATA_IS_ACTUAL = true;
-            statusBar.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            setHeaderColorActualData();
         }
     }
 

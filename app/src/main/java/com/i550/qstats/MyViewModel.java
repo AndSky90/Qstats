@@ -6,10 +6,22 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+
 import com.i550.qstats.Model.DataGlobal;
 import com.i550.qstats.Model.LeaderBoard;
-import com.i550.qstats.Model.PlayerStats;
+import com.i550.qstats.Model.PlayerStats.PlayerLoadOut;
+import com.i550.qstats.Model.PlayerStats.PlayerStats;
+
+import com.i550.qstats.Model.PlayerStats.PlayerStatsDeserializer;
 import com.i550.qstats.Model.PlayerSummary;
+
+import org.w3c.dom.Entity;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 //__________________________________________________________________________________________________
 
@@ -19,9 +31,8 @@ public class MyViewModel extends AndroidViewModel {
     }
 
     private static final String TAG = "qStatserViewModel";
-    private GsonBuilder builder = new GsonBuilder();
-    private Gson gson = builder.create();
-
+ //   private Gson gson = new GsonBuilder().registerTypeAdapter(PlayerStats.class, new PlayerStatsDeserializer()).create();
+    Gson gson = new Gson();
     private static DataGlobal dataGlobal = new DataGlobal();
     private static LeaderBoard tdmLeads = new LeaderBoard();
     private static LeaderBoard duelLeads = new LeaderBoard();
@@ -31,9 +42,15 @@ public class MyViewModel extends AndroidViewModel {
     public static DataGlobal getDataGlobal() {
         return dataGlobal;
     }
-    private static void setDataGlobal(DataGlobal dataGlobal) {
+    private void setDataGlobal(DataGlobal dataGlobal) {
         MyViewModel.dataGlobal = dataGlobal;
         Log.i(TAG, "setDataGlobal: " + MyViewModel.dataGlobal.getTotal_championusage() +"\n" );
+
+        Map<String,PlayerLoadOut> map = new HashMap<>();
+        map.put("RANGER", new PlayerLoadOut("id12", "icon12" ));
+        map.put("GALENA", new PlayerLoadOut("id17", "icon17" ));
+        String json = gson.toJson(map);
+        Log.i(TAG, "map : " + json );
     }
 
     public static LeaderBoard getTdmLeads() {
@@ -93,5 +110,10 @@ public class MyViewModel extends AndroidViewModel {
         Log.i(TAG, "String Object stats: " + data.toString());
         setPlayerStats(data);
     }
+
+
+
+
+
 
 }

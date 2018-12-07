@@ -1,11 +1,12 @@
 package com.i550.qstats.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerSummary {
     public PlayerSummary() {}
 
-    private List<Match> matches = null;
+    private List<Match> matches = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -19,7 +20,7 @@ class Match {
     public String time;
     public String mapName;
     public Integer rank;
-    public List<Integer> score = null;
+    public List<Integer> score = new ArrayList<>();
     public String gameMode;
     public Boolean won;
     public Integer xp;
