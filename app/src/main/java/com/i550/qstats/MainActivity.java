@@ -181,13 +181,13 @@ public class MainActivity extends AppCompatActivity {
             profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
         } else queryNewProfile();
         Log.i(TAG, "Prefs: PROFILE_NAMES_LIST: " + profileName + " LAST_PROFILE_NAME: " + profileNamesList);
-      /*  if (mSharedPreferences.contains("DataGlobal")) {
+        if (mSharedPreferences.contains("DataGlobal")) {
             mViewModel.fetchDataGlobal(mSharedPreferences.getString("DataGlobal", null));
             mViewModel.fetchLeaderBoard(mSharedPreferences.getString("TdmLeads", null), false);
             mViewModel.fetchLeaderBoard(mSharedPreferences.getString("DuelLeads", null), true);
             mViewModel.fetchPlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
             mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
-        }*/
+        }
     }
 
     public void setHeaderColorActualData() {

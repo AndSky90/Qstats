@@ -14,4 +14,9 @@
     <string name="global_weapon_usage">Global Weapon Usage:</string>
     <string name="none">none</string>
     <string name="matches">Matches</string>
+    <string name="victory">Victory</string>
+    <string name="defeat">Defeat</string>
+    <string name="placeholder">===</string>
+
+
 </resources>

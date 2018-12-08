@@ -7,15 +7,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 
+import com.i550.qstats.Adapters.MatchItemAdapter;
+import com.i550.qstats.Model.PlayerSummary.MatchDetails;
 import com.i550.qstats.databinding.FGlobalBinding;
 import com.i550.qstats.databinding.FMatchesBinding;
 import com.i550.qstats.databinding.FChampionsBinding;
 import com.i550.qstats.databinding.FMedalsBinding;
 import com.i550.qstats.databinding.FModesBinding;
 import com.i550.qstats.databinding.FWeaponsBinding;
-
 
 
 import java.util.Arrays;
@@ -74,6 +77,11 @@ public class QStatsFragment extends Fragment {
             case (4): {
                 FMatchesBinding binding4 = DataBindingUtil.bind(result);
                 binding4.setVm(model);
+                ListView listView = result.findViewById(R.id.listView);
+                List<MatchDetails> matchDetails = model.getPlayerSummary().getMatch();
+                ArrayAdapter<MatchDetails> adapter = new MatchItemAdapter(getContext(), 0, matchDetails);
+                listView.setAdapter(adapter);
+
                 break;
             }
             case 5: {

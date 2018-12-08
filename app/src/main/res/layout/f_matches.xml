@@ -8,36 +8,24 @@
             type="com.i550.qstats.MyViewModel" />
     </data>
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/match"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/match"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/matches" />
+
+        <ListView
+            android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/matches" />
-
-            <include
-                android:id="@+id/map_i"
-                layout="@layout/map_item_view_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{String.valueOf(vm.playerSummary)}' />
-        </LinearLayout>
-    </ScrollView>
-
+    </LinearLayout>
 </layout>

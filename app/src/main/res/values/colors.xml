@@ -5,5 +5,6 @@
     <color name="colorAccent">#ffe600</color>
     <color name="colorRed">#ff5722</color>
     <color name="colorBlue">#00e1ff</color>
-
+    <color name="colorDefeat">#b71c1c</color>
+    <color name="colorVictory">#76ff03</color>
 </resources>

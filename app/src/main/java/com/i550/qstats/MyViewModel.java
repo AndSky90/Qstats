@@ -5,7 +5,6 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 
 import com.i550.qstats.Model.DataGlobal;
@@ -13,14 +12,9 @@ import com.i550.qstats.Model.LeaderBoard;
 import com.i550.qstats.Model.PlayerStats.PlayerLoadOut;
 import com.i550.qstats.Model.PlayerStats.PlayerStats;
 
-import com.i550.qstats.Model.PlayerStats.PlayerStatsDeserializer;
-import com.i550.qstats.Model.PlayerSummary;
+import com.i550.qstats.Model.PlayerSummary.PlayerSummary;
 
-import org.w3c.dom.Entity;
-
-import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 //__________________________________________________________________________________________________

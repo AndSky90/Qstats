@@ -21,13 +21,14 @@
             android:layout_height="wrap_content"
             android:text="Weapons" />
 
-        <include
-            android:id="@+id/usage_weapons"
-            layout="@layout/usage_item_view_holder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            />
+
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+            </TableLayout>
+
         </LinearLayout>
     </ScrollView>
 </layout>
