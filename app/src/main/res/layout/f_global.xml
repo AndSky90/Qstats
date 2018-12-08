@@ -167,8 +167,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/duels_header"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textview_global_cd"
-                tools:layout_conversion_absoluteHeight="19dp"
-                tools:layout_conversion_absoluteWidth="87dp" />
+                />
 
             <TextView
                 android:id="@+id/textview_tdm"
@@ -181,8 +180,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/textview_duel"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tdm_header"
-                tools:layout_conversion_absoluteHeight="19dp"
-                tools:layout_conversion_absoluteWidth="1dp" />
+                />
 
 
             <TextView
@@ -196,8 +194,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tdm_header"
                 app:layout_constraintTop_toBottomOf="@+id/textview_global_cd"
-                tools:layout_conversion_absoluteHeight="19dp"
-                tools:layout_conversion_absoluteWidth="64dp" />
+                />
 
             <TextView
                 android:id="@+id/textview_duel"
@@ -210,8 +207,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textview_tdm"
                 app:layout_constraintTop_toBottomOf="@+id/duels_header"
-                tools:layout_conversion_absoluteHeight="20dp"
-                tools:layout_conversion_absoluteWidth="20dp" />
+                 />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

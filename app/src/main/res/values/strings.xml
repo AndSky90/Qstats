@@ -13,4 +13,5 @@
     <string name="global_champions_usage">Global Champions Usage:</string>
     <string name="global_weapon_usage">Global Weapon Usage:</string>
     <string name="none">none</string>
+    <string name="matches">Matches</string>
 </resources>

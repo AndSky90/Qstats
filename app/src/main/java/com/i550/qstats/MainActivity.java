@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,17 +38,12 @@ public class MainActivity extends AppCompatActivity {
     private Boolean ADDED_NEW_PROFILE = false;
     private Boolean DATA_IS_ACTUAL = false;
 
-    MyViewModel mViewModel = new MyViewModel(getApplication());
-
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor editor;
 
     private TabLayout tabLayout;
-    private ViewPager viewPager;
     private ViewPagerAdapter vpa;
-
     private DrawerLayout mDrawerLayout;
-
 
     private ImageView statusStripe;
     private Toolbar toolbar;
@@ -63,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_matches,
             R.drawable.ic_compare};
 
+    MyViewModel mViewModel = new MyViewModel(getApplication());
 
     protected void configureTabLayout() {
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
@@ -108,18 +103,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FragmentManager fm = getSupportFragmentManager();
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        statusStripe = findViewById(R.id.status_stripe);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar_layout);
+        tabLayout = findViewById(R.id.tab_layout);
+
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
-        statusStripe = findViewById(R.id.status_stripe);
+        vpa = new ViewPagerAdapter(fm);
+        viewPager.setAdapter(vpa);
+        tabLayout.setupWithViewPager(viewPager);
+        configureTabLayout();
 
-        mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -136,13 +139,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        FragmentManager fm = getSupportFragmentManager();
-        vpa = new ViewPagerAdapter(fm);
-        viewPager = findViewById(R.id.viewpager);
-        viewPager.setAdapter(vpa);
-        tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
-        configureTabLayout();
 
       /*  headerLayout = findViewById(R.id.header_nameplate);
         headerLayout.setOnClickListener(new View.OnClickListener() {
@@ -158,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
         if (CheckInternet()) new AsyncTaskGlobal().execute();
 
     }
+
+
+
 
     private Boolean CheckInternet() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -194,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
     public void setHeaderColorActualData() {
         if (DATA_IS_ACTUAL)
             statusStripe.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        else statusStripe.setBackgroundColor(getResources().getColor(R.color.colorBad));
+        else statusStripe.setBackgroundColor(getResources().getColor(R.color.colorRed));
     }
 
     @Override
@@ -212,7 +211,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             case android.R.id.home: {
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) mDrawerLayout.closeDrawer(GravityCompat.START);
+                    else mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
                // return true;
             }
