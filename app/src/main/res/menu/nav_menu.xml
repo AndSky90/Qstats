@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="none">
     <item
-        android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_champions"
-        android:title="@string/profile" />
-    <item
-        android:id="@+id/nav_stats"
-        android:icon="@drawable/ic_modes"
-        android:title="@string/stats" />
-    <item
-        android:id="@+id/nav_timer"
-        android:icon="@drawable/ic_matches"
-        android:title="@string/timer" />
+        android:id="@+id/url_stats"
+        android:icon="@drawable/ic_refresh_black_24dp"
+        android:title="Quake.stats.com"/>
+        <item
+            android:id="@+id/url_bethesda"
+            android:icon="@drawable/ic_refresh_black_24dp"
+            android:title="Bethesda.com"/>
+    </group>
+
 </menu>

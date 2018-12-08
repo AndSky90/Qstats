@@ -12,25 +12,23 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:scrollbars="none">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/viewRoot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toStartOf="@+id/textview_global_tc"
-            app:layout_constraintStart_toStartOf="@+id/textview_global_tc">
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/global_data_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Global data"
+                android:text="@string/global_data"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -38,18 +36,32 @@
                 tools:layout_conversion_absoluteWidth="72dp" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/global_champions_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Total Champions Usage:"
+                android:text="@string/global_champions_usage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/global_data_text_view"
                 tools:layout_conversion_absoluteHeight="19dp"
                 tools:layout_conversion_absoluteWidth="151dp" />
+
+            <include
+                android:id="@+id/holder"
+                layout="@layout/usage_item_view_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/global_champions_text_view" />
+
+
 
             <TextView
                 android:id="@+id/textview_global_tc"
@@ -61,18 +73,18 @@
                 android:text='@{vm.dataGlobal.total_championusage}'
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                app:layout_constraintTop_toBottomOf="@+id/holder"
                 tools:layout_conversion_absoluteHeight="20dp"
                 tools:layout_conversion_absoluteWidth="20dp" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/global_weapons_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Total Deaths:"
+                android:text="@string/global_weapon_usage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textview_global_tc"
@@ -89,7 +101,7 @@
                 android:text='@{vm.dataGlobal.total_deaths}'
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                app:layout_constraintTop_toBottomOf="@+id/global_weapons_text_view"
                 tools:layout_conversion_absoluteHeight="20dp"
                 tools:layout_conversion_absoluteWidth="20dp" />
 
@@ -98,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Change Championsusage"
+                android:text="Change Championsusage удалить"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textview_global_td"
@@ -122,7 +134,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Change Deaths:"
+                android:text="Change Deaths удалить"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textview_global_cc"

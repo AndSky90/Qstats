@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="400dp"
+    android:layout_height="100dp">
+
+    <ImageView
+        android:id="@+id/namelpate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/nameplate_default"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/profile_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/profile_icon_01"
+        app:layout_constraintBottom_toBottomOf="@+id/namelpate"
+        app:layout_constraintStart_toStartOf="@+id/namelpate"
+        app:layout_constraintTop_toTopOf="@+id/namelpate" />
+
+    <TextView
+        android:id="@+id/profile_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="XF8ShaggyStoned"
+        app:layout_constraintStart_toEndOf="@+id/profile_icon"
+        app:layout_constraintTop_toTopOf="@+id/namelpate" />
+
+    <ImageView
+        android:id="@+id/range_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/range_gold_02"
+        app:layout_constraintBottom_toBottomOf="@+id/namelpate"
+        app:layout_constraintStart_toEndOf="@+id/profile_icon"
+        app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+
+    <TextView
+        android:id="@+id/duel_elo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="1608"
+        app:layout_constraintBottom_toBottomOf="@+id/namelpate"
+        app:layout_constraintStart_toEndOf="@+id/range_icon"
+        app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+
+</android.support.constraint.ConstraintLayout>

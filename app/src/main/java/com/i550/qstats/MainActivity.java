@@ -2,34 +2,27 @@ package com.i550.qstats;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewStub;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
-import com.i550.qstats.Model.DataGlobal;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,13 +40,21 @@ public class MainActivity extends AppCompatActivity {
     private Boolean DATA_IS_ACTUAL = false;
 
     MyViewModel mViewModel = new MyViewModel(getApplication());
-    SharedPreferences.Editor editor;
+
     private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor editor;
+
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    public ViewPagerAdapter vpa;
-    public AppBarLayout headerLayout;
-    public ImageView statusBar;
+    private ViewPagerAdapter vpa;
+
+    private DrawerLayout mDrawerLayout;
+
+
+    private ImageView statusStripe;
+    private Toolbar toolbar;
+    private AppBarLayout headerLayout;
+    private ConstraintLayout statusBar;
     private int[] tabIcons = {
             R.drawable.ic_champions,
             R.drawable.ic_medals,
@@ -61,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_weapons,
             R.drawable.ic_matches,
             R.drawable.ic_compare};
-
-
 
 
     protected void configureTabLayout() {
@@ -109,6 +108,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        toolbar = findViewById(R.id.toolbar_layout);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+
+        statusStripe = findViewById(R.id.status_stripe);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                //menuItem.setChecked(true);
+                mDrawerLayout.closeDrawers();
+
+                switch (menuItem.getItemId()) {
+                    case R.id.url_stats:
+                        if (CheckInternet()) // TODO intents ;
+                            break;
+                }
+                return true;
+            }
+        });
 
 
         FragmentManager fm = getSupportFragmentManager();
@@ -118,20 +143,18 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
         configureTabLayout();
-        statusBar = findViewById(R.id.status_bar_colored);
-        headerLayout = findViewById(R.id.headerLayout);
+
+      /*  headerLayout = findViewById(R.id.header_nameplate);
         headerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "Click header");
                 if (CheckInternet()) new AsyncTaskGlobal().execute();
             }
-        });
+        });*/
 
         readSharedPreferences();
-
         queryNewProfile();
-
         if (CheckInternet()) new AsyncTaskGlobal().execute();
 
     }
@@ -142,19 +165,10 @@ public class MainActivity extends AppCompatActivity {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-
-
-
-    /*
-        TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
-        Test te = new Test();
-        te.setJopa("aage2324geg");
-        testModel.setTest(te);
-
-
+/*
     public void updateView(){
         viewPager.invalidate();
-        // viewPager.updateViewLayout();
+        viewPager.updateViewLayout();
     }*/
 
 
@@ -176,10 +190,38 @@ public class MainActivity extends AppCompatActivity {
             mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
         }*/
     }
-    public void setHeaderColorActualData(){
-        if(DATA_IS_ACTUAL)             statusBar.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        else             statusBar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+
+    public void setHeaderColorActualData() {
+        if (DATA_IS_ACTUAL)
+            statusStripe.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        else statusStripe.setBackgroundColor(getResources().getColor(R.color.colorBad));
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.refresh: {
+                if (CheckInternet()) new AsyncTaskGlobal().execute();
+                break;
+            }
+            case android.R.id.home: {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
+               // return true;
+            }
+
+        }
+        return true;
+     //   return super.onOptionsItemSelected(item);
+    }
+
 
 //__________________________________________________________________________________________________
 
@@ -229,6 +271,8 @@ public class MainActivity extends AppCompatActivity {
             setHeaderColorActualData();
         }
     }
+}
+
 
 
 
@@ -250,4 +294,4 @@ public class MainActivity extends AppCompatActivity {
     }*/
 
 
-}
+
