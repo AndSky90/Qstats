@@ -2,25 +2,29 @@ package com.i550.qstats;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.MatrixCursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,27 +32,24 @@ import java.util.Set;
 //__________________________________________________________________________________________________
 
 public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = "qStatser";
     public static final String PREFS = "prefs";
     public static final String PROFILE_NAMES_LIST = "namelist";
     public static final String LAST_PROFILE_NAME = "last_profile_name";
-    public static final String LAST_DATA = "last data";
     private static String profileName;
+    private static String searchName = "";
+    private String[] searchResult;
     private Set<String> profileNamesList;
-    private Boolean ADDED_NEW_PROFILE = false;
-    private Boolean DATA_IS_ACTUAL = false;
-
+    private SimpleCursorAdapter mAdapter;
     private SharedPreferences mSharedPreferences;
-    private SharedPreferences.Editor editor;
 
     private TabLayout tabLayout;
     private ViewPagerAdapter vpa;
     private DrawerLayout mDrawerLayout;
 
     private ImageView statusStripe;
-    private Toolbar toolbar;
-    private AppBarLayout headerLayout;
-    private ConstraintLayout statusBar;
+
     private int[] tabIcons = {
             R.drawable.ic_champions,
             R.drawable.ic_medals,
@@ -58,13 +59,6 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_compare};
 
     MyViewModel mViewModel = new MyViewModel(getApplication());
-
-    protected void configureTabLayout() {
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
-            // tabLayout. TODO посмотреть разные методы, с иконкой намутить
-        }
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle sis) {
@@ -80,24 +74,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onRestoreInstanceState");
     }
 
-  /*  @Override
-    protected void onStop() {
-        if (ADDED_NEW_PROFILE) {
-            editor = mSharedPreferences.edit();
-            editor.putStringSet(PROFILE_NAMES_LIST, profileNamesList);
-            editor.putString(LAST_PROFILE_NAME, profileName).apply();
-        }
-        super.onStop();
-    }*/
-
-    protected void queryNewProfile() {
-        profileName = "XF8ShaggyStoned";
-        ADDED_NEW_PROFILE = true;
-        profileNamesList.add(profileName);
-        return;
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,13 +81,11 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         ViewPager viewPager = findViewById(R.id.viewpager);
-        NavigationView navigationView = findViewById(R.id.nav_view);
         statusStripe = findViewById(R.id.status_stripe);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        toolbar = findViewById(R.id.toolbar_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_layout);
         tabLayout = findViewById(R.id.tab_layout);
 
-        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -122,84 +96,9 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         configureTabLayout();
 
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                //menuItem.setChecked(true);
-                mDrawerLayout.closeDrawers();
-
-                switch (menuItem.getItemId()) {
-                    case R.id.url_stats:
-                        if (CheckInternet()) // TODO intents ;
-                            break;
-                }
-                return true;
-            }
-        });
-
-
-
-      /*  headerLayout = findViewById(R.id.header_nameplate);
-        headerLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "Click header");
-                if (CheckInternet()) new AsyncTaskGlobal().execute();
-            }
-        });*/
-
         readSharedPreferences();
-        queryNewProfile();
-        if (CheckInternet()) new AsyncTaskGlobal().execute();
 
-    }
-
-
-
-
-    private Boolean CheckInternet() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-/*
-    public void updateView(){
-        viewPager.invalidate();
-        viewPager.updateViewLayout();
-    }*/
-
-
-    private void readSharedPreferences() {
-        mSharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        profileNamesList = new HashSet<>();
-        if (mSharedPreferences.contains(PROFILE_NAMES_LIST)) {
-            profileNamesList = mSharedPreferences.getStringSet(PROFILE_NAMES_LIST, new HashSet<String>());
-        }
-        if (mSharedPreferences.contains(LAST_PROFILE_NAME)) {
-            profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
-        } else queryNewProfile();
-        Log.i(TAG, "Prefs: PROFILE_NAMES_LIST: " + profileName + " LAST_PROFILE_NAME: " + profileNamesList);
-        if (mSharedPreferences.contains("DataGlobal")) {
-            mViewModel.fetchDataGlobal(mSharedPreferences.getString("DataGlobal", null));
-            mViewModel.fetchLeaderBoard(mSharedPreferences.getString("TdmLeads", null), false);
-            mViewModel.fetchLeaderBoard(mSharedPreferences.getString("DuelLeads", null), true);
-            mViewModel.fetchPlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
-            mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
-        }
-    }
-
-    public void setHeaderColorActualData() {
-        if (DATA_IS_ACTUAL)
-            statusStripe.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        else statusStripe.setBackgroundColor(getResources().getColor(R.color.colorRed));
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return true;
+        createQueryAdapter();
     }
 
     @Override
@@ -211,17 +110,162 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             case android.R.id.home: {
-                if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) mDrawerLayout.closeDrawer(GravityCompat.START);
-                    else mDrawerLayout.openDrawer(GravityCompat.START);
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START))
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                else mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
-               // return true;
+                // return true;
             }
-
         }
         return true;
-     //   return super.onOptionsItemSelected(item);
+        //   return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        //  final SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem menuItem = menu.findItem(R.id.menu_search);
+        final View np = findViewById(R.id.header_nameplate);
+        final SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setSuggestionsAdapter(mAdapter);
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionClick(int position) {
+                searchView.setQuery(searchResult[position], true);
+                return true;
+            }
+
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return true;
+            }
+        });
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                np.setVisibility(View.GONE);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                np.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!profileName.equals(query)) {
+                    profileName = query;
+                    queryNewProfile(profileName);
+                }
+                menuItem.collapseActionView();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                if (query != null && query.length() > 0) {
+                    searchName = query;
+                    new AsyncTaskNameSearch().execute();
+                }
+                return true;
+            }
+        });
+
+        NavigationView navigationView = findViewById(R.id.navigation_menu_view);
+        //TODO intents //menuItem.setChecked(true);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.url_stats:
+                        if (CheckInternet())
+                            return true;
+                }
+                mDrawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
+
+        return true;
+    }
+
+    private void populateAdapter() {
+        final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "name"});
+        for (int i = 0; i < searchResult.length; i++) {
+            c.addRow(new Object[]{i, searchResult[i]});
+        }
+        mAdapter.changeCursor(c);
+    }
+
+    public void setHeaderColorActualData(boolean dataIsActual) {
+        if (dataIsActual)
+            statusStripe.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        else statusStripe.setBackgroundColor(getResources().getColor(R.color.colorRed));
+    }
+
+    private void queryNewProfile(String name) {
+        profileName = name;
+        profileNamesList.add(name);
+        Log.i(TAG, " NEW NAME: " + profileName);
+        if (CheckInternet()) new AsyncTaskGlobal().execute();
+    }
+
+    private Boolean CheckInternet() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    private void createQueryAdapter() {
+        final String[] from = new String[]{"name"};
+        final int[] to = new int[]{android.R.id.text1};
+        mAdapter = new
+                SimpleCursorAdapter(this,
+                android.R.layout.simple_list_item_1,
+                null,
+                from,
+                to,
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+    }
+
+    protected void configureTabLayout() {
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
+            // tabLayout. TODO посмотреть разные методы, с иконкой намутить
+        }
+    }
+
+    private void readSharedPreferences() {
+        mSharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        profileNamesList = new HashSet<>();
+        if (mSharedPreferences.contains(PROFILE_NAMES_LIST)) {
+            profileNamesList = mSharedPreferences.getStringSet(PROFILE_NAMES_LIST, new HashSet<String>());
+            searchResult = profileNamesList.toArray(new String[profileNamesList.size()]);
+        }
+        if (mSharedPreferences.contains(LAST_PROFILE_NAME)) {
+            profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
+        } else queryNewProfile("rapha");
+        Log.i(TAG, "Prefs: PROFILE_NAMES_LIST: " + profileName + " LAST_PROFILE_NAME: " + profileNamesList);
+        if (mSharedPreferences.contains("DataGlobal")) {
+            mViewModel.fetchDataGlobal(mSharedPreferences.getString("DataGlobal", null));
+            mViewModel.fetchLeaderBoard(mSharedPreferences.getString("TdmLeads", null), false);
+            mViewModel.fetchLeaderBoard(mSharedPreferences.getString("DuelLeads", null), true);
+            mViewModel.fetchPlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
+            mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
+        }
+
+    }
+    /*
+    public void updateView(){
+        viewPager.invalidate();
+        viewPager.updateViewLayout();
+    }*/
 
 //__________________________________________________________________________________________________
 
@@ -229,21 +273,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            DATA_IS_ACTUAL = false;
-            setHeaderColorActualData();
+            setHeaderColorActualData(false);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
 
-
-            NetQstatsWork background = new NetQstatsWork();
+            NetQStatsWork background = new NetQStatsWork();
             String dg = background.fetch(getString(R.string.url_global));
             String tdm = background.fetch(getString(R.string.url_tdm_leads));
             String duel = background.fetch(getString(R.string.url_duel_leads));
             String summary = background.fetch(getString(R.string.url_player_summary) + "?name=" + profileName);
             String stats = background.fetch(getString(R.string.url_player_stats) + "?name=" + profileName);
-
 
             mViewModel.fetchDataGlobal(dg);
             mViewModel.fetchLeaderBoard(tdm, false);
@@ -251,13 +292,14 @@ public class MainActivity extends AppCompatActivity {
             mViewModel.fetchPlayerSummary(summary);
             mViewModel.fetchPlayerStats(stats);
 
-            editor = mSharedPreferences.edit();
-
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.putStringSet(PROFILE_NAMES_LIST, profileNamesList);
             editor.putString("DataGlobal", dg);
             editor.putString("TdmLeads", tdm);
             editor.putString("DuelLeads", duel);
             editor.putString("PlayerSummary", summary);
             editor.putString("PlayerStats", stats);
+            editor.putString(LAST_PROFILE_NAME, profileName).apply();
             editor.apply();
 
             return null;
@@ -267,31 +309,28 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void v) {
             vpa.notifyDataSetChanged();
             configureTabLayout();
-            DATA_IS_ACTUAL = true;
-            setHeaderColorActualData();
+            setHeaderColorActualData(true);
         }
     }
-}
 
-
-
-
-/*
-    public class AsyncTaskNameSearch extends AsyncTask<Void, Void, Void> {
+    class AsyncTaskNameSearch extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            NetQstatsWork background = new NetQstatsWork();
-
-            background.fetchNames(getApplication().getString(R.string.url_global), input);
-
+            NetQStatsWork background = new NetQStatsWork();
+            String nameSearchJson = background.fetch(getString(R.string.url_player_search) + "?term=" + searchName);
+            if (nameSearchJson != null) {
+                Log.i(TAG, " Input search: " + searchName + ". NameSuggestion: " + nameSearchJson);
+                String[] r = mViewModel.fetchSearchResult(nameSearchJson);
+                if (r.length > 0) searchResult = r;
+            }
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void r) {
-
+        protected void onPostExecute(Void aVoid) {
+            populateAdapter();
+            super.onPostExecute(aVoid);
         }
-    }*/
-
-
+    }
+}
 

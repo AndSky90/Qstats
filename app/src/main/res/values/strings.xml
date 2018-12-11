@@ -13,10 +13,13 @@
     <string name="global_champions_usage">Global Champions Usage:</string>
     <string name="global_weapon_usage">Global Weapon Usage:</string>
     <string name="none">none</string>
-    <string name="matches">Matches</string>
+    <string name="matches">Recent matches</string>
     <string name="victory">Victory</string>
     <string name="defeat">Defeat</string>
-    <string name="placeholder">===</string>
+    <string name="placeholder">unknown</string>
+    <string name="quake_stats_com">Quake.stats.com</string>
+    <string name="bethesda_com">Bethesda.com</string>
+    <string name="share">Share</string>
 
 
 </resources>

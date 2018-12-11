@@ -2,14 +2,13 @@ package com.i550.qstats;
 
 import android.net.Uri;
 import android.util.Log;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class NetQstatsWork {
+class NetQStatsWork {
     private static final String TAG = "qStatserNetwork";
 
 
@@ -44,10 +43,8 @@ class NetQstatsWork {
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
         }
-        return jsonString;
+        finally {
+            return jsonString;
+        }
     }
-
-
-
-    // TODO void fetchNames(String path, String value) {}
 }

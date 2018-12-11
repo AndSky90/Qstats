@@ -1,5 +1,7 @@
 package com.i550.qstats.Model.PlayerStats;
 
+import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.PlayerProfileStats;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,11 +9,11 @@ public class PlayerStats {
     public PlayerStats() {}
 
     private String name;
-    PlayerRatings playerRatings = new PlayerRatings();
-    PlayerLoadOut playerLoadOut = new PlayerLoadOut();
-    PlayerProfileStats playerProfileStats = new PlayerProfileStats();
-    PlayerLevelState playerLevelState = new PlayerLevelState();
-    List<Matches> matches = new ArrayList<>();
+    private PlayerRatings playerRatings = new PlayerRatings();
+    private PlayerLoadOut playerLoadOut = new PlayerLoadOut();
+    private PlayerProfileStats playerProfileStats = new PlayerProfileStats();
+    private PlayerLevelState playerLevelState = new PlayerLevelState();
+    private List<Matches> matches = new ArrayList<>();
 
     public String getName() {
         return name;

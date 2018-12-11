@@ -5,11 +5,14 @@
     <item
         android:id="@+id/url_stats"
         android:icon="@drawable/ic_language_black_24dp"
-        android:title="Quake.stats.com"/>
+        android:title="@string/quake_stats_com"/>
         <item
             android:id="@+id/url_bethesda"
             android:icon="@drawable/ic_language_black_24dp"
-            android:title="Bethesda.com"/>
+            android:title="@string/bethesda_com"/>
+        <item
+            android:id="@+id/app_bar_menu_share"
+            android:title="@string/share"/>
     </group>
 
 </menu>

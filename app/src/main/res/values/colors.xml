@@ -3,8 +3,11 @@
     <color name="colorPrimary">#434343</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#ffe600</color>
-    <color name="colorRed">#ff5722</color>
-    <color name="colorBlue">#00e1ff</color>
-    <color name="colorDefeat">#b71c1c</color>
+    <color name="colorRed">#b71c1c</color>
+    <color name="colorBlue">#1565c0</color>
+    <color name="colorDefeat">#ff5722</color>
     <color name="colorVictory">#76ff03</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="foreground_material_dark">#7d1717</color>
+
 </resources>

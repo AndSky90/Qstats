@@ -7,13 +7,35 @@
             type="com.i550.qstats.MyViewModel" />
     </data>
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/linear_medals"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Modes" />
-    </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/medals_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ListView
+                android:id="@+id/list_view_champions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="8dp"
+                android:scrollbars="none" />
+
+
+        </LinearLayout>
+    </LinearLayout>
 </layout>

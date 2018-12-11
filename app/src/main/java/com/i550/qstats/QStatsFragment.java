@@ -2,6 +2,7 @@ package com.i550.qstats;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import com.i550.qstats.Adapters.ChampionsAdapter;
 import com.i550.qstats.Adapters.MatchItemAdapter;
+import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.Champions;
 import com.i550.qstats.Model.PlayerSummary.MatchDetails;
 import com.i550.qstats.databinding.FGlobalBinding;
 import com.i550.qstats.databinding.FMatchesBinding;
@@ -23,6 +26,7 @@ import com.i550.qstats.databinding.FWeaponsBinding;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class QStatsFragment extends Fragment {
     public QStatsFragment() {
@@ -54,39 +58,58 @@ public class QStatsFragment extends Fragment {
         MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
 
         switch (pageNumber) {
-            case (0): {
+            case (0): { //global
                 FGlobalBinding binding0 = DataBindingUtil.bind(result);
                 binding0.setVm(model);
                 break;
             }
-            case (1): {
+            case (1): { //medals
                 FMedalsBinding binding1 = DataBindingUtil.bind(result);
                 binding1.setVm(model);
+                ListView listViewChampions = result.findViewById(R.id.list_view_champions);
+                List<String> champions = model.getPlayerStats().getPlayerProfileStats().getChampionsNamesArray();
+                ArrayAdapter<String> adaptChampions = new ChampionsAdapter(getContext(), 0, champions);
+                listViewChampions.setAdapter(adaptChampions);
                 break;
             }
-            case (2): {
+
+            case (2): { //modes
                 FModesBinding binding2 = DataBindingUtil.bind(result);
                 binding2.setVm(model);
+                ListView listViewChampions = result.findViewById(R.id.list_view_champions);
+                List<String> champions = model.getPlayerStats().getPlayerProfileStats().getChampionsNamesArray();
+                ArrayAdapter<String> adaptChampions = new ChampionsAdapter(getContext(), 0, champions);
+                listViewChampions.setAdapter(adaptChampions);
                 break;
             }
-            case (3): {
+            case (3): { //weapons
                 FWeaponsBinding binding3 = DataBindingUtil.bind(result);
                 binding3.setVm(model);
+                ListView listViewChampions = result.findViewById(R.id.list_view_champions);
+                List<String> champions = model.getPlayerStats().getPlayerProfileStats().getChampionsNamesArray();
+                ArrayAdapter<String> adaptChampions = new ChampionsAdapter(getContext(), 0, champions);
+                listViewChampions.setAdapter(adaptChampions);
+
                 break;
             }
-            case (4): {
+            case (4): { //matches
                 FMatchesBinding binding4 = DataBindingUtil.bind(result);
                 binding4.setVm(model);
-                ListView listView = result.findViewById(R.id.listView);
+                ListView listView = result.findViewById(R.id.list_view_matches);
                 List<MatchDetails> matchDetails = model.getPlayerSummary().getMatch();
                 ArrayAdapter<MatchDetails> adapter = new MatchItemAdapter(getContext(), 0, matchDetails);
                 listView.setAdapter(adapter);
 
                 break;
             }
-            case 5: {
+            case 5: { //champions
                 FChampionsBinding binding5 = DataBindingUtil.bind(result);
                 binding5.setVm(model);
+                ListView listViewChampions = result.findViewById(R.id.list_view_champions);
+                List<String> champions = model.getPlayerStats().getPlayerProfileStats().getChampionsNamesArray();
+                ArrayAdapter<String> adaptChampions = new ChampionsAdapter(getContext(), 0, champions);
+                listViewChampions.setAdapter(adaptChampions);
+
                 break;
             }
 
