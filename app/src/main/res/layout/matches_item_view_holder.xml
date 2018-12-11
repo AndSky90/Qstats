@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:id="@+id/map_image"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="@id/time_elatsed_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/gamemode_image"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/gamemode_tdm"
+        app:layout_constraintBottom_toBottomOf="@id/map_title"
+        app:layout_constraintStart_toEndOf="@id/map_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/gamemode_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="@string/placeholder"
+        app:layout_constraintStart_toEndOf="@id/gamemode_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/map_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/placeholder"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toEndOf="@id/gamemode_image"
+        app:layout_constraintTop_toBottomOf="@id/gamemode_title" />
+
+    <TextView
+        android:id="@+id/time_elatsed_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/placeholder"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/map_image"
+        app:layout_constraintTop_toBottomOf="@+id/gamemode_image" />
+
+    <TextView
+        android:id="@+id/win_lose_title"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/red_team_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/colorRed"
+        app:layout_constraintStart_toStartOf="@id/win_lose_title"
+        app:layout_constraintTop_toBottomOf="@id/win_lose_title" />
+
+    <TextView
+        android:id="@+id/blue_team_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/colorBlue"
+        app:layout_constraintStart_toEndOf="@id/red_team_title"
+        app:layout_constraintTop_toBottomOf="@id/win_lose_title" />
+
+</android.support.constraint.ConstraintLayout>

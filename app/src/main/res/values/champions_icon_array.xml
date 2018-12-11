@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="names">
+        <item>champ_all</item>
+        <item>champ_anarki</item>
+        <item>champ_athena</item>
+        <item>champ_bj</item>
+        <item>champ_clutch</item>
+        <item>champ_deathknight</item>
+        <item>champ_doom</item>
+        <item>champ_eisen</item>
+        <item>champ_galena</item>
+        <item>champ_keel</item>
+        <item>champ_nyx</item>
+        <item>champ_ranger</item>
+        <item>champ_scalebearer</item>
+        <item>champ_slash</item>
+        <item>champ_sorlag</item>
+        <item>champ_strogg</item>
+        <item>champ_visor</item>
+    </string-array>
+</resources>
