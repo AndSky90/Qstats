@@ -18,14 +18,14 @@ import java.util.List;
 
 public class MatchItemAdapter extends ArrayAdapter<MatchDetails> {
     private Context context;
-    private DataTranslationAdapters dta;
+    private DataTranslator dta;
     private List<MatchDetails> matchDetails;
 
     public MatchItemAdapter(Context context, int resource, List<MatchDetails> matchDetails) {
         super(context, resource, matchDetails);
         this.context = context;
         this.matchDetails = matchDetails;
-        dta = DataTranslationAdapters.getInstance(context);
+        dta = DataTranslator.getInstance(context);
     }
 
     @NonNull public View getView(int position, View convertView, ViewGroup parent) {

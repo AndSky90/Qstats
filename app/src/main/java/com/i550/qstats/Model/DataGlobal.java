@@ -153,7 +153,7 @@ class ChangeChampionusage {
 }
 
 class ChangeDeaths {
-
+    ChangeDeaths() {}
     private String GrenadeSwarm;
     private String DireOrb;
     private String WallOfFire;
@@ -177,68 +177,10 @@ class ChangeDeaths {
     private String ROCKET_LAUNCHER;
     private String GrapplingHook;
 
-    ChangeDeaths() {
-    }
-
-    public ChangeDeaths(String grenadeSwarm, String direOrb, String wallOfFire, String SHOTGUN,
-                        String vendetta, String bullRush, String LAGBOLT, String GAUNTLET, String RAILGUN,
-                        String berserk, String plasmaTrail, String NAILGUN, String DRONE_PLASMA_GUN, String DOMAIN,
-                        String MINING_LASER, String MACHINEGUN, String reconDrone, String acidSpit, String unholyTotem,
-                        String LIGHTNING_GUN, String ROCKET_LAUNCHER, String grapplingHook) {
-        GrenadeSwarm = grenadeSwarm;
-        DireOrb = direOrb;
-        WallOfFire = wallOfFire;
-        this.SHOTGUN = SHOTGUN;
-        Vendetta = vendetta;
-        BullRush = bullRush;
-        this.LAGBOLT = LAGBOLT;
-        this.GAUNTLET = GAUNTLET;
-        this.RAILGUN = RAILGUN;
-        Berserk = berserk;
-        PlasmaTrail = plasmaTrail;
-        this.NAILGUN = NAILGUN;
-        this.DRONE_PLASMA_GUN = DRONE_PLASMA_GUN;
-        this.DOMAIN = DOMAIN;
-        this.MINING_LASER = MINING_LASER;
-        this.MACHINEGUN = MACHINEGUN;
-        ReconDrone = reconDrone;
-        AcidSpit = acidSpit;
-        UnholyTotem = unholyTotem;
-        this.LIGHTNING_GUN = LIGHTNING_GUN;
-        this.ROCKET_LAUNCHER = ROCKET_LAUNCHER;
-        GrapplingHook = grapplingHook;
-    }
-
-    @Override
-    public String toString() {
-        return "ChangeDeaths{" +
-                "GrenadeSwarm='" + GrenadeSwarm + '\'' +
-                ", DireOrb='" + DireOrb + '\'' +
-                ", WallOfFire='" + WallOfFire + '\'' +
-                ", SHOTGUN='" + SHOTGUN + '\'' +
-                ", Vendetta='" + Vendetta + '\'' +
-                ", BullRush='" + BullRush + '\'' +
-                ", LAGBOLT='" + LAGBOLT + '\'' +
-                ", GAUNTLET='" + GAUNTLET + '\'' +
-                ", RAILGUN='" + RAILGUN + '\'' +
-                ", Berserk='" + Berserk + '\'' +
-                ", PlasmaTrail='" + PlasmaTrail + '\'' +
-                ", NAILGUN='" + NAILGUN + '\'' +
-                ", DRONE_PLASMA_GUN='" + DRONE_PLASMA_GUN + '\'' +
-                ", DOMAIN='" + DOMAIN + '\'' +
-                ", MINING_LASER='" + MINING_LASER + '\'' +
-                ", MACHINEGUN='" + MACHINEGUN + '\'' +
-                ", ReconDrone='" + ReconDrone + '\'' +
-                ", AcidSpit='" + AcidSpit + '\'' +
-                ", UnholyTotem='" + UnholyTotem + '\'' +
-                ", LIGHTNING_GUN='" + LIGHTNING_GUN + '\'' +
-                ", ROCKET_LAUNCHER='" + ROCKET_LAUNCHER + '\'' +
-                ", GrapplingHook='" + GrapplingHook + '\'' +
-                '}';
-    }
 }
 
 class TotalChampionusage {
+    TotalChampionusage() {}
 
     private String GALENA;
     private String RANGER;
@@ -256,47 +198,6 @@ class TotalChampionusage {
     private String CLUTCH;
     private String ATHENA;
 
-    TotalChampionusage() {
-    }
-
-    public TotalChampionusage(String GALENA, String RANGER, String DEATH_KNIGHT, String VISOR, String DOOM_SLAYER, String KEEL, String ANARKI, String SLASH, String NYX, String STROGG, String SORLAG, String SCALEBEARER, String BJ_BLAZKOWICZ, String CLUTCH, String ATHENA) {
-        this.GALENA = GALENA;
-        this.RANGER = RANGER;
-        this.DEATH_KNIGHT = DEATH_KNIGHT;
-        this.VISOR = VISOR;
-        this.DOOM_SLAYER = DOOM_SLAYER;
-        this.KEEL = KEEL;
-        this.ANARKI = ANARKI;
-        this.SLASH = SLASH;
-        this.NYX = NYX;
-        this.STROGG = STROGG;
-        this.SORLAG = SORLAG;
-        this.SCALEBEARER = SCALEBEARER;
-        this.BJ_BLAZKOWICZ = BJ_BLAZKOWICZ;
-        this.CLUTCH = CLUTCH;
-        this.ATHENA = ATHENA;
-    }
-
-    @Override
-    public String toString() {
-        return "TotalChampionusage{" +
-                "GALENA='" + GALENA + '\'' +
-                ", RANGER='" + RANGER + '\'' +
-                ", DEATHKNIGHT='" + DEATH_KNIGHT + '\'' +
-                ", VISOR='" + VISOR + '\'' +
-                ", DOOMSLAYER='" + DOOM_SLAYER + '\'' +
-                ", KEEL='" + KEEL + '\'' +
-                ", ANARKI='" + ANARKI + '\'' +
-                ", SLASH='" + SLASH + '\'' +
-                ", NYX='" + NYX + '\'' +
-                ", STROGG='" + STROGG + '\'' +
-                ", SORLAG='" + SORLAG + '\'' +
-                ", SCALEBEARER='" + SCALEBEARER + '\'' +
-                ", BJBLAZKOWICZ='" + BJ_BLAZKOWICZ + '\'' +
-                ", CLUTCH='" + CLUTCH + '\'' +
-                ", ATHENA='" + ATHENA + '\'' +
-                '}';
-    }
 }
 
 class TotalDeaths {

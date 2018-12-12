@@ -17,12 +17,19 @@ public class PlayerProfileStats {
     public Map<String, Champions> getChampions() {
         return champions;
     }
-    public ArrayList<Champions> getChampionsValuesArray() {
-        return (ArrayList<Champions>) champions.values();}
 
-        public ArrayList<String> getChampionsNamesArray() {
-            return new ArrayList<>(champions.keySet());
+    public ArrayList<Champions> getChampionsValuesArray() {
+        ArrayList<Champions> c = new ArrayList<>();
+        for (Champions p : champions.values()) c.add(p);
+        return c;
     }
+
+    public ArrayList<String> getChampionsNamesArray() {
+        ArrayList<String> names = new ArrayList<>(champions.keySet());
+        names.add(0, "ALL");                    // add "ALL" champion for common info
+        return names;
+    }
+
 }
 
 

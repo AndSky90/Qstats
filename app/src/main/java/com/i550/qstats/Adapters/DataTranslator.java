@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DataTranslationAdapters {
+public class DataTranslator {
     private Map<String, String> gameModeTitleTranslator;
     private Map<String, String> mapTitleTranslator;
     private Map<String, Drawable> mapImageTranslator;
@@ -19,16 +19,11 @@ public class DataTranslationAdapters {
     private Map<String, Drawable> weaponsImageTranslator;
     private Map<String, Drawable> championsImageTranslator;
     private List<Drawable> championsImageTranslatorIterable;
-
+    private List<Drawable> weaponsImageTranslatorIterable;
     private Context context;
-    private static DataTranslationAdapters translator;
+    private static DataTranslator translator;
 
-    /*
-    public DataTranslationAdapters init(Context context) {
-        return new DataTranslationAdapters(context);
-    }*/
-
-    private DataTranslationAdapters(Context context) {
+    private DataTranslator(Context context) {
 
         gameModeTitleTranslator = new HashMap<>();
         mapTitleTranslator = new HashMap<>();
@@ -38,7 +33,7 @@ public class DataTranslationAdapters {
         championsImageTranslator = new HashMap<>();
 
 
-        gameModeTitleTranslator.put("GameModeFFA", "Free for all");
+        gameModeTitleTranslator.put("GameModeFFA", "Deathmatch");
         gameModeTitleTranslator.put("GameModeTeamDeathmatch", "Team Deathmatch");
         gameModeTitleTranslator.put("GameModeDuel", "Duel");
         gameModeTitleTranslator.put("GameModeObelisk", "Sacrifice");
@@ -100,11 +95,12 @@ public class DataTranslationAdapters {
             e.printStackTrace();
         }
         championsImageTranslatorIterable = new ArrayList<>(championsImageTranslator.values());
+        weaponsImageTranslatorIterable = new ArrayList<>(weaponsImageTranslator.values());
     }
 
-    public static DataTranslationAdapters getInstance(Context context) {
+    public static DataTranslator getInstance(Context context) {
         if (translator == null) {
-            translator = new DataTranslationAdapters(context);
+            translator = new DataTranslator(context);
         }
         return translator;
     }
@@ -125,12 +121,11 @@ public class DataTranslationAdapters {
         return gameModeImageTranslator.get(k);
     }
 
-    public Drawable getWeaponsImageTranslation(String k) {
-        return weaponsImageTranslator.get(k);
-    }
-
     public Drawable getChampionsImageTranslation(String k) {
         return championsImageTranslator.get(k);
     }
 
+    public Drawable getWeaponsImageTranslationIterable(int k) {
+        return weaponsImageTranslatorIterable.get(k);
+    }
 }

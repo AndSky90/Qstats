@@ -42,12 +42,6 @@ public class MyViewModel extends AndroidViewModel {
     private void setDataGlobal(DataGlobal dataGlobal) {
         MyViewModel.dataGlobal = dataGlobal;
         Log.i(TAG, "setDataGlobal: " + MyViewModel.dataGlobal.getTotal_championusage() + "\n");
-
-        Map<String, PlayerLoadOut> map = new HashMap<>();
-        map.put("RANGER", new PlayerLoadOut("id12", "icon12"));
-        map.put("GALENA", new PlayerLoadOut("id17", "icon17"));
-        String json = gson.toJson(map);
-        Log.i(TAG, "map : " + json);
     }
 
     public static LeaderBoard getTdmLeads() {

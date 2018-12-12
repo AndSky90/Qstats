@@ -16,14 +16,14 @@ import java.util.List;
 
 public class ChampionsAdapter extends ArrayAdapter<String> {
     private Context context;
-    private DataTranslationAdapters dta;
+    private DataTranslator dta;
     private List<String> names;
 
     public ChampionsAdapter(Context context, int resource, List<String> names) {
         super(context, resource, names);
         this.context = context;
         this.names = names;
-        dta = DataTranslationAdapters.getInstance(context);
+        dta = DataTranslator.getInstance(context);
     }
 
     @NonNull
