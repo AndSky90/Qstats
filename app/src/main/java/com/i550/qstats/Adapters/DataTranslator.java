@@ -3,11 +3,14 @@ package com.i550.qstats.Adapters;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,22 +19,19 @@ public class DataTranslator {
     private Map<String, String> mapTitleTranslator;
     private Map<String, Drawable> mapImageTranslator;
     private Map<String, Drawable> gameModeImageTranslator;
-    private Map<String, Drawable> weaponsImageTranslator;
     private Map<String, Drawable> championsImageTranslator;
-    private List<Drawable> championsImageTranslatorIterable;
-    private List<Drawable> weaponsImageTranslatorIterable;
+    private LinkedList <Drawable> weaponsImageTranslatorIterable;
     private Context context;
     private static DataTranslator translator;
 
     private DataTranslator(Context context) {
 
-        gameModeTitleTranslator = new HashMap<>();
-        mapTitleTranslator = new HashMap<>();
-        mapImageTranslator = new HashMap<>();
-        gameModeImageTranslator = new HashMap<>();
-        weaponsImageTranslator = new HashMap<>();
-        championsImageTranslator = new HashMap<>();
-
+        gameModeTitleTranslator = new LinkedHashMap<>();
+        mapTitleTranslator = new LinkedHashMap<>();
+        mapImageTranslator = new LinkedHashMap<>();
+        gameModeImageTranslator = new LinkedHashMap<>();
+        championsImageTranslator = new LinkedHashMap<>();
+        weaponsImageTranslatorIterable = new LinkedList <>();
 
         gameModeTitleTranslator.put("GameModeFFA", "Deathmatch");
         gameModeTitleTranslator.put("GameModeTeamDeathmatch", "Team Deathmatch");
@@ -65,28 +65,29 @@ public class DataTranslator {
         AssetManager mAssetManager = context.getAssets();
         this.context = context;
         String[] files;
+        InputStream inputStream ;
         try {
             files = mAssetManager.list("map_images");
             for (String f : files) {
-                InputStream inputStream = mAssetManager.open("map_images/" + f);
+                inputStream = mAssetManager.open("map_images/" + f);
                 Drawable d = Drawable.createFromStream(inputStream, null);
                 mapImageTranslator.put(f.replace(".jpg", ""), d);
             }
             files = mAssetManager.list("game_mode");
             for (String f : files) {
-                InputStream inputStream = mAssetManager.open("game_mode/" + f);
+                inputStream = mAssetManager.open("game_mode/" + f);
                 Drawable d = Drawable.createFromStream(inputStream, null);
                 gameModeImageTranslator.put(f.replace(".png", ""), d);
             }
             files = mAssetManager.list("weapons");
             for (String f : files) {
-                InputStream inputStream = mAssetManager.open("weapons/" + f);
+                inputStream = mAssetManager.open("weapons/" + f);
                 Drawable d = Drawable.createFromStream(inputStream, null);
-                weaponsImageTranslator.put(f.replace(".png", ""), d);
+                weaponsImageTranslatorIterable.add(d);
             }
             files = mAssetManager.list("champions");
             for (String f : files) {
-                InputStream inputStream = mAssetManager.open("champions/" + f);
+                inputStream = mAssetManager.open("champions/" + f);
                 Drawable d = Drawable.createFromStream(inputStream, null);
                 championsImageTranslator.put(f.replace(".png", ""), d);
             }
@@ -94,8 +95,8 @@ public class DataTranslator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        championsImageTranslatorIterable = new ArrayList<>(championsImageTranslator.values());
-        weaponsImageTranslatorIterable = new ArrayList<>(weaponsImageTranslator.values());
+      //  championsImageTranslatorIterable = new LinkedList<>(championsImageTranslator.values());
+
     }
 
     public static DataTranslator getInstance(Context context) {

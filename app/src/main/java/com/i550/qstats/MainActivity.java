@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private static String profileName;
     private static String searchName = "";
     private String[] searchResult;
-    private Set<String> profileNamesList;
+    private Set<String> profileNamesList = new HashSet<>();
     private SimpleCursorAdapter mAdapter;
     private SharedPreferences mSharedPreferences;
 
@@ -91,12 +91,12 @@ public class MainActivity extends AppCompatActivity {
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
+        readSharedPreferences();
+
         vpa = new ViewPagerAdapter(fm);
         viewPager.setAdapter(vpa);
         tabLayout.setupWithViewPager(viewPager);
         configureTabLayout();
-
-        readSharedPreferences();
 
         createQueryAdapter();
     }
@@ -158,7 +158,8 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (!profileName.equals(query)) {
+               // if (!profileName.equals(query))
+                {
                     profileName = query;
                     queryNewProfile(profileName);
                 }
@@ -243,14 +244,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void readSharedPreferences() {
         mSharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        profileNamesList = new HashSet<>();
+
         if (mSharedPreferences.contains(PROFILE_NAMES_LIST)) {
+            profileNamesList = new HashSet<>();
             profileNamesList = mSharedPreferences.getStringSet(PROFILE_NAMES_LIST, new HashSet<String>());
             searchResult = profileNamesList.toArray(new String[profileNamesList.size()]);
         }
         if (mSharedPreferences.contains(LAST_PROFILE_NAME)) {
             profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
-        } else queryNewProfile("rapha");
+        } else {
+            queryNewProfile("rapha");
+            configureHeader();
+        }
         Log.i(TAG, "Prefs: PROFILE_NAMES_LIST: " + profileName + " LAST_PROFILE_NAME: " + profileNamesList);
         if (mSharedPreferences.contains("DataGlobal")) {
             mViewModel.fetchDataGlobal(mSharedPreferences.getString("DataGlobal", null));
@@ -259,6 +264,10 @@ public class MainActivity extends AppCompatActivity {
             mViewModel.fetchPlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
             mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
         }
+
+    }
+
+    private void configureHeader(){
 
     }
     /*

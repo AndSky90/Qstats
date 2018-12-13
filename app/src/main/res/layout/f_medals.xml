@@ -8,7 +8,6 @@
     </data>
 
     <LinearLayout
-        android:id="@+id/linear_medals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -23,11 +22,12 @@
             android:id="@+id/medals_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
             <ListView
                 android:id="@+id/list_view_champions"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
@@ -35,6 +35,16 @@
                 android:dividerHeight="8dp"
                 android:scrollbars="none" />
 
+            <ListView
+                android:id="@+id/list_view_medals"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:dividerHeight="2dp"
+                android:headerDividersEnabled="true"
+                android:scrollbars="none" />
 
         </LinearLayout>
     </LinearLayout>

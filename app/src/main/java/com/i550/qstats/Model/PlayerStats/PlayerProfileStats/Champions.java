@@ -21,6 +21,15 @@ public class Champions {
         return gameModes;
     }
 
+    public ArrayList<String> getGameModesTitles() {
+        return new ArrayList<>(gameModes.keySet());
+    }
+
+    public ArrayList<GameModes> getGameModesValues() {
+        ArrayList<GameModes> modes = new ArrayList<>();
+        for (GameModes p : gameModes.values()) modes.add(p);
+        return modes;
+    }
     public Map<String, DamageStatusList> getDamageStatusList() {
         return damageStatusList;
     }

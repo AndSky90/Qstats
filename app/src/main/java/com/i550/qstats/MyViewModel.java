@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 //__________________________________________________________________________________________________
-
 public class MyViewModel extends AndroidViewModel {
     public MyViewModel(@NonNull Application application) {
         super(application);
@@ -39,7 +38,7 @@ public class MyViewModel extends AndroidViewModel {
         return dataGlobal;
     }
 
-    private void setDataGlobal(DataGlobal dataGlobal) {
+    private static void setDataGlobal(DataGlobal dataGlobal) {
         MyViewModel.dataGlobal = dataGlobal;
         Log.i(TAG, "setDataGlobal: " + MyViewModel.dataGlobal.getTotal_championusage() + "\n");
     }
@@ -125,7 +124,7 @@ public class MyViewModel extends AndroidViewModel {
                 JsonPrimitive p = (JsonPrimitive) o.get("entityName");
                 String s = p.getAsString();
                 result[i] = s;
-            } Log.i(TAG, "result: " + result[0] + " , " + result[1]);
+            } // Log.i(TAG, "result: " + result[0] + " , " + result[1]);
         }
         return result;
     }

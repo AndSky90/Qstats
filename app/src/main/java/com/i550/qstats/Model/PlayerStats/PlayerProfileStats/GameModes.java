@@ -69,9 +69,87 @@ public class GameModes {
     @Expose
     public Integer rankedTimePlayed;
 
-   /* @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("won", won).append("lost", lost).append("tie", tie).append("lifeTime", lifeTime).append("timePlayed", timePlayed).append("kills", kills).append("deaths", deaths).append("powerPickups", powerPickups).append("megaHealthPickups", megaHealthPickups).append("heavyArmorPickups", heavyArmorPickups).append("tacticalPickups", tacticalPickups).append("score", score).append("captured", captured).append("defended", defended).append("scoringEvents", scoringEvents).append("healed", healed).append("smallArmorPickups", smallArmorPickups).append("rankedWon", rankedWon).append("rankedLost", rankedLost).append("rankedTied", rankedTied).append("rankedTimePlayed", rankedTimePlayed).toString();
-    }*/
+    public Integer getWon() {
+        return won;
+    }
 
+    public Integer getLost() {
+        return lost;
+    }
+
+    public Integer getTie() {
+        return tie;
+    }
+
+    public Integer getLifeTime() {
+        return lifeTime;
+    }
+
+    public Integer getTimePlayed() {
+        return timePlayed;
+    }
+
+    public Integer getKills() {
+        return kills;
+    }
+
+    public Integer getDeaths() {
+        return deaths;
+    }
+
+    public Integer getPowerPickups() {
+        return powerPickups;
+    }
+
+    public Integer getMegaHealthPickups() {
+        return megaHealthPickups;
+    }
+
+    public Integer getHeavyArmorPickups() {
+        return heavyArmorPickups;
+    }
+
+    public Integer getTacticalPickups() {
+        return tacticalPickups;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public Integer getCaptured() {
+        return captured;
+    }
+
+    public Integer getDefended() {
+        return defended;
+    }
+
+    public ScoringEvents getScoringEvents() {
+        return scoringEvents;
+    }
+
+    public Integer getHealed() {
+        return healed;
+    }
+
+    public Integer getSmallArmorPickups() {
+        return smallArmorPickups;
+    }
+
+    public Integer getRankedWon() {
+        return rankedWon;
+    }
+
+    public Integer getRankedLost() {
+        return rankedLost;
+    }
+
+    public Integer getRankedTied() {
+        return rankedTied;
+    }
+
+    public Integer getRankedTimePlayed() {
+        return rankedTimePlayed;
+    }
 }
