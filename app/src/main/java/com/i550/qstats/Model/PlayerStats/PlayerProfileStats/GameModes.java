@@ -3,153 +3,181 @@ package com.i550.qstats.Model.PlayerStats.PlayerProfileStats;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GameModes {
+    public GameModes() {
+    }
 
     @SerializedName("won")
-    @Expose
-    public Integer won;
+    private int won = 0 ;
     @SerializedName("lost")
-    @Expose
-    public Integer lost;
+    private int lost = 0;
     @SerializedName("tie")
-    @Expose
-    public Integer tie;
+    private int tie = 0;
     @SerializedName("lifeTime")
-    @Expose
-    public Integer lifeTime;
+    private int lifeTime = 0;
     @SerializedName("timePlayed")
-    @Expose
-    public Integer timePlayed;
+    private int timePlayed = 0;
     @SerializedName("kills")
-    @Expose
-    public Integer kills;
+    private int kills = 0;
     @SerializedName("deaths")
-    @Expose
-    public Integer deaths;
+    private int deaths = 0;
     @SerializedName("powerPickups")
-    @Expose
-    public Integer powerPickups;
+    private int powerPickups = 0;
     @SerializedName("megaHealthPickups")
-    @Expose
-    public Integer megaHealthPickups;
+    private int megaHealthPickups = 0;
     @SerializedName("heavyArmorPickups")
-    @Expose
-    public Integer heavyArmorPickups;
+    private int heavyArmorPickups = 0;
     @SerializedName("tacticalPickups")
-    @Expose
-    public Integer tacticalPickups;
+    private int tacticalPickups = 0;
     @SerializedName("score")
-    @Expose
-    public Integer score;
+    private int score = 0;
     @SerializedName("captured")
-    @Expose
-    public Integer captured;
+    private int captured = 0;
     @SerializedName("defended")
-    @Expose
-    public Integer defended;
+    private int defended = 0;
     @SerializedName("scoringEvents")
-    @Expose
-    public ScoringEvents scoringEvents = new ScoringEvents();
+    private Map<String, Integer> scoringEvents = new HashMap<>();
     @SerializedName("healed")
-    @Expose
-    public Integer healed;
+    private int healed = 0;
     @SerializedName("smallArmorPickups")
-    @Expose
-    public Integer smallArmorPickups;
+    private int smallArmorPickups = 0;
     @SerializedName("rankedWon")
-    @Expose
-    public Integer rankedWon;
+    private int rankedWon = 0;
     @SerializedName("rankedLost")
-    @Expose
-    public Integer rankedLost;
+    private int rankedLost = 0;
     @SerializedName("rankedTied")
-    @Expose
-    public Integer rankedTied;
+    private int rankedTied = 0;
     @SerializedName("rankedTimePlayed")
-    @Expose
-    public Integer rankedTimePlayed;
+    private int rankedTimePlayed = 0;
 
-    public Integer getWon() {
+    public int getWon() {
         return won;
     }
-
-    public Integer getLost() {
+    public int getLost() {
         return lost;
     }
-
-    public Integer getTie() {
+    public int getTie() {
         return tie;
     }
-
-    public Integer getLifeTime() {
+    public int getLifeTime() {
         return lifeTime;
     }
-
-    public Integer getTimePlayed() {
+    public int getTimePlayed() {
         return timePlayed;
     }
-
-    public Integer getKills() {
+    public int getKills() {
         return kills;
     }
-
-    public Integer getDeaths() {
+    public int getDeaths() {
         return deaths;
     }
-
-    public Integer getPowerPickups() {
+    public int getPowerPickups() {
         return powerPickups;
     }
-
-    public Integer getMegaHealthPickups() {
+    public int getMegaHealthPickups() {
         return megaHealthPickups;
     }
-
-    public Integer getHeavyArmorPickups() {
+    public int getHeavyArmorPickups() {
         return heavyArmorPickups;
     }
-
-    public Integer getTacticalPickups() {
+    public int getTacticalPickups() {
         return tacticalPickups;
     }
-
-    public Integer getScore() {
+    public int getScore() {
         return score;
     }
-
-    public Integer getCaptured() {
+    public int getCaptured() {
         return captured;
     }
-
-    public Integer getDefended() {
+    public int getDefended() {
         return defended;
     }
-
-    public ScoringEvents getScoringEvents() {
+    public Map<String, Integer> getScoringEvents() {
         return scoringEvents;
     }
-
-    public Integer getHealed() {
+    public int getHealed() {
         return healed;
     }
-
-    public Integer getSmallArmorPickups() {
+    public int getSmallArmorPickups() {
         return smallArmorPickups;
     }
-
-    public Integer getRankedWon() {
+    public int getRankedWon() {
         return rankedWon;
     }
-
-    public Integer getRankedLost() {
+    public int getRankedLost() {
         return rankedLost;
     }
-
-    public Integer getRankedTied() {
+    public int getRankedTied() {
         return rankedTied;
     }
-
-    public Integer getRankedTimePlayed() {
+    public int getRankedTimePlayed() {
         return rankedTimePlayed;
+    }
+
+    public void setWon(int won) {
+        this.won = won;
+    }
+    public void setLost(int lost) {
+        this.lost = lost;
+    }
+    public void setTie(int tie) {
+        this.tie = tie;
+    }
+    public void setLifeTime(int lifeTime) {
+        this.lifeTime = lifeTime;
+    }
+    public void setTimePlayed(int timePlayed) {
+        this.timePlayed = timePlayed;
+    }
+    public void setKills(int kills) {
+        this.kills = kills;
+    }
+    public void setDeaths(int deaths) {
+        this.deaths = deaths;
+    }
+    public void setPowerPickups(int powerPickups) {
+        this.powerPickups = powerPickups;
+    }
+    public void setMegaHealthPickups(int megaHealthPickups) {
+        this.megaHealthPickups = megaHealthPickups;
+    }
+    public void setHeavyArmorPickups(int heavyArmorPickups) {
+        this.heavyArmorPickups = heavyArmorPickups;
+    }
+    public void setTacticalPickups(int tacticalPickups) {
+        this.tacticalPickups = tacticalPickups;
+    }
+    public void setScore(int score) {
+        this.score = score;
+    }
+    public void setCaptured(int captured) {
+        this.captured = captured;
+    }
+    public void setDefended(int defended) {
+        this.defended = defended;
+    }
+    public void setScoringEvents(HashMap<String, Integer> scoringEvents) {
+        this.scoringEvents = scoringEvents;
+    }
+    public void setHealed(int healed) {
+        this.healed = healed;
+    }
+    public void setSmallArmorPickups(int smallArmorPickups) {
+        this.smallArmorPickups = smallArmorPickups;
+    }
+    public void setRankedWon(int rankedWon) {
+        this.rankedWon = rankedWon;
+    }
+    public void setRankedLost(int rankedLost) {
+        this.rankedLost = rankedLost;
+    }
+    public void setRankedTied(int rankedTied) {
+        this.rankedTied = rankedTied;
+    }
+    public void setRankedTimePlayed(int rankedTimePlayed) {
+        this.rankedTimePlayed = rankedTimePlayed;
     }
 }

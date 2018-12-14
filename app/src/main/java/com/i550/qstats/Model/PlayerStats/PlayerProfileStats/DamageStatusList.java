@@ -2,11 +2,11 @@ package com.i550.qstats.Model.PlayerStats.PlayerProfileStats;
 
 public class DamageStatusList {
 
-    private int hits;
-    private int shots;
-    private int kills;
-    private int headshots;
-    private int damage;
+    private int hits = 0;
+    private int shots = 0;
+    private int kills = 0;
+    private int headshots = 0;
+    private int damage = 0;
 
     public int getHits() {
         return hits;
@@ -26,6 +26,26 @@ public class DamageStatusList {
 
     public int getDamage() {
         return damage;
+    }
+
+    public void setHits(int hits) {
+        this.hits = hits;
+    }
+
+    public void setShots(int shots) {
+        this.shots = shots;
+    }
+
+    public void setKills(int kills) {
+        this.kills = kills;
+    }
+
+    public void setHeadshots(int headshots) {
+        this.headshots = headshots;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 
     @Override

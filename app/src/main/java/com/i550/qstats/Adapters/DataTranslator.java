@@ -21,6 +21,7 @@ public class DataTranslator {
     private Map<String, Drawable> gameModeImageTranslator;
     private Map<String, Drawable> championsImageTranslator;
     private LinkedList <Drawable> weaponsImageTranslatorIterable;
+    private Map<String, Drawable> medalsImageTranslator;
     private Context context;
     private static DataTranslator translator;
 
@@ -32,6 +33,7 @@ public class DataTranslator {
         gameModeImageTranslator = new LinkedHashMap<>();
         championsImageTranslator = new LinkedHashMap<>();
         weaponsImageTranslatorIterable = new LinkedList <>();
+        medalsImageTranslator = new HashMap<>();
 
         gameModeTitleTranslator.put("GameModeFFA", "Deathmatch");
         gameModeTitleTranslator.put("GameModeTeamDeathmatch", "Team Deathmatch");
@@ -91,6 +93,12 @@ public class DataTranslator {
                 Drawable d = Drawable.createFromStream(inputStream, null);
                 championsImageTranslator.put(f.replace(".png", ""), d);
             }
+            files = mAssetManager.list("medals");
+            for (String f : files) {
+                inputStream = mAssetManager.open("medals/" + f);
+                Drawable d = Drawable.createFromStream(inputStream, null);
+                medalsImageTranslator.put(f.replace(".png", ""), d);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -128,5 +136,9 @@ public class DataTranslator {
 
     public Drawable getWeaponsImageTranslationIterable(int k) {
         return weaponsImageTranslatorIterable.get(k);
+    }
+
+    public Drawable getMedalsImageTranslator(String k) {
+        return medalsImageTranslator.get(k);
     }
 }

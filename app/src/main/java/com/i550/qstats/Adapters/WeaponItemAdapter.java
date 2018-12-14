@@ -21,27 +21,19 @@ import java.util.List;
 public class WeaponItemAdapter extends ArrayAdapter<DamageStatusList> {
     private Context context;
     private DataTranslator dta;
-    private List<Champions> champions;
-    private int numberChampion;
     private List<DamageStatusList> weapons;
-    private Champions person;
 
-    public WeaponItemAdapter(Context context, int resource, List<DamageStatusList> weapons, int numberChampion, List<Champions> champions) {
+
+    public WeaponItemAdapter(Context context, int resource, List<DamageStatusList> weapons) {
         super(context, resource, weapons);
         this.context = context;
         this.weapons = weapons;
-        this.champions = champions;
-        this.numberChampion = numberChampion;
         dta = DataTranslator.getInstance(context);
-        person = champions.get(numberChampion);
+
     }
 
     @NonNull
     public View getView(int position, View convertView, ViewGroup parent) {
-
-        DamageStatusList w;
-        List<DamageStatusList> damageStatusList = person.getWeaponsStats();
-        w = damageStatusList.get(position);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.weapon_item_view_holder, null);
@@ -53,28 +45,30 @@ public class WeaponItemAdapter extends ArrayAdapter<DamageStatusList> {
         TextView kills = view.findViewById(R.id.kills);
         TextView damage = view.findViewById(R.id.damage);
 
+        DamageStatusList w = weapons.get(position);
+
         int overallKills = 0;
-        for (DamageStatusList i : damageStatusList) overallKills += i.getKills();
-        double dHits = w.getHits();
-        double dShots = w.getShots();
-        double dAcc = dHits / dShots * 100;
+        for (DamageStatusList i : weapons) overallKills += i.getKills();
+
+        int iHits = w.getHits();
+        int iShots = w.getShots();
+        int iAcc = (int)Math.round( (double)iHits * 100 / iShots) ;
         int iKills = w.getKills();
+        int iKillHits = (int)Math.round((double)iKills / iHits * 100);
+        int iKillPart = (int)Math.round((double) iKills / overallKills * 100);
 
-        double dKillHits = (double) iKills / dHits * 100;
-        double dKillPart = (double) iKills / overallKills * 100;
-
-        accuracy.setText((int) dAcc + "%");
-        killHits.setText((int) dKillHits + "%");
-        killPart.setText((int) dKillPart + "%");
+        accuracy.setText(iAcc + "%");
+        killHits.setText(iKillHits + "%");
+        killPart.setText(iKillPart + "%");
         kills.setText(String.valueOf(iKills));
-        damage.setText(String.valueOf(w.getDamage()));
+        double ddd = (double)w.getDamage()/1000;
+        damage.setText(String.format("%.1f" +" K",ddd));
         weaponImage.setImageDrawable(dta.getWeaponsImageTranslationIterable(position));
 
-        Log.i("qStatsWeaponAdapter", " Input search: " + dAcc + " " + dKillHits + " " + dKillPart);
+       // Log.i("qStatsWeaponAdapter", " Input search: " + iAcc + " " + iKillHits + " " + iKillPart);
         //int imageID = context.getResources().getIdentifier(property.getImage(), "drawable", context.getPackageName());
         //image.setImageResource(imageID);
 
         return view;
     }
-
 }

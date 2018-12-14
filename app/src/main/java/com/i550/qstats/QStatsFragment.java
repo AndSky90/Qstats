@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.i550.qstats.Adapters.ChampionsAdapter;
 import com.i550.qstats.Adapters.MatchItemAdapter;
+import com.i550.qstats.Adapters.MedalsItemAdapter;
 import com.i550.qstats.Adapters.ModesItemAdapter;
 import com.i550.qstats.Adapters.WeaponItemAdapter;
 import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.Champions;
@@ -29,6 +30,7 @@ import com.i550.qstats.databinding.FWeaponsBinding;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class QStatsFragment extends Fragment {
@@ -77,13 +79,15 @@ public class QStatsFragment extends Fragment {
                     listViewChampions.setAdapter(adaptChampions);
 
                     ListView listViewMedals = result.findViewById(R.id.list_view_medals);
-                    List<Champions> c = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray();
-                    Champions info = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray().get(1);
 
-                    ArrayList<String> gameModesTitles = info.getGameModesTitles();
+
+                    Champions info = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray().get(NUMBER_SELECTED_CHAMPION);
                     ArrayList<GameModes> gameModesValues = info.getGameModesValues();
 
-                    ArrayAdapter<GameModes> aMedals = new WeaponItemAdapter(getContext(), 0, gameModesValues, NUMBER_SELECTED_CHAMPION, c);
+                    ArrayList<String> scoringEventsTitles = new ArrayList<> (gameModesValues.get(1).getScoringEvents().keySet());
+
+
+                    ArrayAdapter<String> aMedals = new MedalsItemAdapter(getContext(), 0, scoringEventsTitles, gameModesValues);
 
                     listViewMedals.setAdapter(aMedals);
 
@@ -91,7 +95,7 @@ public class QStatsFragment extends Fragment {
                     break;
                 }
 
-                case (2): { //modes
+                case (2): { //modes+
                     FModesBinding binding2 = DataBindingUtil.bind(result);
                     binding2.setVm(model);
                     ListView listViewChampions = result.findViewById(R.id.list_view_champions);
@@ -101,18 +105,16 @@ public class QStatsFragment extends Fragment {
 
 
                     ListView listViewModes = result.findViewById(R.id.list_view_modes);
-                    List<Champions> c = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray();
-                    Champions info = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray().get(1);
-
+                    Champions info = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray().get(NUMBER_SELECTED_CHAMPION);
                     ArrayList<String> gameModesTitles = info.getGameModesTitles();
                     ArrayList<GameModes> gameModesValues = info.getGameModesValues();
 
-                    ArrayAdapter<GameModes> amodes = new ModesItemAdapter(getContext(), 0, gameModesValues, NUMBER_SELECTED_CHAMPION, c);
+                    ArrayAdapter<GameModes> amodes = new ModesItemAdapter(getContext(), 0, gameModesValues, gameModesTitles);
                     listViewModes.setAdapter(amodes);
 
                     break;
                 }
-                case (3): { //weapons
+                case (3): { //weapons+
                     FWeaponsBinding binding3 = DataBindingUtil.bind(result);
                     binding3.setVm(model);
                     ListView listViewChampions = result.findViewById(R.id.list_view_champions);
@@ -121,15 +123,14 @@ public class QStatsFragment extends Fragment {
                     listViewChampions.setAdapter(aChampions);
 
                     ListView listViewWeapons = result.findViewById(R.id.list_view_weapons);
-                    List<Champions> c = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray();
-                    Champions info = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray().get(1);
+                    Champions info = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray().get(NUMBER_SELECTED_CHAMPION);
                     List<DamageStatusList> weaponsList = info.getWeaponsStats();
-                    ArrayAdapter<DamageStatusList> aWeapons = new WeaponItemAdapter(getContext(), 0, weaponsList, NUMBER_SELECTED_CHAMPION, c);
+                    ArrayAdapter<DamageStatusList> aWeapons = new WeaponItemAdapter(getContext(), 0, weaponsList);
                     listViewWeapons.setAdapter(aWeapons);
 
                     break;
                 }
-                case (4): { //matches
+                case (4): { //matches+
                     FMatchesBinding binding4 = DataBindingUtil.bind(result);
                     binding4.setVm(model);
                     ListView listView = result.findViewById(R.id.list_view_matches);

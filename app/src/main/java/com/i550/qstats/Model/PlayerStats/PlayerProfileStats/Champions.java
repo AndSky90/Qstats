@@ -6,16 +6,24 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Champions {
     @SerializedName("gameModes")
-    private Map<String, GameModes> gameModes = new HashMap<>();
+    private Map<String, GameModes> gameModes = new LinkedHashMap<>();
     @SerializedName("damageStatusList")
-    private Map<String, DamageStatusList> damageStatusList = new HashMap<>();
+    private Map<String, DamageStatusList> damageStatusList = new LinkedHashMap<>();
     @SerializedName("medals")
     private String medals;
+
+    public Champions(){}
+    public Champions(Map<String, GameModes> gameModes, Map<String, DamageStatusList> damageStatusList, String medals) {
+        this.gameModes = gameModes;
+        this.damageStatusList = damageStatusList;
+        this.medals = medals;
+    }
 
     public Map<String, GameModes> getGameModes() {
         return gameModes;
@@ -51,5 +59,17 @@ public class Champions {
     }
     public String getMedals() {
         return medals;
+    }
+
+    public void setGameModes(Map<String, GameModes> gameModes) {
+        this.gameModes = gameModes;
+    }
+
+    public void setDamageStatusList(Map<String, DamageStatusList> damageStatusList) {
+        this.damageStatusList = damageStatusList;
+    }
+
+    public void setMedals(String medals) {
+        this.medals = medals;
     }
 }
