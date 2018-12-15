@@ -8,14 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 
 
 import com.i550.qstats.Adapters.ChampionsAdapter;
+import com.i550.qstats.Adapters.LeaderBoardAdapter;
 import com.i550.qstats.Adapters.MatchItemAdapter;
 import com.i550.qstats.Adapters.MedalsItemAdapter;
 import com.i550.qstats.Adapters.ModesItemAdapter;
 import com.i550.qstats.Adapters.WeaponItemAdapter;
+import com.i550.qstats.Model.Entry;
+import com.i550.qstats.Model.LeaderBoard;
 import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.Champions;
 import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.DamageStatusList;
 import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.GameModes;
@@ -36,7 +40,7 @@ import java.util.List;
 public class QStatsFragment extends Fragment {
     public QStatsFragment() {
     }
-    static int NUMBER_SELECTED_CHAMPION = 1;
+    static int NUMBER_SELECTED_CHAMPION = 3;
 
     private int pageNumber;
     private final List<Integer> mFragmentList = Arrays.asList(R.layout.f_global, R.layout.f_medals, R.layout.f_modes, R.layout.f_weapons, R.layout.f_matches, R.layout.f_champions);
@@ -67,6 +71,16 @@ public class QStatsFragment extends Fragment {
                 case (0): { //global
                     FGlobalBinding binding0 = DataBindingUtil.bind(result);
                     binding0.setVm(model);
+
+                    ListView listViewDuelLeads = result.findViewById(R.id.list_view_duel_leads);
+                    ListView listViewTdmLeads = result.findViewById(R.id.list_view_tdm_leads);
+                    List<Entry> duelLeads = model.getDuelLeads().getEntries();
+                    List<Entry> tdmLeads = model.getTdmLeads().getEntries();
+                    ArrayAdapter<Entry> aDuel = new LeaderBoardAdapter(getContext(), 0, duelLeads);
+                    ArrayAdapter<Entry> aTdm = new LeaderBoardAdapter(getContext(), 0, tdmLeads);
+                    listViewDuelLeads.setAdapter(aDuel);
+                    listViewTdmLeads.setAdapter(aTdm);
+
                     break;
                 }
 
@@ -78,18 +92,14 @@ public class QStatsFragment extends Fragment {
                     ArrayAdapter<String> adaptChampions = new ChampionsAdapter(getContext(), 0, champions);
                     listViewChampions.setAdapter(adaptChampions);
 
-                    ListView listViewMedals = result.findViewById(R.id.list_view_medals);
 
-
+                    GridView gridViewMedals = result.findViewById(R.id.grid_view_medals);
                     Champions info = model.getPlayerStats().getPlayerProfileStats().getChampionsValuesArray().get(NUMBER_SELECTED_CHAMPION);
                     ArrayList<GameModes> gameModesValues = info.getGameModesValues();
-
                     ArrayList<String> scoringEventsTitles = new ArrayList<> (gameModesValues.get(1).getScoringEvents().keySet());
 
-
                     ArrayAdapter<String> aMedals = new MedalsItemAdapter(getContext(), 0, scoringEventsTitles, gameModesValues);
-
-                    listViewMedals.setAdapter(aMedals);
+                    gridViewMedals.setAdapter(aMedals);
 
 
                     break;
@@ -151,8 +161,7 @@ public class QStatsFragment extends Fragment {
                     break;
                 }
 
-                //    TestViewModel testModel = ViewModelProviders.of(this).get(TestViewModel.class);
-                //    binding.setTvm(testModel);
+
             }
         }
         return result;

@@ -9,15 +9,10 @@
             type="com.i550.qstats.MyViewModel" />
     </data>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
-
         <android.support.constraint.ConstraintLayout
             android:id="@+id/viewRoot"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -62,21 +57,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/global_champions_text_view" />
 
 
-
-            <TextView
-                android:id="@+id/textview_global_tc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text='@{vm.dataGlobal.total_championusage}'
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/holder"
-                tools:layout_conversion_absoluteHeight="20dp"
-                tools:layout_conversion_absoluteWidth="20dp" />
-
             <TextView
                 android:id="@+id/global_weapons_text_view"
                 android:layout_width="wrap_content"
@@ -86,74 +66,38 @@
                 android:layout_marginEnd="8dp"
                 android:text="@string/global_weapon_usage"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textview_global_tc"
+                app:layout_constraintTop_toBottomOf="@+id/holder"
                 tools:layout_conversion_absoluteHeight="19dp"
                 tools:layout_conversion_absoluteWidth="83dp" />
 
             <TextView
-                android:id="@+id/textview_global_td"
-                android:layout_width="wrap_content"
+                android:id="@+id/duels_header"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text='@{vm.dataGlobal.total_deaths}'
-                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/top_duel"
+                app:layout_constraintEnd_toStartOf="@+id/tdm_header"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/global_weapons_text_view"
-                tools:layout_conversion_absoluteHeight="20dp"
-                tools:layout_conversion_absoluteWidth="20dp" />
+                app:layout_constraintTop_toBottomOf="@+id/global_weapons_text_view" />
 
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Change Championsusage удалить"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textview_global_td"
-                tools:layout_conversion_absoluteHeight="19dp"
-                tools:layout_conversion_absoluteWidth="157dp" />
 
-            <TextView
-                android:id="@+id/textview_global_cc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ListView
+                android:id="@+id/list_view_duel_leads"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                android:text='@{vm.dataGlobal.change_championusage}'
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView6"
-                tools:layout_conversion_absoluteHeight="20dp"
-                tools:layout_conversion_absoluteWidth="20dp" />
-
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Change Deaths удалить"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textview_global_cc"
-                tools:layout_conversion_absoluteHeight="19dp"
-                tools:layout_conversion_absoluteWidth="97dp" />
-
-            <TextView
-                android:id="@+id/textview_global_cd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text='@{vm.dataGlobal.change_deaths}'
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView7"
-                tools:layout_conversion_absoluteHeight="19dp"
-                tools:layout_conversion_absoluteWidth="1dp" />
+                android:layout_marginBottom="8dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="8dp"
+                android:scrollbars="none"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/duels_header"
+                app:layout_constraintStart_toStartOf="@+id/duels_header"
+                app:layout_constraintTop_toBottomOf="@+id/duels_header" />
 
 
             <TextView
@@ -163,52 +107,24 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="TOP 2v2 TDM"
-                app:layout_constraintEnd_toStartOf="@+id/duels_header"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textview_global_cd"
-                />
+                android:text="@string/top_2v2_tdm"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/duels_header"
+                app:layout_constraintTop_toBottomOf="@+id/global_weapons_text_view" />
 
-            <TextView
-                android:id="@+id/textview_tdm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text='@{vm.tdmLeads.toString()}'
-                app:layout_constraintEnd_toStartOf="@+id/textview_duel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tdm_header"
-                />
-
-
-            <TextView
-                android:id="@+id/duels_header"
+            <ListView
+                android:id="@+id/list_view_tdm_leads"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="TOP DUEL"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tdm_header"
-                app:layout_constraintTop_toBottomOf="@+id/textview_global_cd"
-                />
-
-            <TextView
-                android:id="@+id/textview_duel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text='@{vm.duelLeads.toString()}'
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textview_tdm"
-                app:layout_constraintTop_toBottomOf="@+id/duels_header"
-                 />
+                android:layout_marginBottom="8dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="8dp"
+                android:scrollbars="none"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tdm_header"
+                app:layout_constraintStart_toStartOf="@+id/tdm_header"
+                app:layout_constraintTop_toBottomOf="@+id/tdm_header" />
 
         </android.support.constraint.ConstraintLayout>
-    </ScrollView>
 </layout>

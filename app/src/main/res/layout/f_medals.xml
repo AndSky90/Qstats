@@ -35,8 +35,9 @@
                 android:dividerHeight="8dp"
                 android:scrollbars="none" />
 
-            <ListView
-                android:id="@+id/list_view_medals"
+            <GridView
+                android:id="@+id/grid_view_medals"
+                android:numColumns="5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

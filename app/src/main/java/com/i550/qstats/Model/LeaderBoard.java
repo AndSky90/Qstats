@@ -16,11 +16,9 @@ public class LeaderBoard {
                 ", totalEntries=" + totalEntries +
                 '}';
     }
+
+    public List<Entry> getEntries() {
+        return entries;
+    }
 }
 
-class Entry {
-        public String userName;
-        public Integer eloRating;
-        public String profileIconId;
-        public String namePlateId;
-    }

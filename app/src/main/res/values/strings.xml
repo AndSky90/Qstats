@@ -31,6 +31,8 @@
     <string name="kills">Kills</string>
     <string name="deaths">Deaths</string>
     <string name="avg_lifetime">Avg Lifetime</string>
+    <string name="top_duel">TOP DUEL</string>
+    <string name="top_2v2_tdm">TOP 2v2 TDM</string>
 
 
 </resources>

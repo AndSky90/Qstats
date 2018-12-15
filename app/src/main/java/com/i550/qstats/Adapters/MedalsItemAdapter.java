@@ -19,6 +19,7 @@ import com.i550.qstats.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class MedalsItemAdapter extends ArrayAdapter<String> {
         dta = DataTranslator.getInstance(context);
 
         Map<String,Integer> se = gameModesValues.get(1).getScoringEvents();         // берем любой набор scoringEvents с медалями
-         medalsMap = new HashMap<>();                               // создаем итоговый набор с медалями из всех режимов игры
+         medalsMap = new LinkedHashMap<>();                               // создаем итоговый набор с медалями из всех режимов игры
         for (String title : se.keySet()) medalsMap.put(title, 0);                           // заполняем его нулями
 
         for (GameModes mode : gameModesValues)                                             //берем данные всех режимов игры нашего чемпиона
@@ -73,12 +74,14 @@ public class MedalsItemAdapter extends ArrayAdapter<String> {
 
 
         ArrayList<Integer> countM = new ArrayList<>(medalsMap.values());
-
+        ArrayList<String> sM = new ArrayList<>(medalsMap.keySet());
        // if (countM.get(position) == 0) return null;
         String text = scoringEventsTitles.get(position).replace("SCORING_EVENT_","");
         text = text.replace("_"," ");
+
         medalCount.setText(String.valueOf(countM.get(position)));
         medalTitle.setText(text);
+        // medalTitle.setText(sM.get(position));
         medalImage.setImageDrawable(dta.getMedalsImageTranslator(text.replace(" ","").toLowerCase()));
         return view;
     }

@@ -20,8 +20,13 @@ public class DataTranslator {
     private Map<String, Drawable> mapImageTranslator;
     private Map<String, Drawable> gameModeImageTranslator;
     private Map<String, Drawable> championsImageTranslator;
-    private LinkedList <Drawable> weaponsImageTranslatorIterable;
+    private LinkedList<Drawable> weaponsImageTranslatorIterable;
     private Map<String, Drawable> medalsImageTranslator;
+    private LinkedList<Drawable> rangeImageTranslator;
+    private Map<String, Drawable> nameplatesImageTranslator;
+    private Map<String, Drawable> iconsImageTranslator;
+
+
     private Context context;
     private static DataTranslator translator;
 
@@ -32,8 +37,11 @@ public class DataTranslator {
         mapImageTranslator = new LinkedHashMap<>();
         gameModeImageTranslator = new LinkedHashMap<>();
         championsImageTranslator = new LinkedHashMap<>();
-        weaponsImageTranslatorIterable = new LinkedList <>();
+        weaponsImageTranslatorIterable = new LinkedList<>();
         medalsImageTranslator = new HashMap<>();
+        rangeImageTranslator = new LinkedList<>();
+        nameplatesImageTranslator = new HashMap<>();
+        iconsImageTranslator = new HashMap<>();
 
         gameModeTitleTranslator.put("GameModeFFA", "Deathmatch");
         gameModeTitleTranslator.put("GameModeTeamDeathmatch", "Team Deathmatch");
@@ -48,7 +56,6 @@ public class DataTranslator {
         gameModeTitleTranslator.put("GameModeHOLY_TRINITY", "Unholy Trinity");
         gameModeTitleTranslator.put("GameModeCtf", "Capture the flag");
         gameModeTitleTranslator.put("GameModeSlipgate", "Slipgate");
-
 
         mapTitleTranslator.put("awoken", "Awoken");
         mapTitleTranslator.put("blood_covenant", "Blood Covenant");
@@ -67,7 +74,7 @@ public class DataTranslator {
         AssetManager mAssetManager = context.getAssets();
         this.context = context;
         String[] files;
-        InputStream inputStream ;
+        InputStream inputStream;
         try {
             files = mAssetManager.list("map_images");
             for (String f : files) {
@@ -99,11 +106,28 @@ public class DataTranslator {
                 Drawable d = Drawable.createFromStream(inputStream, null);
                 medalsImageTranslator.put(f.replace(".png", ""), d);
             }
-
+            files = mAssetManager.list("range");
+            for (String f : files) {
+                inputStream = mAssetManager.open("range/" + f);
+                Drawable d = Drawable.createFromStream(inputStream, null);
+                rangeImageTranslator.add(d);
+            }
+            files = mAssetManager.list("nameplates");
+            for (String f : files) {
+                inputStream = mAssetManager.open("nameplates/" + f);
+                Drawable d = Drawable.createFromStream(inputStream, null);
+                nameplatesImageTranslator.put(f.replace(".png", ""), d);
+            }
+            files = mAssetManager.list("profile_icon");
+            for (String f : files) {
+                inputStream = mAssetManager.open("profile_icon/" + f);
+                Drawable d = Drawable.createFromStream(inputStream, null);
+                iconsImageTranslator.put(f.replace(".png", ""), d);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-      //  championsImageTranslatorIterable = new LinkedList<>(championsImageTranslator.values());
+        //  championsImageTranslatorIterable = new LinkedList<>(championsImageTranslator.values());
 
     }
 
@@ -140,5 +164,20 @@ public class DataTranslator {
 
     public Drawable getMedalsImageTranslator(String k) {
         return medalsImageTranslator.get(k);
+    }
+
+    public Drawable getRangeImageTranslator(int elo) {
+        int range = (elo - 775) / 75;
+        if (elo < 775) range = 0;
+        if (elo > 2200) range = 19;
+        return rangeImageTranslator.get(range);
+    }
+
+    public Drawable getNameplatesImageTranslator(String k) {
+        return nameplatesImageTranslator.get(k);
+    }
+
+    public Drawable getIconsImageTranslator(String k) {
+        return iconsImageTranslator.get(k);
     }
 }
