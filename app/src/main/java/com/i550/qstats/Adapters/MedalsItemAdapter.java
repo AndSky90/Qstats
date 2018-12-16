@@ -1,75 +1,80 @@
 package com.i550.qstats.Adapters;
 
-import android.app.Activity;
+
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.Champions;
-import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.DamageStatusList;
 import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.GameModes;
 import com.i550.qstats.R;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public class MedalsItemAdapter extends ArrayAdapter<String> {
+
+public class MedalsItemAdapter extends RecyclerView.Adapter<MedalsItemAdapter.MyViewHolder>{
     private Context context;
     private DataTranslator dta;
-
     private ArrayList<GameModes> gameModesValues;
     private List<String> scoringEventsTitles;
-    Map<String,Integer> medalsMap;
+    private Map<String,Integer> medalsMap;
 
-    public MedalsItemAdapter(Context context, int resource, List<String> scoringEventsTitles ,ArrayList<GameModes> gameModesValues ) {
-        super(context, resource, scoringEventsTitles);
+    public MedalsItemAdapter(Context context, List<String> scoringEventsTitles ,ArrayList<GameModes> gameModesValues) {
         this.context = context;
         this.scoringEventsTitles=scoringEventsTitles;
         this.gameModesValues=gameModesValues;
-
+        medalsMap = gameModesValues.get(0).getScoringEvents();
         dta = DataTranslator.getInstance(context);
-
-        medalsMap = gameModesValues.get(0).getScoringEvents();         // берем количество медалей из ScoringEventsAll
     }
 
-    @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    //=============================================================================================
 
+    static class MyViewHolder extends RecyclerView.ViewHolder {
+        private  ImageView medalImage;
+        private TextView medalCount;
+        private TextView medalTitle;
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.medals_item_view_holder, null);
+         MyViewHolder(LayoutInflater i, ViewGroup parent) {
+            super(i.inflate(R.layout.medals_item_view_holder, parent,false));
 
-        ImageView medalImage = view.findViewById(R.id.medal_image);
-        TextView medalCount = view.findViewById(R.id.medal_count);
-        TextView medalTitle = view.findViewById(R.id.medal_title);
+            medalImage = itemView.findViewById(R.id.medal_image);       //itemView - встроенная байда
+            medalCount = itemView.findViewById(R.id.medal_count);
+            medalTitle = itemView.findViewById(R.id.medal_title);
+        }
+    }
 
-       /* for (String key : medalsMap.keySet()){                                      //удаляем медали с нулевым счетчиком
-            if (medalsMap.get(key)==0) medalsMap.remove(key);
-        }*/
+    @Override @NonNull
+    public MedalsItemAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new MyViewHolder(LayoutInflater.from(context),parent);
+    }
 
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         ArrayList<Integer> countM = new ArrayList<>(medalsMap.values());
-       // ArrayList<String> sM = new ArrayList<>(medalsMap.keySet());
-       // if (countM.get(position) == 0) return null;
+        // ArrayList<String> sM = new ArrayList<>(medalsMap.keySet());
+        // if (countM.get(position) == 0) return null;
         String text = scoringEventsTitles.get(position).replace("SCORING_EVENT_","");
         text = text.replace("_"," ");
-
-        medalCount.setText(String.valueOf(countM.get(position)));
-        medalTitle.setText(text);
+        holder.medalCount.setText(String.valueOf(countM.get(position)));
+        holder.medalTitle.setText(text);
         // medalTitle.setText(sM.get(position));
-        medalImage.setImageDrawable(dta.getMedalsImageTranslator(text.replace(" ","").toLowerCase()));
-        return view;
+        holder.medalImage.setImageDrawable(dta.getMedalsImageTranslator(text.replace(" ","").toLowerCase()));
     }
 
+    @Override
+    public int getItemCount() {
+        return scoringEventsTitles.size();
+    }
 }
+
+
+
+
+
+
+

@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Medals" />
+        android:text="@string/medals" />
 
     <LinearLayout
         android:id="@+id/medals_layout"
@@ -33,11 +33,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginBottom="8dp"
-            android:dividerHeight="2dp"
-            android:headerDividersEnabled="true"
             android:numColumns="5"
             android:scrollbars="none" />
 
-    </LinearLayout>
+
+</LinearLayout>
 </LinearLayout>

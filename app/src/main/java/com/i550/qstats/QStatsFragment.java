@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -110,7 +111,9 @@ public class QStatsFragment extends Fragment {
                     RecyclerView gridViewMedals = result.findViewById(R.id.grid_view_medals);
                     ArrayList<GameModes> gameModesValues = currentChampion.getGameModesValues();
                     ArrayList<String> scoringEventsTitles = new ArrayList<>(gameModesValues.get(1).getScoringEvents().keySet());
-                    ArrayAdapter<String> aMedals = new MedalsItemAdapter(getContext(), 0, scoringEventsTitles, gameModesValues);
+                    RecyclerView.Adapter aMedals = new MedalsItemAdapter(getContext(), scoringEventsTitles, gameModesValues);
+                    GridLayoutManager manager = new GridLayoutManager(getContext(),5);
+                    gridViewMedals.setLayoutManager(manager);
                     gridViewMedals.setAdapter(aMedals);
 
 

@@ -37,6 +37,7 @@
     <string name="search_hint">type a nickname &#8230; </string>
     <string name="ability_kills">Ability Kills</string>
     <string name="champions_selector">Champions selector</string>
+    <string name="medals">Medals</string>
 
 
 </resources>

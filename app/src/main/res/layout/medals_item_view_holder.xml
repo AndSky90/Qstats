@@ -3,11 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     >
 
     <ImageView
+        android:contentDescription="@string/medals"
         android:id="@+id/medal_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
