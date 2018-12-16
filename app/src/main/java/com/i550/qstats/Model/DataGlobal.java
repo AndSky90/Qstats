@@ -4,46 +4,46 @@ public class DataGlobal {
     public DataGlobal() { }
 
     private static final String TAG = "qS";
-    private TotalChampionusage total_championusage = new TotalChampionusage();
-    private TotalDeaths total_deaths = new TotalDeaths();
-    private ChangeChampionusage change_championusage = new ChangeChampionusage();
-    private ChangeDeaths change_deaths = new ChangeDeaths();
+    private TotalChampionusage totalChampionusage = new TotalChampionusage();
+    private TotalDeaths totalDeaths = new TotalDeaths();
+    private ChangeChampionusage changeChampionusage = new ChangeChampionusage();
+    private ChangeDeaths changeDeaths = new ChangeDeaths();
 
-    public String getTotal_championusage() {
+    public String getTotalChampionusage() {
         String z;
-        if (total_championusage != null) {
-            z = total_championusage.toString();
+        if (totalChampionusage != null) {
+            z = totalChampionusage.toString();
         } else
             z = "loading..";
         return z;
     }
 
-    public String getTotal_deaths() {
-        return total_deaths.toString();
+    public String getTotalDeaths() {
+        return totalDeaths.toString();
     }
 
-    public String getChange_championusage() {
-        return change_championusage.toString();
+    public String getChangeChampionusage() {
+        return changeChampionusage.toString();
     }
 
-    public String getChange_deaths() {
-        return change_deaths.toString();
+    public ChangeDeaths getChangeDeaths() {
+        return changeDeaths;
     }
 
-    public void setTotal_championusage(TotalChampionusage total_championusage) {
-        this.total_championusage = total_championusage;
+    public void setTotalChampionusage(TotalChampionusage totalChampionusage) {
+        this.totalChampionusage = totalChampionusage;
     }
 
-    public void setTotal_deaths(TotalDeaths total_deaths) {
-        this.total_deaths = total_deaths;
+    public void setTotalDeaths(TotalDeaths totalDeaths) {
+        this.totalDeaths = totalDeaths;
     }
 
-    public void setChange_championusage(ChangeChampionusage change_championusage) {
-        this.change_championusage = change_championusage;
+    public void setChangeChampionusage(ChangeChampionusage changeChampionusage) {
+        this.changeChampionusage = changeChampionusage;
     }
 
-    public void setChange_deaths(ChangeDeaths change_deaths) {
-        this.change_deaths = change_deaths;
+    public void setChangeDeaths(ChangeDeaths changeDeaths) {
+        this.changeDeaths = changeDeaths;
     }
 
 }
@@ -177,6 +177,93 @@ class ChangeDeaths {
     private String ROCKET_LAUNCHER;
     private String GrapplingHook;
 
+    public String getGrenadeSwarm() {
+        return GrenadeSwarm;
+    }
+
+    public String getDireOrb() {
+        return DireOrb;
+    }
+
+    public String getWallOfFire() {
+        return WallOfFire;
+    }
+
+    public String getSHOTGUN() {
+        return SHOTGUN;
+    }
+
+    public String getVendetta() {
+        return Vendetta;
+    }
+
+    public String getBullRush() {
+        return BullRush;
+    }
+
+    public String getLAGBOLT() {
+        return LAGBOLT;
+    }
+
+    public String getGAUNTLET() {
+        return GAUNTLET;
+    }
+
+    public String getRAILGUN() {
+        return RAILGUN;
+    }
+
+    public String getBerserk() {
+        return Berserk;
+    }
+
+    public String getPlasmaTrail() {
+        return PlasmaTrail;
+    }
+
+    public String getNAILGUN() {
+        return NAILGUN;
+    }
+
+    public String getDRONE_PLASMA_GUN() {
+        return DRONE_PLASMA_GUN;
+    }
+
+    public String getDOMAIN() {
+        return DOMAIN;
+    }
+
+    public String getMINING_LASER() {
+        return MINING_LASER;
+    }
+
+    public String getMACHINEGUN() {
+        return MACHINEGUN;
+    }
+
+    public String getReconDrone() {
+        return ReconDrone;
+    }
+
+    public String getAcidSpit() {
+        return AcidSpit;
+    }
+
+    public String getUnholyTotem() {
+        return UnholyTotem;
+    }
+
+    public String getLIGHTNING_GUN() {
+        return LIGHTNING_GUN;
+    }
+
+    public String getROCKET_LAUNCHER() {
+        return ROCKET_LAUNCHER;
+    }
+
+    public String getGrapplingHook() {
+        return GrapplingHook;
+    }
 }
 
 class TotalChampionusage {

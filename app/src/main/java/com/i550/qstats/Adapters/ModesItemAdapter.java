@@ -3,6 +3,7 @@ package com.i550.qstats.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,12 @@ import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.GameModes;
 import com.i550.qstats.R;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Period;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 
 public class ModesItemAdapter extends ArrayAdapter<GameModes> {
@@ -34,56 +39,66 @@ public class ModesItemAdapter extends ArrayAdapter<GameModes> {
     @NonNull
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.modes_item_view_holder, null);
-
-        TextView title = view.findViewById(R.id.mode_title);
-        TextView matchCompleteCount = view.findViewById(R.id.match_complete_count);
-        TextView winLoseRatio = view.findViewById(R.id.win_lose_ratio);
-        TextView winsCount = view.findViewById(R.id.wins_count);
-        TextView losesCount = view.findViewById(R.id.losses_count);
-        TextView majorPickups = view.findViewById(R.id.major_pickups);
-        TextView powerPickups = view.findViewById(R.id.power_pickups);
-        TextView timePlayedCount = view.findViewById(R.id.time_played_count);
-        TextView kdRatio = view.findViewById(R.id.kdr);
-        TextView killsCount = view.findViewById(R.id.kills_count);
-        TextView deathsCount = view.findViewById(R.id.deaths_count);
-        TextView avgLifetime = view.findViewById(R.id.avg_lifetime);
-
         GameModes w = gameModesValues.get(position);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
-        title.setText(dta.getGameModeTitleTranslation(gameModesTitles.get(position)));
-
-        int iWinsCount = w.getWon();
-        int iLosesCount = w.getLost();
-        int iMajorPickups = w.getTacticalPickups();
-        int iPowerPickups = w.getPowerPickups();
         long iTimePlayedCount = w.getTimePlayed();   //milliseconds
-        int iKillsCount = w.getKills();
-        int iDeathsCount = w.getDeaths();
 
-        int iMatchCompleteCount = iWinsCount + iLosesCount + w.getTie();
-        double dWinLoseRatio = (double) iWinsCount / iLosesCount;
-        double dKdRatio = (double) iKillsCount / iDeathsCount;
-        if (iDeathsCount==0) iDeathsCount=1;                                        //в конце раунда смерть anyway
-        int iAvgLifetime = Math.round ( iTimePlayedCount / iDeathsCount / 1000 );
+        if (iTimePlayedCount == 0) {                                                        //если в режим не играли, возвращаем заглушку с текстом
+            View view = inflater.inflate(R.layout.modes_no_games_played, null);
+            TextView title = view.findViewById(R.id.mode_title);
+            title.setText(dta.getGameModeTitleTranslation(gameModesTitles.get(position)));
+            return view;
+        } else {
 
-        //Date d = new Date(iTimePlayedCount);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("H:mm:ss ");
+            View view = inflater.inflate(R.layout.modes_item_view_holder, null);
 
-        matchCompleteCount.setText(String.valueOf(iMatchCompleteCount));
-        winLoseRatio.setText(String.format("%.3f", dWinLoseRatio));
-        winsCount.setText(String.valueOf(iWinsCount));
-        losesCount.setText(String.valueOf(iLosesCount));
-        majorPickups.setText(String.valueOf(iMajorPickups));
-        powerPickups.setText(String.valueOf(iPowerPickups));
-        timePlayedCount.setText(dateFormat.format(iTimePlayedCount));
-        kdRatio.setText(String.format("%.2f", dKdRatio));
-        killsCount.setText(String.valueOf(iKillsCount));
-        deathsCount.setText(String.valueOf(iDeathsCount));
-        avgLifetime.setText(iAvgLifetime + " s");
+            TextView title = view.findViewById(R.id.mode_title);
+            TextView matchCompleteCount = view.findViewById(R.id.match_complete_count);
+            TextView winLoseRatio = view.findViewById(R.id.win_lose_ratio);
+            TextView winsCount = view.findViewById(R.id.wins_count);
+            TextView losesCount = view.findViewById(R.id.losses_count);
+            TextView majorPickups = view.findViewById(R.id.major_pickups);
+            TextView powerPickups = view.findViewById(R.id.power_pickups);
+            TextView timePlayedCount = view.findViewById(R.id.time_played_count);
+            TextView kdRatio = view.findViewById(R.id.kdr);
+            TextView killsCount = view.findViewById(R.id.kills_count);
+            TextView deathsCount = view.findViewById(R.id.deaths_count);
+            TextView avgLifetime = view.findViewById(R.id.avg_lifetime);
+            TextView abilKills = view.findViewById(R.id.abil_kills);
 
-        return view;
+
+            int iWinsCount = w.getWon();
+            int iLosesCount = w.getLost();
+            int iKillsCount = w.getKills();
+            int iDeathsCount = w.getDeaths();
+            int iMatchCompleteCount = iWinsCount + iLosesCount;
+            double dWinLoseRatio = (double) iWinsCount / iLosesCount;
+            double dKdRatio = (double) iKillsCount / iDeathsCount;
+            if (iDeathsCount == 0)
+                iDeathsCount = 1;                                        //в конце раунда смерть anyway
+            int iAvgLifetime = Math.round(iTimePlayedCount / iDeathsCount / 1000);
+
+            //Date d = new Date(iTimePlayedCount);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("DD = HH:mm ", Locale.getDefault());
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+            title.setText(dta.getGameModeTitleTranslation(gameModesTitles.get(position)));
+            matchCompleteCount.setText(String.valueOf(iMatchCompleteCount));
+            winLoseRatio.setText(String.format("%.3f", dWinLoseRatio));
+            winsCount.setText(String.valueOf(iWinsCount));
+            losesCount.setText(String.valueOf(iLosesCount));
+            majorPickups.setText(String.valueOf(w.getTacticalPickups()));
+            powerPickups.setText(String.valueOf(w.getPowerPickups()));
+            timePlayedCount.setText(dateFormat.format(iTimePlayedCount));
+            kdRatio.setText(String.format("%.2f", dKdRatio));
+            killsCount.setText(String.valueOf(iKillsCount));
+            deathsCount.setText(String.valueOf(iDeathsCount));
+            avgLifetime.setText(iAvgLifetime + " s");
+            abilKills.setText(String.valueOf(w.getScoringEvents().get("SCORING_EVENT_ABILITYKILL")));
+
+            return view;
+        }
+
     }
-
 }

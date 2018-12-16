@@ -51,5 +51,7 @@ public class PlayerStats {
     public void setMatches(List<Matches> matches) {
         this.matches = matches;
     }
+
+
 }
 

@@ -41,8 +41,10 @@ public class LeaderBoardAdapter extends ArrayAdapter<Entry> {
         ImageView rangeIcon = view.findViewById(R.id.range_icon);
         TextView profileName = view.findViewById(R.id.profile_name);
         TextView duelElo = view.findViewById(R.id.duel_elo);
+        TextView positionTextView = view.findViewById(R.id.position);
 
         profileName.setText(entry.getUserName());
+        positionTextView.setText(String.valueOf(position + 1));
 
         int elo = entry.getEloRating();
         duelElo.setText(String.valueOf(elo));

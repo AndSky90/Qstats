@@ -159,7 +159,7 @@ public class GameModes {
     public void setDefended(int defended) {
         this.defended = defended;
     }
-    public void setScoringEvents(HashMap<String, Integer> scoringEvents) {
+    public void setScoringEvents(Map<String, Integer> scoringEvents) {
         this.scoringEvents = scoringEvents;
     }
     public void setHealed(int healed) {

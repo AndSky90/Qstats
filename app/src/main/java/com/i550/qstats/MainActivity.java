@@ -26,6 +26,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.i550.qstats.Adapters.DataTranslator;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private Set<String> profileNamesList = new HashSet<>();
     private SimpleCursorAdapter mAdapter;
     private SharedPreferences mSharedPreferences;
-
+    private DataTranslator dta;
     private TabLayout tabLayout;
     private ViewPagerAdapter vpa;
     private DrawerLayout mDrawerLayout;
@@ -55,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_medals,
             R.drawable.ic_modes,
             R.drawable.ic_weapons,
-            R.drawable.ic_matches,
-            R.drawable.ic_compare};
+            R.drawable.ic_matches};
 
     MyViewModel mViewModel = new MyViewModel(getApplication());
 
@@ -79,26 +82,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentManager fm = getSupportFragmentManager();
-        ViewPager viewPager = findViewById(R.id.viewpager);
         statusStripe = findViewById(R.id.status_stripe);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar_layout);
         tabLayout = findViewById(R.id.tab_layout);
-
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        Toolbar toolbar = findViewById(R.id.toolbar_layout);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        createQueryAdapter();
+
+
+        FragmentManager fm = getSupportFragmentManager();
+        vpa = new ViewPagerAdapter(fm);
+        viewPager.setAdapter(vpa);
+       // configureTabLayout();
+        tabLayout.setupWithViewPager(viewPager,false);          //false для того чтобы иконки не исчезали
+        configureTabLayout();
+
 
         readSharedPreferences();
 
-        vpa = new ViewPagerAdapter(fm);
-        viewPager.setAdapter(vpa);
-        tabLayout.setupWithViewPager(viewPager);
-        configureTabLayout();
+        refreshData(profileName);
 
-        createQueryAdapter();
     }
 
     @Override
@@ -106,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.refresh: {
-                if (CheckInternet()) new AsyncTaskGlobal().execute();
+                refreshData(null);               ///////////////////
                 break;
             }
             case android.R.id.home: {
@@ -114,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                 else mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
-                // return true;
             }
         }
         return true;
@@ -125,10 +131,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        //  final SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final MenuItem menuItem = menu.findItem(R.id.menu_search);
         final View np = findViewById(R.id.header_nameplate);
         final SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint(getString(R.string.search_hint));
         searchView.setSuggestionsAdapter(mAdapter);
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
@@ -158,10 +164,9 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-               // if (!profileName.equals(query))
                 {
                     profileName = query;
-                    queryNewProfile(profileName);
+                    refreshData(profileName);                                ///////////////////
                 }
                 menuItem.collapseActionView();
                 return true;
@@ -184,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.url_stats:
-                        if (CheckInternet())
+                        if (checkInternet())
                             return true;
                 }
                 mDrawerLayout.closeDrawers();
@@ -193,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        return true;
+        return true;        //end onCreateOptionsMenu
     }
 
     private void populateAdapter() {
@@ -210,14 +215,17 @@ public class MainActivity extends AppCompatActivity {
         else statusStripe.setBackgroundColor(getResources().getColor(R.color.colorRed));
     }
 
-    private void queryNewProfile(String name) {
-        profileName = name;
-        profileNamesList.add(name);
-        Log.i(TAG, " NEW NAME: " + profileName);
-        if (CheckInternet()) new AsyncTaskGlobal().execute();
+    private void refreshData(String name) {                                               ///////////////////
+        if (name == null) {
+            profileName = name;
+            profileNamesList.add(name);
+            Log.i(TAG, " NEW NAME: " + profileName);
+        }
+        if (checkInternet()) new AsyncTaskGlobal().execute();
     }
 
-    private Boolean CheckInternet() {
+
+    private Boolean checkInternet() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
@@ -244,32 +252,41 @@ public class MainActivity extends AppCompatActivity {
 
     private void readSharedPreferences() {
         mSharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if (mSharedPreferences.contains(LAST_PROFILE_NAME)) {
+            profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
+        } else {
+            profileName = "rapha";
+        }
 
         if (mSharedPreferences.contains(PROFILE_NAMES_LIST)) {
             profileNamesList = new HashSet<>();
             profileNamesList = mSharedPreferences.getStringSet(PROFILE_NAMES_LIST, new HashSet<String>());
             searchResult = profileNamesList.toArray(new String[profileNamesList.size()]);
         }
-        if (mSharedPreferences.contains(LAST_PROFILE_NAME)) {
-            profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
-        } else {
-            queryNewProfile("rapha");
-            configureHeader();
-        }
         Log.i(TAG, "Prefs: PROFILE_NAMES_LIST: " + profileName + " LAST_PROFILE_NAME: " + profileNamesList);
-        if (mSharedPreferences.contains("DataGlobal")) {
-            mViewModel.fetchDataGlobal(mSharedPreferences.getString("DataGlobal", null));
-            mViewModel.fetchLeaderBoard(mSharedPreferences.getString("TdmLeads", null), false);
-            mViewModel.fetchLeaderBoard(mSharedPreferences.getString("DuelLeads", null), true);
-            mViewModel.fetchPlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
-            mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
+        if (mSharedPreferences.contains("DataGlobal")) { new AsyncTaskFetchFromCache().execute();
         }
-
     }
 
-    private void configureHeader(){
+    private void configureHeader() {
 
+        ImageView namePlateH = findViewById(R.id.namelpate);
+        ImageView profileIconH = findViewById(R.id.profile_icon);
+        ImageView rangeIconH = findViewById(R.id.range_icon);
+        TextView profileNameH = findViewById(R.id.profile_name);
+        TextView duelElo = findViewById(R.id.duel_elo);
+
+        dta = DataTranslator.getInstance(this);
+        profileNameH.setText(profileName);
+        int elo = mViewModel.getPlayerStats().getPlayerRatings().getDuelRating();
+        duelElo.setText(String.valueOf(elo));
+        rangeIconH.setImageDrawable(dta.getRangeImageTranslator(elo));
+        profileIconH.setImageDrawable(dta.getIconsImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getIconId()));
+        namePlateH.setImageDrawable(dta.getNameplatesImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getNamePlateId()));
     }
+
+
+
     /*
     public void updateView(){
         viewPager.invalidate();
@@ -284,7 +301,6 @@ public class MainActivity extends AppCompatActivity {
             super.onPreExecute();
             setHeaderColorActualData(false);
         }
-
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -300,6 +316,7 @@ public class MainActivity extends AppCompatActivity {
             mViewModel.fetchLeaderBoard(duel, true);
             mViewModel.fetchPlayerSummary(summary);
             mViewModel.fetchPlayerStats(stats);
+            mViewModel.emptyDb = false;
 
             SharedPreferences.Editor editor = mSharedPreferences.edit();
             editor.putStringSet(PROFILE_NAMES_LIST, profileNamesList);
@@ -317,8 +334,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void v) {
             vpa.notifyDataSetChanged();
-            configureTabLayout();
+          //  configureTabLayout();
+            configureHeader();
             setHeaderColorActualData(true);
+        }
+    }
+
+    class AsyncTaskFetchFromCache extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mViewModel.fetchDataGlobal(mSharedPreferences.getString("DataGlobal", null));
+            mViewModel.fetchLeaderBoard(mSharedPreferences.getString("TdmLeads", null), false);
+            mViewModel.fetchLeaderBoard(mSharedPreferences.getString("DuelLeads", null), true);
+            mViewModel.fetchPlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
+            mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
+            mViewModel.emptyDb = false;
+            Log.i(TAG, "Prefs: READ DATA : " );
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void v) {
+            vpa.notifyDataSetChanged();
+          //  configureTabLayout();
+            configureHeader();
         }
     }
 
@@ -338,7 +376,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             populateAdapter();
-            super.onPostExecute(aVoid);
         }
     }
 }

@@ -3,15 +3,12 @@ package com.i550.qstats.Adapters;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class DataTranslator {
@@ -26,8 +23,6 @@ public class DataTranslator {
     private Map<String, Drawable> nameplatesImageTranslator;
     private Map<String, Drawable> iconsImageTranslator;
 
-
-    private Context context;
     private static DataTranslator translator;
 
     private DataTranslator(Context context) {
@@ -43,6 +38,7 @@ public class DataTranslator {
         nameplatesImageTranslator = new HashMap<>();
         iconsImageTranslator = new HashMap<>();
 
+        gameModeTitleTranslator.put("GameModeAll", "All modes");
         gameModeTitleTranslator.put("GameModeFFA", "Deathmatch");
         gameModeTitleTranslator.put("GameModeTeamDeathmatch", "Team Deathmatch");
         gameModeTitleTranslator.put("GameModeDuel", "Duel");
@@ -72,7 +68,7 @@ public class DataTranslator {
 
 
         AssetManager mAssetManager = context.getAssets();
-        this.context = context;
+
         String[] files;
         InputStream inputStream;
         try {

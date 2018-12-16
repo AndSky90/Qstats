@@ -5,33 +5,28 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 
 public class PlayerProfileStats {
 
     @SerializedName("champions")
     private Map<String, Champions> champions = new LinkedHashMap<>();
 
-    public Map<String, Champions> getChampions() {
-
-        Map<String, Champions> allChamps = new LinkedHashMap<>();
+    public void generateAll() {
         Champions all;                                            //создаем чемпиона ALL
-        Map<String, GameModes> allGameModes = new HashMap<>();                      //со всеми его полями
-        Map<String, DamageStatusList> allDamageStatusList = new HashMap<>();
-
+        LinkedHashMap<String, GameModes> gameModesOfAllChamp = new LinkedHashMap<>();                      //со всеми его полями
+        Map<String, DamageStatusList> damageStatusListOfAllChamp = new HashMap<>();
+        if (champions.containsKey("ALL")) champions.remove("ALL");
         for (Champions c : champions.values()) {                                    //для всех чемпионов
-
-            for (String key : c.getGameModes().keySet()) {                          //для всех gamemodes
-                GameModes gm = c.getGameModes().get(key);                           //прибавляем данные гейммода в чемпиона ALL
+            c.generateAllGameModes();
+            for (String key : c.getGameModes().keySet()) {                          //для каждого члена GameModes чемпиона==============
+                GameModes gm = c.getGameModes().get(key);                           //у GameModes чемпиона ALL берем тот же ключ
                 GameModes value;
-                if (allGameModes.containsKey(key)) {
-                    value = allGameModes.get(key);
-                } else {value = new GameModes();}
+                if (gameModesOfAllChamp.containsKey(key)) value = gameModesOfAllChamp.get(key);
+                else value = new GameModes();
 
-                value.setWon(value.getWon() + gm.getWon());
+                value.setWon(value.getWon() + gm.getWon());                  //суммируем каждое поле каждого члена GameModes
                 value.setLost(value.getLost() + gm.getLost());
                 value.setTimePlayed(value.getTimePlayed() + gm.getTimePlayed());
                 value.setKills(value.getKills() + gm.getKills());
@@ -39,32 +34,47 @@ public class PlayerProfileStats {
                 value.setPowerPickups(value.getPowerPickups() + gm.getPowerPickups());
                 value.setTacticalPickups(value.getTacticalPickups() + gm.getTacticalPickups());
 
-                allGameModes.put(key, value);                                   //итог операции с 1 гейммодом вливаем в ALL
+                Map<String, Integer> allScoringEvent = value.getScoringEvents();
+                Map<String, Integer> currScoringEvent = gm.getScoringEvents();
+                for (String keySe : currScoringEvent.keySet()) {
+                    if (!allScoringEvent.containsKey(keySe)) allScoringEvent.put(keySe, 0);
+                    allScoringEvent.put(keySe, allScoringEvent.get(keySe) + currScoringEvent.get(keySe));
+                }
+                value.setScoringEvents(allScoringEvent);
+
+                gameModesOfAllChamp.put(key, value);                                   //итог операции с 1 чемпионом вливаем в ALL
             }
 
-            for (String key: c.getDamageStatusList().keySet()){
+            for (String key : c.getDamageStatusList().keySet()) {                 //для каждого члена DamageStatusList чемпиона
                 DamageStatusList dsl = c.getDamageStatusList().get(key);
-                DamageStatusList value;
-                if (allDamageStatusList.containsKey(key)) {
-                    value = allDamageStatusList.get(key);
-                } else {value = new DamageStatusList();}
+                DamageStatusList value;                                         //у DamageStatusList чемпиона ALL берем тот же ключ
+                if (damageStatusListOfAllChamp.containsKey(key)) {
+                    value = damageStatusListOfAllChamp.get(key);
+                } else {
+                    value = new DamageStatusList();
+                }
 
-                value.setDamage(value.getDamage() + dsl.getDamage());
+                value.setDamage(value.getDamage() + dsl.getDamage());                   //суммируем каждое поле каждого члена DamageStatusList
                 value.setHeadshots(value.getHeadshots() + dsl.getHeadshots());
                 value.setHits(value.getHits() + dsl.getHits());
                 value.setKills(value.getKills() + dsl.getKills());
                 value.setShots(value.getShots() + dsl.getShots());
 
-                allDamageStatusList.put(key,value);
+                damageStatusListOfAllChamp.put(key, value);                                     // возвращаем суммированное значение обратно в DamageStatusList чемпиона ALL
             }
+
         }
 
-        String allMedals = "null";
-        all = new Champions(allGameModes, allDamageStatusList, allMedals);
+        String medalsOfAllChamp = "null";
+        all = new Champions(gameModesOfAllChamp, damageStatusListOfAllChamp, medalsOfAllChamp);              // собираем чемпиона ALL воедино
+        Map<String, Champions> allChamps = new LinkedHashMap<>();
         allChamps.put("ALL", all);
         allChamps.putAll(champions);
+        champions = allChamps;
+    }
 
-        return allChamps;
+    public Map<String, Champions> getChampions() {
+        return champions;
 
     }
 

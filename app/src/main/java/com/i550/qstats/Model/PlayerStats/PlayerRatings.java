@@ -9,11 +9,9 @@ public class PlayerRatings {
     private Duel duel = new Duel();
     private Tdm tdm = new Tdm();
 
-    @Override
-    public String toString() {
-        return (" duel " + duel + " tdm " + tdm);
+    public int getDuelRating() {
+        return duel.getRating();
     }
-
 
     class Duel {
 
@@ -38,7 +36,11 @@ public class PlayerRatings {
         @SerializedName("history")
         @Expose
         public List<History> history = new ArrayList<>();
- /*   @Override
+
+        public Integer getRating() {
+            return rating;
+        }
+        /*   @Override
     public String toString() {
         return new ToStringBuilder(this).append("rating", rating).append("deviation", deviation).append("volitility", volitility).append("lastUpdated", lastUpdated).append("gamesCount", gamesCount).append("lastChange", lastChange).append("history", history).toString();
     }*/

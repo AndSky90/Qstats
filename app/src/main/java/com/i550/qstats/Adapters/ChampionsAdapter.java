@@ -18,17 +18,18 @@ public class ChampionsAdapter extends ArrayAdapter<String> {
     private Context context;
     private DataTranslator dta;
     private List<String> names;
+    private int selectedChampion;
 
-    public ChampionsAdapter(Context context, int resource, List<String> names) {
+    public ChampionsAdapter(Context context, int resource, List<String> names, int selectedChampion) {
         super(context, resource, names);
         this.context = context;
         this.names = names;
+        this.selectedChampion = selectedChampion;
         dta = DataTranslator.getInstance(context);
     }
 
     @NonNull
     public View getView(int position, View convertView, ViewGroup parent) {
-
 
         String name = names.get(position);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -36,7 +37,7 @@ public class ChampionsAdapter extends ArrayAdapter<String> {
 
         ImageView championImage = view.findViewById(R.id.champion_imageview);
         championImage.setImageDrawable(dta.getChampionsImageTranslation(name));
-
+        if (position==selectedChampion) championImage.setBackgroundColor(context.getResources().getColor(R.color.shotGun));
         return view;
     }
 

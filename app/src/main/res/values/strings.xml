@@ -3,12 +3,12 @@
     <string name="timer">Timer</string>
     <string name="stats">Stats</string>
     <string name="profile">Profile</string>
-    <string name="url_global">https://stats.quake.com/api/v2/Global</string>
-    <string name="url_duel_leads">https://stats.quake.com/api/v2/Leaderboard?from=0&amp;board=duel&amp;season=current</string>
-    <string name="url_tdm_leads">https://stats.quake.com/api/v2/Leaderboard?from=0&amp;board=tdm&amp;season=current</string>
-    <string name="url_player_stats">https://stats.quake.com/api/v2/Player/Stats</string>
-    <string name="url_player_summary">https://stats.quake.com/api/v2/Player/GamesSummary</string>
-    <string name="url_player_search">https://stats.quake.com/api/v2/Player/Search</string>
+    <string name="url_global" translatable="false">https://stats.quake.com/api/v2/Global</string>
+    <string name="url_duel_leads" translatable="false">https://stats.quake.com/api/v2/Leaderboard?from=0&amp;board=duel&amp;season=current</string>
+    <string name="url_tdm_leads" translatable="false">https://stats.quake.com/api/v2/Leaderboard?from=0&amp;board=tdm&amp;season=current</string>
+    <string name="url_player_stats" translatable="false">https://stats.quake.com/api/v2/Player/Stats</string>
+    <string name="url_player_summary" translatable="false">https://stats.quake.com/api/v2/Player/GamesSummary</string>
+    <string name="url_player_search" translatable="false">https://stats.quake.com/api/v2/Player/Search</string>
     <string name="global_data">Global data</string>
     <string name="global_champions_usage">Global Champions Usage:</string>
     <string name="global_weapon_usage">Global Weapon Usage:</string>
@@ -33,6 +33,10 @@
     <string name="avg_lifetime">Avg Lifetime</string>
     <string name="top_duel">TOP DUEL</string>
     <string name="top_2v2_tdm">TOP 2v2 TDM</string>
+    <string name="no_matches_played">No Matches Played</string>
+    <string name="search_hint">type a nickname &#8230; </string>
+    <string name="ability_kills">Ability Kills</string>
+    <string name="champions_selector">Champions selector</string>
 
 
 </resources>

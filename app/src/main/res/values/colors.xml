@@ -2,12 +2,21 @@
 <resources>
     <color name="colorPrimary">#434343</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#ffe600</color>
+    <color name="colorAccent">#efa54a</color>
     <color name="colorRed">#b71c1c</color>
     <color name="colorBlue">#1565c0</color>
     <color name="colorDefeat">#ff5722</color>
     <color name="colorVictory">#76ff03</color>
     <color name="colorWhite">#ffffff</color>
     <color name="foreground_material_dark">#7d1717</color>
+    <color name="gauntlet">#9C55E0</color>
+    <color name="machineGun">#ffff00</color>
+    <color name="shotGun">#efa54a</color>
+    <color name="nailGun">#4D5FEA</color>
+    <color name="tribolt">#88943f</color>
+    <color name="rocketLauncher">#E46659</color>
+    <color name="lightningGun">#58F4F1</color>
+    <color name="railGun">#3AF93F</color>
 
 </resources>
+

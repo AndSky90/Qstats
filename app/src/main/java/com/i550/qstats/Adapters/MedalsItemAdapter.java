@@ -30,7 +30,7 @@ public class MedalsItemAdapter extends ArrayAdapter<String> {
 
     private ArrayList<GameModes> gameModesValues;
     private List<String> scoringEventsTitles;
-    HashMap<String,Integer> medalsMap;
+    Map<String,Integer> medalsMap;
 
     public MedalsItemAdapter(Context context, int resource, List<String> scoringEventsTitles ,ArrayList<GameModes> gameModesValues ) {
         super(context, resource, scoringEventsTitles);
@@ -40,22 +40,11 @@ public class MedalsItemAdapter extends ArrayAdapter<String> {
 
         dta = DataTranslator.getInstance(context);
 
-        Map<String,Integer> se = gameModesValues.get(1).getScoringEvents();         // берем любой набор scoringEvents с медалями
-         medalsMap = new LinkedHashMap<>();                               // создаем итоговый набор с медалями из всех режимов игры
-        for (String title : se.keySet()) medalsMap.put(title, 0);                           // заполняем его нулями
-
-        for (GameModes mode : gameModesValues)                                             //берем данные всех режимов игры нашего чемпиона
-        {
-            Map<String, Integer> someScoringEvent = mode.getScoringEvents();                             //для каждого режима игры берем набор медалей
-            for (String key : someScoringEvent.keySet()) {                                              // суммируем счетчик каждой медали в наш итоговый набор
-                medalsMap.put(key, medalsMap.get(key) + someScoringEvent.get(key) );
-            }
-        }
+        medalsMap = gameModesValues.get(0).getScoringEvents();         // берем количество медалей из ScoringEventsAll
     }
 
     @NonNull
     public View getView(int position, View convertView, ViewGroup parent) {
-
 
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -65,16 +54,13 @@ public class MedalsItemAdapter extends ArrayAdapter<String> {
         TextView medalCount = view.findViewById(R.id.medal_count);
         TextView medalTitle = view.findViewById(R.id.medal_title);
 
-
-
-
        /* for (String key : medalsMap.keySet()){                                      //удаляем медали с нулевым счетчиком
             if (medalsMap.get(key)==0) medalsMap.remove(key);
         }*/
 
 
         ArrayList<Integer> countM = new ArrayList<>(medalsMap.values());
-        ArrayList<String> sM = new ArrayList<>(medalsMap.keySet());
+       // ArrayList<String> sM = new ArrayList<>(medalsMap.keySet());
        // if (countM.get(position) == 0) return null;
         String text = scoringEventsTitles.get(position).replace("SCORING_EVENT_","");
         text = text.replace("_"," ");

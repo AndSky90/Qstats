@@ -21,4 +21,14 @@ public class Entry {
     public String getNamePlateId() {
         return namePlateId;
     }
+
+    @Override
+    public String toString() {
+        return "Entry{" +
+                "userName='" + userName + '\'' +
+                ", eloRating=" + eloRating +
+                ", profileIconId='" + profileIconId + '\'' +
+                ", namePlateId='" + namePlateId + '\'' +
+                '}';
+    }
 }

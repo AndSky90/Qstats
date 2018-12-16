@@ -12,12 +12,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.i550.qstats.Model.DataGlobal;
 import com.i550.qstats.Model.LeaderBoard;
-import com.i550.qstats.Model.PlayerStats.PlayerLoadOut;
 import com.i550.qstats.Model.PlayerStats.PlayerStats;
 import com.i550.qstats.Model.PlayerSummary.PlayerSummary;
-
-import java.util.HashMap;
-import java.util.Map;
 
 //__________________________________________________________________________________________________
 public class MyViewModel extends AndroidViewModel {
@@ -33,6 +29,8 @@ public class MyViewModel extends AndroidViewModel {
     private static LeaderBoard duelLeads = new LeaderBoard();
     private static PlayerStats playerStats = new PlayerStats();
     private static PlayerSummary playerSummary = new PlayerSummary();
+    public static Boolean emptyDb = true;
+
 
     public static DataGlobal getDataGlobal() {
         return dataGlobal;
@@ -40,7 +38,7 @@ public class MyViewModel extends AndroidViewModel {
 
     private static void setDataGlobal(DataGlobal dataGlobal) {
         MyViewModel.dataGlobal = dataGlobal;
-        Log.i(TAG, "setDataGlobal: " + MyViewModel.dataGlobal.getTotal_championusage() + "\n");
+        Log.i(TAG, "setDataGlobal: " + MyViewModel.dataGlobal.getTotalChampionusage() + "\n");
     }
 
     public static LeaderBoard getTdmLeads() {
@@ -83,7 +81,7 @@ public class MyViewModel extends AndroidViewModel {
     void fetchDataGlobal(String jsonString) {
         if (jsonString != null) {
             DataGlobal data = gson.fromJson(jsonString, DataGlobal.class);
-            Log.i(TAG, "String Object global: " + data.getTotal_championusage() + "\n");
+            Log.i(TAG, "String Object global: " + data.getTotalChampionusage() + "\n");
             setDataGlobal(data);
         }
     }
@@ -93,7 +91,7 @@ public class MyViewModel extends AndroidViewModel {
             LeaderBoard data = gson.fromJson(jsonString, LeaderBoard.class);
             Log.i(TAG, "String Object tdm: " + data.toString());
             if (mode) MyViewModel.setDuelLeads(data);
-            setTDMLeads(data);
+            else setTDMLeads(data);
         }
     }
 
@@ -109,6 +107,7 @@ public class MyViewModel extends AndroidViewModel {
         if (jsonString != null) {
             PlayerStats data = gson.fromJson(jsonString, PlayerStats.class);
             Log.i(TAG, "String Object stats: " + data.toString());
+            data.getPlayerProfileStats().generateAll();     //генерируем чемпиона ALL
             setPlayerStats(data);
         }
     }
