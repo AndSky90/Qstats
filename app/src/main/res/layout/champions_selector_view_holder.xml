@@ -13,7 +13,6 @@
     android:cropToPadding="true"
     android:padding="2dp"
     android:scaleType="centerCrop"
-    android:src="@drawable/champ_all"
     android:background="@color/colorPrimary"/>
 </FrameLayout>
 

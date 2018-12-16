@@ -103,8 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         readSharedPreferences();
-
-        refreshData(profileName);
+        if (profileName!=null) refreshData(profileName);
 
     }
 
@@ -254,9 +253,9 @@ public class MainActivity extends AppCompatActivity {
         mSharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         if (mSharedPreferences.contains(LAST_PROFILE_NAME)) {
             profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
-        } else {
+        } /*else {
             profileName = "rapha";
-        }
+        }*/
 
         if (mSharedPreferences.contains(PROFILE_NAMES_LIST)) {
             profileNamesList = new HashSet<>();

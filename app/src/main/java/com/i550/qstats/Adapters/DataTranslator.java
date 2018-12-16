@@ -158,9 +158,10 @@ public class DataTranslator {
         return weaponsImageTranslatorIterable.get(k);
     }
 
-    public Drawable getMedalsImageTranslator(String k) {
-        return medalsImageTranslator.get(k);
+    public Map<String, Drawable> getMedalsImageTranslator() {
+        return medalsImageTranslator;
     }
+    public int getSizeMedalsList(){return medalsImageTranslator.size();}
 
     public Drawable getRangeImageTranslator(int elo) {
         int range = (elo - 775) / 75;

@@ -57,15 +57,16 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/weapons_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/duels_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center_horizontal"
         android:text="@string/top_duel"
         app:layout_constraintEnd_toStartOf="@+id/tdm_header"
@@ -73,7 +74,7 @@
         app:layout_constraintTop_toBottomOf="@+id/global_weapons_text_view" />
 
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/list_view_duel_leads"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -90,16 +91,17 @@
         android:id="@+id/tdm_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center_horizontal"
         android:text="@string/top_2v2_tdm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/duels_header"
         app:layout_constraintTop_toBottomOf="@+id/global_weapons_text_view" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/list_view_tdm_leads"
         android:layout_width="0dp"
         android:layout_height="0dp"

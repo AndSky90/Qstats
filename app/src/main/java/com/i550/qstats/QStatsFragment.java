@@ -19,7 +19,7 @@ import android.widget.ListView;
 
 
 import com.i550.qstats.Adapters.ChampionsAdapter;
-import com.i550.qstats.Adapters.LeaderBoardAdapter;
+import com.i550.qstats.Adapters.LeadersItemAdapter;
 import com.i550.qstats.Adapters.MatchItemAdapter;
 import com.i550.qstats.Adapters.MedalsItemAdapter;
 import com.i550.qstats.Adapters.ModesItemAdapter;
@@ -34,13 +34,13 @@ import com.i550.qstats.Model.PlayerSummary.MatchDetails;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class QStatsFragment extends Fragment {
     public QStatsFragment() {
     }
 
     static int NUMBER_SELECTED_CHAMPION = 0;
-
     private int pageNumber;
     private final List<Integer> mFragmentList = Arrays.asList(R.layout.f_global, R.layout.f_medals, R.layout.f_modes, R.layout.f_weapons, R.layout.f_matches);
 
@@ -93,35 +93,34 @@ public class QStatsFragment extends Fragment {
                     //  MyAdapter adapter = new MyAdapter(myDataset);
                     // recyclerView.setAdapter(adapter);
 
-                    ListView listViewDuelLeads = result.findViewById(R.id.list_view_duel_leads);                //duel recycleview
+                    RecyclerView listViewDuelLeads = result.findViewById(R.id.list_view_duel_leads);
                     List<Entry> duelLeads = model.getDuelLeads().getEntries();
-                    ArrayAdapter<Entry> aDuel = new LeaderBoardAdapter(getContext(), 0, duelLeads);
+                    RecyclerView.Adapter aDuel = new LeadersItemAdapter(getContext(), duelLeads);
+                    LinearLayoutManager duelManager = new LinearLayoutManager(getContext());
+                    listViewDuelLeads.setLayoutManager(duelManager);
                     listViewDuelLeads.setAdapter(aDuel);
 
-                    ListView listViewTdmLeads = result.findViewById(R.id.list_view_tdm_leads);                   //tdm recycleview
+                    RecyclerView listViewTdmLeads = result.findViewById(R.id.list_view_tdm_leads);
                     List<Entry> tdmLeads = model.getTdmLeads().getEntries();
-                    ArrayAdapter<Entry> aTdm = new LeaderBoardAdapter(getContext(), 0, tdmLeads);
+                    RecyclerView.Adapter aTdm = new LeadersItemAdapter(getContext(), tdmLeads);
+                    LinearLayoutManager tdmManager = new LinearLayoutManager(getContext());
+                    listViewTdmLeads.setLayoutManager(tdmManager);
                     listViewTdmLeads.setAdapter(aTdm);
 
                     break;
                 }
 
                 case (1): { //medals
-
                     RecyclerView gridViewMedals = result.findViewById(R.id.grid_view_medals);
-                    ArrayList<GameModes> gameModesValues = currentChampion.getGameModesValues();
-                    ArrayList<String> scoringEventsTitles = new ArrayList<>(gameModesValues.get(1).getScoringEvents().keySet());
-                    RecyclerView.Adapter aMedals = new MedalsItemAdapter(getContext(), scoringEventsTitles, gameModesValues);
+                    Map<String,Integer> medalsMap = currentChampion.getGameModesValues().get(0).getScoringEvents();
+                    RecyclerView.Adapter aMedals = new MedalsItemAdapter(getContext(), medalsMap);
                     GridLayoutManager manager = new GridLayoutManager(getContext(),5);
                     gridViewMedals.setLayoutManager(manager);
                     gridViewMedals.setAdapter(aMedals);
-
-
                     break;
                 }
 
                 case (2): { //modes+
-
 
                     ListView listViewModes = result.findViewById(R.id.list_view_modes);
                     ArrayList<String> gameModesTitles = currentChampion.getGameModesTitles();
@@ -146,25 +145,14 @@ public class QStatsFragment extends Fragment {
                     listView.setAdapter(adapter);
                     break;
                 }
-
-
             }
             return result;
         } else return null;
     }
-
 }
 
 
 
-        /*
-        можно в onResume вписать notifyDataSetChanged(у адаптера)
-        какое событие произошло? модель поменялась! надо листенер изменения модели ->
-        binding.executePendingBindings()
-        binding.notifyPropertyChanged();
-        binding.notify();
-        может быть что похуй, биндинг узнал но не перерисовал, а надо перерисовать и надо нотифай для адаптера
-        ProfileActivityBinding binding = ProfileActivityBinding.inflate(layoutInflater, viewGroup, false);
-        */
+
 
 

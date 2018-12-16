@@ -22,6 +22,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         return QStatsFragment.newStatsFragment(position);
     }
+
     public int getItemPosition(@NonNull Object object) {
         return POSITION_NONE;
     }
