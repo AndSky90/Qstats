@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linear_weapons"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
+        style="@style/HeaderTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="Weapons" />
+        android:text="@string/weapons" />
 
     <LinearLayout
+        android:baselineAligned="false"
         android:id="@+id/weapons_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <ListView
             android:id="@+id/list_view_champions"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:divider="@android:color/transparent"
             android:dividerHeight="8dp"
             android:scrollbars="none" />
 
         <LinearLayout
-
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -39,7 +39,6 @@
                 layout="@layout/weapon_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
             </include>
 
             <ListView
@@ -47,7 +46,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="4dp"
                 android:scrollbars="none" />

@@ -37,7 +37,7 @@ public class ModesItemAdapter extends ArrayAdapter<GameModes> {
     }
 
     @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         GameModes w = gameModesValues.get(position);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -49,6 +49,7 @@ public class ModesItemAdapter extends ArrayAdapter<GameModes> {
             TextView title = view.findViewById(R.id.mode_title);
             title.setText(dta.getGameModeTitleTranslation(gameModesTitles.get(position)));
             return view;
+
         } else {
 
             View view = inflater.inflate(R.layout.modes_item_view_holder, null);
@@ -65,8 +66,7 @@ public class ModesItemAdapter extends ArrayAdapter<GameModes> {
             TextView killsCount = view.findViewById(R.id.kills_count);
             TextView deathsCount = view.findViewById(R.id.deaths_count);
             TextView avgLifetime = view.findViewById(R.id.avg_lifetime);
-            TextView abilKills = view.findViewById(R.id.abil_kills);
-
+            TextView abilityKills = view.findViewById(R.id.abil_kills);
 
             int iWinsCount = w.getWon();
             int iLosesCount = w.getLost();
@@ -78,9 +78,13 @@ public class ModesItemAdapter extends ArrayAdapter<GameModes> {
             if (iDeathsCount == 0)
                 iDeathsCount = 1;                                        //в конце раунда смерть anyway
             int iAvgLifetime = Math.round(iTimePlayedCount / iDeathsCount / 1000);
+            SimpleDateFormat dateFormat;
+            if (iTimePlayedCount < 3600_000L) dateFormat = new SimpleDateFormat("m'm 's's' ", Locale.getDefault());
+            else if (iTimePlayedCount < 86_400_000L) dateFormat = new SimpleDateFormat("HH'h 'm'm' ", Locale.getDefault());
+                else if (iTimePlayedCount < 2_592_000_000L)  dateFormat = new SimpleDateFormat("DD'd 'HH'h'", Locale.getDefault());
+                     else if (iTimePlayedCount<31_536_000_000L) dateFormat = new SimpleDateFormat("MM'm 'DD'd'", Locale.getDefault());
+                         else dateFormat = new SimpleDateFormat("YY y. MM m. ", Locale.getDefault());
 
-            //Date d = new Date(iTimePlayedCount);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("DD = HH:mm ", Locale.getDefault());
             dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
             title.setText(dta.getGameModeTitleTranslation(gameModesTitles.get(position)));
@@ -95,7 +99,7 @@ public class ModesItemAdapter extends ArrayAdapter<GameModes> {
             killsCount.setText(String.valueOf(iKillsCount));
             deathsCount.setText(String.valueOf(iDeathsCount));
             avgLifetime.setText(iAvgLifetime + " s");
-            abilKills.setText(String.valueOf(w.getScoringEvents().get("SCORING_EVENT_ABILITYKILL")));
+            abilityKills.setText(String.valueOf(w.getScoringEvents().get("SCORING_EVENT_ABILITYKILL")));
 
             return view;
         }

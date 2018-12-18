@@ -1,5 +1,6 @@
 package com.i550.qstats;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.MatrixCursor;
@@ -24,6 +25,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,11 +38,11 @@ import java.util.Set;
 
 //__________________________________________________________________________________________________
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnChangeNameFromLeaderList{
 
-    private static final String TAG = "qStatser";
+    private static final String TAG = "qStats";
     public static final String PREFS = "prefs";
-    public static final String PROFILE_NAMES_LIST = "namelist";
+    public static final String PROFILE_NAMES_LIST = "name_list";
     public static final String LAST_PROFILE_NAME = "last_profile_name";
     private static String profileName;
     private static String searchName = "";
@@ -51,17 +54,23 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPagerAdapter vpa;
     private DrawerLayout mDrawerLayout;
+    private SearchView searchView;
 
-    private ImageView statusStripe;
+    @Override
+    public void OnChangeName(String name) {
+        refreshData(name);
+    }
 
+    private enum RefreshMode {update, actual, outdated}
+    MenuItem refreshItem;
     private int[] tabIcons = {
             R.drawable.ic_champions,
-            R.drawable.ic_medals,
             R.drawable.ic_modes,
+            R.drawable.ic_medals,
             R.drawable.ic_weapons,
             R.drawable.ic_matches};
 
-    MyViewModel mViewModel = new MyViewModel(getApplication());
+    MyViewModel mViewModel;
 
     @Override
     protected void onSaveInstanceState(Bundle sis) {
@@ -82,28 +91,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        statusStripe = findViewById(R.id.status_stripe);
+        MainActivity.this.setTitle("");
         mDrawerLayout = findViewById(R.id.drawer_layout);
         tabLayout = findViewById(R.id.tab_layout);
+        dta = DataTranslator.getInstance(this);
+
         ViewPager viewPager = findViewById(R.id.viewpager);
+
         Toolbar toolbar = findViewById(R.id.toolbar_layout);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+
         createQueryAdapter();
 
+        mViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        readSharedPreferences();
+        if (profileName != null) refreshData(profileName);
 
         FragmentManager fm = getSupportFragmentManager();
         vpa = new ViewPagerAdapter(fm);
         viewPager.setAdapter(vpa);
-       // configureTabLayout();
-        tabLayout.setupWithViewPager(viewPager,false);          //false для того чтобы иконки не исчезали
+
+        tabLayout.setupWithViewPager(viewPager, false);          //false для того чтобы иконки не исчезали
         configureTabLayout();
-
-
-        readSharedPreferences();
-        if (profileName!=null) refreshData(profileName);
+        refreshData(null);
 
     }
 
@@ -111,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.refresh: {
-                refreshData(null);               ///////////////////
+            case R.id.menu_refresh: {
+                refreshData(null);
                 break;
             }
             case android.R.id.home: {
@@ -124,17 +137,18 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
         //   return super.onOptionsItemSelected(item);
-    }
+    }                           //листенеры menu_refresh и mDrawerLayout
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {                                              // inflate toolbar & searchView
 
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         final MenuItem menuItem = menu.findItem(R.id.menu_search);
         final View np = findViewById(R.id.header_nameplate);
-        final SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView = (SearchView) menuItem.getActionView();
         searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setSuggestionsAdapter(mAdapter);
+        searchView.setSuggestionsAdapter(mAdapter);         // on first launch serchview is open
+
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionClick(int position) {
@@ -146,7 +160,26 @@ public class MainActivity extends AppCompatActivity {
             public boolean onSuggestionSelect(int position) {
                 return true;
             }
-        });
+        });         // onClick suggestion
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                {
+                    refreshData(query);
+                }
+                menuItem.collapseActionView();
+                return true;
+            }                                  // Submit suggestion  ///////////////////
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                if (query != null && query.length() > 0) {
+                    searchName = query;
+                    new AsyncTaskNameSearch().execute();
+                }
+                return true;
+            }                                   // Change suggestion
+        });           ///////////////////
         menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
@@ -159,70 +192,101 @@ public class MainActivity extends AppCompatActivity {
                 np.setVisibility(View.VISIBLE);
                 return true;
             }
-        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                {
-                    profileName = query;
-                    refreshData(profileName);                                ///////////////////
-                }
-                menuItem.collapseActionView();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                if (query != null && query.length() > 0) {
-                    searchName = query;
-                    new AsyncTaskNameSearch().execute();
-                }
-                return true;
-            }
-        });
-
+        });         // expand-collapse ---
+       // if (profileName==null) menuItem.expandActionView();             // activate if intended -> serchview is open on first launch
         NavigationView navigationView = findViewById(R.id.navigation_menu_view);
-        //TODO intents //menuItem.setChecked(true);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.url_stats:
-                        if (checkInternet())
-                            return true;
-                }
-                mDrawerLayout.closeDrawers();
-                return true;
+        navigationView.setNavigationItemSelectedListener(MenuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.url_stats:
+                    if (checkInternet())
+                        return true;
             }
-        });
-
+            mDrawerLayout.closeDrawers();
+            return true;
+        });             // onClick navigation_menu each item TODO intents //menuItem.setChecked(true);
 
         return true;        //end onCreateOptionsMenu
     }
 
     private void populateAdapter() {
         final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "name"});
-        for (int i = 0; i < searchResult.length; i++) {
-            c.addRow(new Object[]{i, searchResult[i]});
+        if (searchResult != null && searchResult.length > 0) {
+            for (int i = 0; i < searchResult.length; i++) {
+                c.addRow(new Object[]{i, searchResult[i]});
+            }
         }
         mAdapter.changeCursor(c);
-    }
+    }                                                   // suggestion cursor adapter
 
-    public void setHeaderColorActualData(boolean dataIsActual) {
-        if (dataIsActual)
-            statusStripe.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        else statusStripe.setBackgroundColor(getResources().getColor(R.color.colorRed));
-    }
+    public void setRefreshIcon(RefreshMode refreshMode) {
+        Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.refresh);
+        //View v = findViewById(R.id.menu_refresh);
+        switch (refreshMode) {
 
-    private void refreshData(String name) {                                               ///////////////////
-        if (name == null) {
-            profileName = name;
-            profileNamesList.add(name);
-            Log.i(TAG, " NEW NAME: " + profileName);
+            case update: {
+               //  v.startAnimation(anim);
+                break;
+            }
+            case actual: {
+                //  v.clearAnimation();
+                break;
+            }
+            case outdated: {
+                break;
+            }
+            default: {
+            }
+            //statusStripe.setBackgroundColor(getResources().getColor(R.color.colorRed));
         }
-        if (checkInternet()) new AsyncTaskGlobal().execute();
     }
 
+     void refreshData(String name) {
+        if (name != null) searchName = name;
+        else searchName=profileName;
+        if (checkInternet()) new AsyncTaskGlobal().execute();
+    }                                               ///////////////////
+
+    private void readSharedPreferences() {
+        mSharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if (mSharedPreferences.contains(LAST_PROFILE_NAME)) {
+            profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
+        }
+        if (mSharedPreferences.contains(PROFILE_NAMES_LIST)) {
+            profileNamesList = new HashSet<>();
+            profileNamesList = mSharedPreferences.getStringSet(PROFILE_NAMES_LIST, new HashSet<>());
+            searchResult = profileNamesList.toArray(new String[profileNamesList.size()]);
+        }
+        Log.i(TAG, "Prefs: PROFILE_NAMES_LIST: " + profileName + " LAST_PROFILE_NAME: " + profileNamesList);
+        if (mSharedPreferences.contains("DataGlobal")) {
+
+            new AsyncTaskFetchFromCache().execute();
+        }
+    }
+
+    private void configureHeader() {
+        if (!mViewModel.emptyDb) {
+            ImageView namePlateH = findViewById(R.id.namelpate);
+            ImageView profileIconH = findViewById(R.id.profile_icon);
+            ImageView rangeIconH = findViewById(R.id.range_icon);
+            TextView profileNameH = findViewById(R.id.profile_name);
+            TextView duelElo = findViewById(R.id.duel_elo);
+
+
+            profileName = mViewModel.getPlayerStats().getName();
+            profileNameH.setText(profileName);
+            int elo = mViewModel.getPlayerStats().getPlayerRatings().getDuelRating();
+            duelElo.setText(String.valueOf(elo));
+            rangeIconH.setImageDrawable(dta.getRangeImageTranslator(elo));
+            profileIconH.setImageDrawable(dta.getIconsImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getIconId()));
+            namePlateH.setImageDrawable(dta.getNameplatesImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getNamePlateId()));
+        }
+    }
+
+    protected void configureTabLayout() {
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
+        }
+    }       //TODO посмотреть разные методы, с иконкой намутить
 
     private Boolean checkInternet() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -242,55 +306,6 @@ public class MainActivity extends AppCompatActivity {
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
     }
 
-    protected void configureTabLayout() {
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
-            // tabLayout. TODO посмотреть разные методы, с иконкой намутить
-        }
-    }
-
-    private void readSharedPreferences() {
-        mSharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        if (mSharedPreferences.contains(LAST_PROFILE_NAME)) {
-            profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
-        } /*else {
-            profileName = "rapha";
-        }*/
-
-        if (mSharedPreferences.contains(PROFILE_NAMES_LIST)) {
-            profileNamesList = new HashSet<>();
-            profileNamesList = mSharedPreferences.getStringSet(PROFILE_NAMES_LIST, new HashSet<String>());
-            searchResult = profileNamesList.toArray(new String[profileNamesList.size()]);
-        }
-        Log.i(TAG, "Prefs: PROFILE_NAMES_LIST: " + profileName + " LAST_PROFILE_NAME: " + profileNamesList);
-        if (mSharedPreferences.contains("DataGlobal")) { new AsyncTaskFetchFromCache().execute();
-        }
-    }
-
-    private void configureHeader() {
-
-        ImageView namePlateH = findViewById(R.id.namelpate);
-        ImageView profileIconH = findViewById(R.id.profile_icon);
-        ImageView rangeIconH = findViewById(R.id.range_icon);
-        TextView profileNameH = findViewById(R.id.profile_name);
-        TextView duelElo = findViewById(R.id.duel_elo);
-
-        dta = DataTranslator.getInstance(this);
-        profileNameH.setText(profileName);
-        int elo = mViewModel.getPlayerStats().getPlayerRatings().getDuelRating();
-        duelElo.setText(String.valueOf(elo));
-        rangeIconH.setImageDrawable(dta.getRangeImageTranslator(elo));
-        profileIconH.setImageDrawable(dta.getIconsImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getIconId()));
-        namePlateH.setImageDrawable(dta.getNameplatesImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getNamePlateId()));
-    }
-
-
-
-    /*
-    public void updateView(){
-        viewPager.invalidate();
-        viewPager.updateViewLayout();
-    }*/
 
 //__________________________________________________________________________________________________
 
@@ -298,8 +313,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            setHeaderColorActualData(false);
+            setRefreshIcon(RefreshMode.update);
         }
+
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -307,39 +323,45 @@ public class MainActivity extends AppCompatActivity {
             String dg = background.fetch(getString(R.string.url_global));
             String tdm = background.fetch(getString(R.string.url_tdm_leads));
             String duel = background.fetch(getString(R.string.url_duel_leads));
-            String summary = background.fetch(getString(R.string.url_player_summary) + "?name=" + profileName);
-            String stats = background.fetch(getString(R.string.url_player_stats) + "?name=" + profileName);
+            String summary = background.fetch(getString(R.string.url_player_summary) + "?name=" + searchName);
+            String stats = background.fetch(getString(R.string.url_player_stats) + "?name=" + searchName);
+            Log.i(TAG, "STATS: " + stats);                                                       //=====
 
             mViewModel.fetchDataGlobal(dg);
             mViewModel.fetchLeaderBoard(tdm, false);
             mViewModel.fetchLeaderBoard(duel, true);
-            mViewModel.fetchPlayerSummary(summary);
-            mViewModel.fetchPlayerStats(stats);
-            mViewModel.emptyDb = false;
 
-            SharedPreferences.Editor editor = mSharedPreferences.edit();
-            editor.putStringSet(PROFILE_NAMES_LIST, profileNamesList);
-            editor.putString("DataGlobal", dg);
-            editor.putString("TdmLeads", tdm);
-            editor.putString("DuelLeads", duel);
-            editor.putString("PlayerSummary", summary);
-            editor.putString("PlayerStats", stats);
-            editor.putString(LAST_PROFILE_NAME, profileName).apply();
-            editor.apply();
 
-            return null;
+            if (stats != null) {
+                mViewModel.fetchPlayerSummary(summary);
+                mViewModel.fetchPlayerStats(stats);
+                mViewModel.emptyDb = false;
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.putStringSet(PROFILE_NAMES_LIST, profileNamesList);
+                editor.putString("DataGlobal", dg);
+                editor.putString("TdmLeads", tdm);
+                editor.putString("DuelLeads", duel);
+                editor.putString("PlayerSummary", summary);
+                editor.putString("PlayerStats", stats);
+
+                profileName = searchName;
+                profileNamesList.add(searchName);
+                editor.putString(LAST_PROFILE_NAME, profileName).apply();
+                editor.apply();
+                Log.i(TAG, " NEW NAME: " + profileName);
+            }
+                return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
             vpa.notifyDataSetChanged();
-          //  configureTabLayout();
             configureHeader();
-            setHeaderColorActualData(true);
+            setRefreshIcon(RefreshMode.actual);
         }
     }
 
-    class AsyncTaskFetchFromCache extends AsyncTask<Void, Void, Void>{
+    class AsyncTaskFetchFromCache extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             mViewModel.fetchDataGlobal(mSharedPreferences.getString("DataGlobal", null));
@@ -348,13 +370,13 @@ public class MainActivity extends AppCompatActivity {
             mViewModel.fetchPlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
             mViewModel.fetchPlayerStats(mSharedPreferences.getString("PlayerStats", null));
             mViewModel.emptyDb = false;
-            Log.i(TAG, "Prefs: READ DATA : " );
+            Log.i(TAG, "Prefs: READ DATA : ");                                                       //=====
             return null;
         }
+
         @Override
         protected void onPostExecute(Void v) {
             vpa.notifyDataSetChanged();
-          //  configureTabLayout();
             configureHeader();
         }
     }
@@ -365,7 +387,6 @@ public class MainActivity extends AppCompatActivity {
             NetQStatsWork background = new NetQStatsWork();
             String nameSearchJson = background.fetch(getString(R.string.url_player_search) + "?term=" + searchName);
             if (nameSearchJson != null) {
-                Log.i(TAG, " Input search: " + searchName + ". NameSuggestion: " + nameSearchJson);
                 String[] r = mViewModel.fetchSearchResult(nameSearchJson);
                 if (r.length > 0) searchResult = r;
             }

@@ -38,6 +38,15 @@
     <string name="ability_kills">Ability Kills</string>
     <string name="champions_selector">Champions selector</string>
     <string name="medals">Medals</string>
+    <string name="refresh">Refresh</string>
+    <string name="search">Search</string>
+    <string name="accuracy">Accu racy</string>
+    <string name="kill_hits">Kill/ Hits</string>
+    <string name="percent_kills">% Kills</string>
+    <string name="damage">Damage</string>
+    <string name="weapon">Weapon</string>
+    <string name="modes">Modes</string>
+    <string name="weapons">Weapons</string>
 
 
 </resources>

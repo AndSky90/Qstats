@@ -2,6 +2,7 @@ package com.i550.qstats;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -16,64 +17,60 @@ import com.i550.qstats.Model.PlayerStats.PlayerStats;
 import com.i550.qstats.Model.PlayerSummary.PlayerSummary;
 
 //__________________________________________________________________________________________________
-public class MyViewModel extends AndroidViewModel {
-    public MyViewModel(@NonNull Application application) {
-        super(application);
-    }
+public class MyViewModel extends ViewModel {
 
     private static final String TAG = "qStatserViewModel";
     //   private Gson gson = new GsonBuilder().registerTypeAdapter(PlayerStats.class, new PlayerStatsDeserializer()).create();
     private Gson gson = new Gson();
-    private static DataGlobal dataGlobal = new DataGlobal();
-    private static LeaderBoard tdmLeads = new LeaderBoard();
-    private static LeaderBoard duelLeads = new LeaderBoard();
-    private static PlayerStats playerStats = new PlayerStats();
-    private static PlayerSummary playerSummary = new PlayerSummary();
-    public static Boolean emptyDb = true;
+    private DataGlobal dataGlobal = new DataGlobal();
+    private LeaderBoard tdmLeads = new LeaderBoard();
+    private LeaderBoard duelLeads = new LeaderBoard();
+    private PlayerStats playerStats = new PlayerStats();
+    private PlayerSummary playerSummary = new PlayerSummary();
+    static Boolean emptyDb = true;
 
-
-    public static DataGlobal getDataGlobal() {
+    public DataGlobal getDataGlobal() {
         return dataGlobal;
     }
 
-    private static void setDataGlobal(DataGlobal dataGlobal) {
-        MyViewModel.dataGlobal = dataGlobal;
-        Log.i(TAG, "setDataGlobal: " + MyViewModel.dataGlobal.getTotalChampionusage() + "\n");
+    private void setDataGlobal(DataGlobal dataGlobal) {
+        this.dataGlobal = dataGlobal;
+        Log.i(TAG, "setDataGlobal: " + dataGlobal.getTotalChampionusage() + "\n");
     }
 
-    public static LeaderBoard getTdmLeads() {
+     LeaderBoard getTdmLeads() {
         return tdmLeads;
     }
 
-    private static void setTDMLeads(LeaderBoard tdmLeads) {
-        MyViewModel.tdmLeads = tdmLeads;
+    private void setTDMLeads(LeaderBoard tdmLeads) {
+        this.tdmLeads = tdmLeads;
         Log.i(TAG, "setTDMLeads : ");
     }
 
-    public static LeaderBoard getDuelLeads() {
+     LeaderBoard getDuelLeads() {
         return duelLeads;
     }
 
-    private static void setDuelLeads(LeaderBoard duelLeads) {
-        MyViewModel.duelLeads = duelLeads;
+    private void setDuelLeads(LeaderBoard duelLeads) {
+        this.duelLeads = duelLeads;
         Log.i(TAG, "setDuelLeads : ");
     }
 
-    public static PlayerStats getPlayerStats() {
+     PlayerStats getPlayerStats() {
         return playerStats;
     }
 
-    private static void setPlayerStats(PlayerStats playerStats) {
-        MyViewModel.playerStats = playerStats;
+    private void setPlayerStats(PlayerStats playerStats) {
+        this.playerStats = playerStats;
         Log.i(TAG, "setPlayerStats : ");
     }
 
-    public static PlayerSummary getPlayerSummary() {
+     PlayerSummary getPlayerSummary() {
         return playerSummary;
     }
 
-    private static void setPlayerSummary(PlayerSummary playerSummary) {
-        MyViewModel.playerSummary = playerSummary;
+    private void setPlayerSummary(PlayerSummary playerSummary) {
+        this.playerSummary = playerSummary;
         Log.i(TAG, "setPlayerSummary : ");
     }
 
@@ -90,7 +87,7 @@ public class MyViewModel extends AndroidViewModel {
         if (jsonString != null) {
             LeaderBoard data = gson.fromJson(jsonString, LeaderBoard.class);
             Log.i(TAG, "String Object tdm: " + data.toString());
-            if (mode) MyViewModel.setDuelLeads(data);
+            if (mode) setDuelLeads(data);
             else setTDMLeads(data);
         }
     }

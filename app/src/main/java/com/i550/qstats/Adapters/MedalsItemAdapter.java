@@ -53,7 +53,8 @@ public class MedalsItemAdapter extends RecyclerView.Adapter<MedalsItemAdapter.Me
         ArrayList<String> medalsTitleList = new ArrayList<>(imagesMap.keySet());
         String text = medalsTitleList.get(position);
         holder.medalImage.setImageDrawable(imagesMap.get(text));
-        holder.medalTitle.setText(text.replace("_", " "));
+        text = text.substring(4);                                                                               //cut number out of filename
+        //holder.medalTitle.setText(text.replace("_", " "));                                                    //title of medals disabled (android:text="" add! & 2dp mardin all)
         holder.medalCount.setText(String.valueOf(medalsMap.get("SCORING_EVENT_" + text.toUpperCase())));
     }
 

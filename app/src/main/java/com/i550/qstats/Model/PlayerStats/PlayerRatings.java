@@ -6,8 +6,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class PlayerRatings {
+    @SerializedName("duel")
     private Duel duel = new Duel();
-    private Tdm tdm = new Tdm();
+    @SerializedName("tdm")
+    private Duel tdm = new Duel();
 
     public int getDuelRating() {
         return duel.getRating();
@@ -17,25 +19,49 @@ public class PlayerRatings {
 
         @SerializedName("rating")
         @Expose
-        public Integer rating;
+        private Integer rating;
         @SerializedName("deviation")
         @Expose
-        public Integer deviation;
+        private Integer deviation;
         @SerializedName("volitility")
         @Expose
-        public Float volitility;
+        private Float volitility;
         @SerializedName("lastUpdated")
         @Expose
-        public String lastUpdated;
+        private String lastUpdated;
         @SerializedName("gamesCount")
         @Expose
-        public Integer gamesCount;
+        private Integer gamesCount;
         @SerializedName("lastChange")
         @Expose
-        public Integer lastChange;
+        private Integer lastChange;
         @SerializedName("history")
         @Expose
-        public List<History> history = new ArrayList<>();
+        private List<History> history = new ArrayList<>();
+
+        public Integer getDeviation() {
+            return deviation;
+        }
+
+        public Float getVolitility() {
+            return volitility;
+        }
+
+        public String getLastUpdated() {
+            return lastUpdated;
+        }
+
+        public Integer getGamesCount() {
+            return gamesCount;
+        }
+
+        public Integer getLastChange() {
+            return lastChange;
+        }
+
+        public List<History> getHistory() {
+            return history;
+        }
 
         public Integer getRating() {
             return rating;
@@ -46,54 +72,45 @@ public class PlayerRatings {
     }*/
     }
 
-    class Tdm {
-
-        @SerializedName("rating")
-        @Expose
-        public Integer rating;
-        @SerializedName("deviation")
-        @Expose
-        public Integer deviation;
-        @SerializedName("volitility")
-        @Expose
-        public Float volitility;
-        @SerializedName("lastUpdated")
-        @Expose
-        public String lastUpdated;
-        @SerializedName("gamesCount")
-        @Expose
-        public Integer gamesCount;
-        @SerializedName("lastChange")
-        @Expose
-        public Integer lastChange;
-        @SerializedName("history")
-        @Expose
-        public List<History> history = new ArrayList<>();
-     /*   @Override
-        public String toString() {
-            return new ToStringBuilder(this).append("rating", rating).append("deviation", deviation).append("volitility", volitility).append("lastUpdated", lastUpdated).append("gamesCount", gamesCount).append("lastChange", lastChange).append("history", history).toString();
-        }*/
-    }
 
     class History {
 
         @SerializedName("gamesPlayed")
         @Expose
-        public Integer gamesPlayed;
+        private Integer gamesPlayed;
         @SerializedName("eloRating")
         @Expose
-        public Integer eloRating;
+        private Integer eloRating;
         @SerializedName("time")
         @Expose
-        public String time;
+        private String time;
         @SerializedName("result")
         @Expose
-        public Integer result;
+        private Integer result;
         @SerializedName("sessionId")
         @Expose
-        public String sessionId;
+        private String sessionId;
 
-   /* @Override
+        public Integer getGamesPlayed() {
+            return gamesPlayed;
+        }
+
+        public Integer getEloRating() {
+            return eloRating;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public Integer getResult() {
+            return result;
+        }
+
+        public String getSessionId() {
+            return sessionId;
+        }
+/* @Override
     public String toString() {
         return new ToStringBuilder(this).append("gamesPlayed", gamesPlayed).append("eloRating", eloRating).append("time", time).append("result", result).append("sessionId", sessionId).toString();
     }*/

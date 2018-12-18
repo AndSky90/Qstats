@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ListView;
 
 
@@ -23,6 +22,7 @@ import com.i550.qstats.Adapters.LeadersItemAdapter;
 import com.i550.qstats.Adapters.MatchItemAdapter;
 import com.i550.qstats.Adapters.MedalsItemAdapter;
 import com.i550.qstats.Adapters.ModesItemAdapter;
+import com.i550.qstats.Adapters.RecyclerDecorator;
 import com.i550.qstats.Adapters.WeaponItemAdapter;
 import com.i550.qstats.Model.Entry;
 import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.Champions;
@@ -37,12 +37,13 @@ import java.util.List;
 import java.util.Map;
 
 public class QStatsFragment extends Fragment {
+    private OnChangeNameFromLeaderList onChangeNameFromLeaderList;
     public QStatsFragment() {
     }
 
     static int NUMBER_SELECTED_CHAMPION = 0;
     private int pageNumber;
-    private final List<Integer> mFragmentList = Arrays.asList(R.layout.f_global, R.layout.f_medals, R.layout.f_modes, R.layout.f_weapons, R.layout.f_matches);
+    private final List<Integer> mFragmentList = Arrays.asList(R.layout.f_global, R.layout.f_modes, R.layout.f_medals, R.layout.f_weapons, R.layout.f_matches);
 
     public static QStatsFragment newStatsFragment(int page) {
         QStatsFragment fragment = new QStatsFragment();
@@ -61,9 +62,34 @@ public class QStatsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        onChangeNameFromLeaderList = (OnChangeNameFromLeaderList)getActivity();
         View result = inflater.inflate(mFragmentList.get(pageNumber), container, false);
-        MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
+        MyViewModel model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+
+
+        if (pageNumber==0) {
+            RecyclerView listViewDuelLeads = result.findViewById(R.id.list_view_duel_leads);
+            List<Entry> duelLeads = model.getDuelLeads().getEntries();
+            LeadersItemAdapter aDuel = new LeadersItemAdapter(getContext(), duelLeads);
+            aDuel.setOnItemClickListener((String name, View v)->
+                    onChangeNameFromLeaderList.OnChangeName(name));
+            listViewDuelLeads.setLayoutManager(new LinearLayoutManager(getContext()));
+            listViewDuelLeads.setHasFixedSize(true);
+            listViewDuelLeads.addItemDecoration(new RecyclerDecorator(8));
+            listViewDuelLeads.setAdapter(aDuel);
+
+            RecyclerView listViewTdmLeads = result.findViewById(R.id.list_view_tdm_leads);
+            List<Entry> tdmLeads = model.getTdmLeads().getEntries();
+            LeadersItemAdapter aTdm = new LeadersItemAdapter(getContext(), tdmLeads);
+            aTdm.setOnItemClickListener((String name, View v)->
+                    onChangeNameFromLeaderList.OnChangeName(name));
+            listViewTdmLeads.setLayoutManager(new LinearLayoutManager(getContext()));
+            listViewTdmLeads.setHasFixedSize(true);
+            listViewTdmLeads.addItemDecoration(new RecyclerDecorator(8));
+            listViewTdmLeads.setAdapter(aTdm);
+            return result;
+        }           //global заполняется всегда независимо от базы данных
+
 
         if (!model.emptyDb) {        //  database empty checking
 
@@ -81,62 +107,39 @@ public class QStatsFragment extends Fragment {
                 });
             }
 
+
             switch (pageNumber) {
                 case (0): { //global
-                    RecyclerView recyclerView = result.findViewById(R.id.weapons_recycler_view);
-
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                    layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-                    recyclerView.setLayoutManager(layoutManager);
-
-                    //   weaponsPercentage = model.getDataGlobal().getTotalDeaths();
-                    //  MyAdapter adapter = new MyAdapter(myDataset);
-                    // recyclerView.setAdapter(adapter);
-
-                    RecyclerView listViewDuelLeads = result.findViewById(R.id.list_view_duel_leads);
-                    List<Entry> duelLeads = model.getDuelLeads().getEntries();
-                    RecyclerView.Adapter aDuel = new LeadersItemAdapter(getContext(), duelLeads);
-                    LinearLayoutManager duelManager = new LinearLayoutManager(getContext());
-                    listViewDuelLeads.setLayoutManager(duelManager);
-                    listViewDuelLeads.setAdapter(aDuel);
-
-                    RecyclerView listViewTdmLeads = result.findViewById(R.id.list_view_tdm_leads);
-                    List<Entry> tdmLeads = model.getTdmLeads().getEntries();
-                    RecyclerView.Adapter aTdm = new LeadersItemAdapter(getContext(), tdmLeads);
-                    LinearLayoutManager tdmManager = new LinearLayoutManager(getContext());
-                    listViewTdmLeads.setLayoutManager(tdmManager);
-                    listViewTdmLeads.setAdapter(aTdm);
-
                     break;
                 }
 
-                case (1): { //medals
-                    RecyclerView gridViewMedals = result.findViewById(R.id.grid_view_medals);
-                    Map<String,Integer> medalsMap = currentChampion.getGameModesValues().get(0).getScoringEvents();
-                    RecyclerView.Adapter aMedals = new MedalsItemAdapter(getContext(), medalsMap);
-                    GridLayoutManager manager = new GridLayoutManager(getContext(),5);
-                    gridViewMedals.setLayoutManager(manager);
-                    gridViewMedals.setAdapter(aMedals);
-                    break;
-                }
-
-                case (2): { //modes+
-
+                case (1): { //modes+
                     ListView listViewModes = result.findViewById(R.id.list_view_modes);
                     ArrayList<String> gameModesTitles = currentChampion.getGameModesTitles();
                     ArrayList<GameModes> gameModesValues = currentChampion.getGameModesValues();
                     ArrayAdapter<GameModes> amodes = new ModesItemAdapter(getContext(), 0, gameModesValues, gameModesTitles);
                     listViewModes.setAdapter(amodes);
+                    listViewModes.setHeaderDividersEnabled(true);
                     break;
                 }
+
+                case (2): { //medals
+                    RecyclerView gridViewMedals = result.findViewById(R.id.grid_view_medals);
+                    Map<String, Integer> medalsMap = currentChampion.getGameModesValues().get(0).getScoringEvents();
+                    RecyclerView.Adapter aMedals = new MedalsItemAdapter(getContext(), medalsMap);
+                    GridLayoutManager manager = new GridLayoutManager(getContext(), 5);
+                    gridViewMedals.setLayoutManager(manager);
+                    gridViewMedals.setAdapter(aMedals);
+                    break;
+                }
+
                 case (3): { //weapons+
-
-
                     ListView listViewWeapons = result.findViewById(R.id.list_view_weapons);
                     List<DamageStatusList> weaponsList = currentChampion.getWeaponsStats();
                     ArrayAdapter<DamageStatusList> aWeapons = new WeaponItemAdapter(getContext(), 0, weaponsList);
                     listViewWeapons.setAdapter(aWeapons);
                     break;
+
                 }
                 case (4): { //matches+
                     ListView listView = result.findViewById(R.id.list_view_matches);

@@ -42,6 +42,7 @@ class NetQStatsWork {
             Log.i(TAG, "Received JSON: " + jsonString);
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
+            jsonString = null;
         }
         finally {
             return jsonString;

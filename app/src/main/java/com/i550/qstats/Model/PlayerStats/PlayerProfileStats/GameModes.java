@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameModes {
-    public GameModes() {
+     GameModes() {
     }
 
     @SerializedName("won")
@@ -19,7 +19,7 @@ public class GameModes {
     @SerializedName("lifeTime")
     private int lifeTime = 0;
     @SerializedName("timePlayed")
-    private int timePlayed = 0;
+    private long timePlayed = 0;
     @SerializedName("kills")
     private int kills = 0;
     @SerializedName("deaths")
@@ -65,7 +65,7 @@ public class GameModes {
     public int getLifeTime() {
         return lifeTime;
     }
-    public int getTimePlayed() {
+    public long getTimePlayed() {
         return timePlayed;
     }
     public int getKills() {
@@ -117,10 +117,10 @@ public class GameModes {
         return rankedTimePlayed;
     }
 
-    public void setWon(int won) {
+     void setWon(int won) {
         this.won = won;
     }
-    public void setLost(int lost) {
+     void setLost(int lost) {
         this.lost = lost;
     }
     public void setTie(int tie) {
@@ -129,7 +129,7 @@ public class GameModes {
     public void setLifeTime(int lifeTime) {
         this.lifeTime = lifeTime;
     }
-    public void setTimePlayed(int timePlayed) {
+     void setTimePlayed(long timePlayed) {
         this.timePlayed = timePlayed;
     }
     public void setKills(int kills) {
@@ -138,7 +138,7 @@ public class GameModes {
     public void setDeaths(int deaths) {
         this.deaths = deaths;
     }
-    public void setPowerPickups(int powerPickups) {
+     void setPowerPickups(int powerPickups) {
         this.powerPickups = powerPickups;
     }
     public void setMegaHealthPickups(int megaHealthPickups) {
@@ -147,7 +147,7 @@ public class GameModes {
     public void setHeavyArmorPickups(int heavyArmorPickups) {
         this.heavyArmorPickups = heavyArmorPickups;
     }
-    public void setTacticalPickups(int tacticalPickups) {
+     void setTacticalPickups(int tacticalPickups) {
         this.tacticalPickups = tacticalPickups;
     }
     public void setScore(int score) {
@@ -159,7 +159,7 @@ public class GameModes {
     public void setDefended(int defended) {
         this.defended = defended;
     }
-    public void setScoringEvents(Map<String, Integer> scoringEvents) {
+     void setScoringEvents(Map<String, Integer> scoringEvents) {
         this.scoringEvents = scoringEvents;
     }
     public void setHealed(int healed) {

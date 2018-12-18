@@ -18,7 +18,7 @@ public class DataTranslator {
     private Map<String, Drawable> gameModeImageTranslator;
     private Map<String, Drawable> championsImageTranslator;
     private LinkedList<Drawable> weaponsImageTranslatorIterable;
-    private Map<String, Drawable> medalsImageTranslator;
+    private LinkedHashMap<String, Drawable> medalsImageTranslator;
     private LinkedList<Drawable> rangeImageTranslator;
     private Map<String, Drawable> nameplatesImageTranslator;
     private Map<String, Drawable> iconsImageTranslator;
@@ -33,7 +33,7 @@ public class DataTranslator {
         gameModeImageTranslator = new LinkedHashMap<>();
         championsImageTranslator = new LinkedHashMap<>();
         weaponsImageTranslatorIterable = new LinkedList<>();
-        medalsImageTranslator = new HashMap<>();
+        medalsImageTranslator = new LinkedHashMap<>();
         rangeImageTranslator = new LinkedList<>();
         nameplatesImageTranslator = new HashMap<>();
         iconsImageTranslator = new HashMap<>();
@@ -134,34 +134,34 @@ public class DataTranslator {
         return translator;
     }
 
-    public String getMapTitleTranslation(String k) {
+     String getMapTitleTranslation(String k) {
         return mapTitleTranslator.get(k);
     }
 
-    public Drawable getMapImageTranslation(String k) {
+     Drawable getMapImageTranslation(String k) {
         return mapImageTranslator.get(k);
     }
 
-    public String getGameModeTitleTranslation(String k) {
+     String getGameModeTitleTranslation(String k) {
         return gameModeTitleTranslator.get(k);
     }
 
-    public Drawable getGameModeImageTranslation(String k) {
+     Drawable getGameModeImageTranslation(String k) {
         return gameModeImageTranslator.get(k);
     }
 
-    public Drawable getChampionsImageTranslation(String k) {
+     Drawable getChampionsImageTranslation(String k) {
         return championsImageTranslator.get(k);
     }
 
-    public Drawable getWeaponsImageTranslationIterable(int k) {
+     Drawable getWeaponsImageTranslationIterable(int k) {
         return weaponsImageTranslatorIterable.get(k);
     }
 
-    public Map<String, Drawable> getMedalsImageTranslator() {
+     Map<String, Drawable> getMedalsImageTranslator() {
         return medalsImageTranslator;
     }
-    public int getSizeMedalsList(){return medalsImageTranslator.size();}
+     int getSizeMedalsList(){return medalsImageTranslator.size();}
 
     public Drawable getRangeImageTranslator(int elo) {
         int range = (elo - 775) / 75;

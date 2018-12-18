@@ -12,8 +12,6 @@ import java.util.List;
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
 
-    private final List<String> mFragmentTitleList = Arrays.asList("Champions","Medals","Modes","Weapons","Matches");
-
     ViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -22,21 +20,12 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         return QStatsFragment.newStatsFragment(position);
     }
-
-    public int getItemPosition(@NonNull Object object) {
+    public int getItemPosition(@NonNull Object object) {        //здесь нужна магия чтобы обновлялись не все страницы
         return POSITION_NONE;
     }
 
     @Override
     public int getCount() {
-        return mFragmentTitleList.size();
+        return 5;
     }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return "";
-    }
-
-
-
 }

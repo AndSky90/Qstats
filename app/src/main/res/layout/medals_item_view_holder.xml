@@ -27,9 +27,7 @@
         android:id="@+id/medal_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
         android:gravity="center_horizontal"
-        android:text="@string/placeholder"
         />
 
 

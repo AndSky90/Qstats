@@ -30,8 +30,8 @@
             <include
                 android:id="@+id/header_nameplate"
                 layout="@layout/profile_item_view_holder"
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_marginStart="52dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
@@ -43,10 +43,9 @@
     </android.support.design.widget.AppBarLayout>
 
     <ImageView
-        android:id="@+id/status_stripe"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/colorRed"
+        android:layout_height="1px"
+        android:background="@color/colorPrimary"
         android:contentDescription="@string/none" />
 
     <android.support.v4.widget.DrawerLayout
@@ -72,6 +71,12 @@
             android:paddingEnd="4dp"
             android:scaleType="centerCrop" />
     </android.support.v4.widget.DrawerLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/colorPrimary"
+        android:contentDescription="@string/none" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/nav_bar_layout"

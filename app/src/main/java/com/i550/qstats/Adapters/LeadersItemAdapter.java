@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,7 +15,9 @@ import com.i550.qstats.R;
 import java.util.List;
 
 
-public class LeadersItemAdapter extends RecyclerView.Adapter<LeadersItemAdapter.LeadersViewHolder> {
+public class LeadersItemAdapter extends RecyclerView.Adapter<LeadersItemAdapter.LeadersViewHolder>
+{
+    private static ClickListener clickListener;
     private Context context;
     private DataTranslator dta;
     private List<Entry> leadsList;
@@ -25,7 +28,7 @@ public class LeadersItemAdapter extends RecyclerView.Adapter<LeadersItemAdapter.
         dta = DataTranslator.getInstance(context);
     }
 
-    static class LeadersViewHolder extends RecyclerView.ViewHolder {
+    static class LeadersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView namePlate;
         private ImageView profileIcon;
         private ImageView rangeIcon;
@@ -43,7 +46,13 @@ public class LeadersItemAdapter extends RecyclerView.Adapter<LeadersItemAdapter.
             duelElo = itemView.findViewById(R.id.duel_elo);
             positionTextView = itemView.findViewById(R.id.position);
 
-        }               //itemView - встроенная байда
+            itemView.setOnClickListener(this);
+        }               //itemView - экземпляр данной вью
+
+        @Override
+        public void onClick(View v) {
+            clickListener.onItemClick(profileName.getText().toString(), v);
+        }
     }
 
     @Override
@@ -69,5 +78,13 @@ public class LeadersItemAdapter extends RecyclerView.Adapter<LeadersItemAdapter.
     @Override
     public int getItemCount() {
         return leadsList.size();
+    }
+
+    public void setOnItemClickListener(ClickListener clickListener) {
+        LeadersItemAdapter.clickListener = clickListener;
+    }
+
+    public interface ClickListener {
+        void onItemClick(String name, View v);
     }
 }

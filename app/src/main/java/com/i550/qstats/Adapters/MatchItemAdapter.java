@@ -28,7 +28,7 @@ public class MatchItemAdapter extends ArrayAdapter<MatchDetails> {
         dta = DataTranslator.getInstance(context);
     }
 
-    @NonNull public View getView(int position, View convertView, ViewGroup parent) {
+    @NonNull public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         MatchDetails m = matchDetails.get(position);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -46,8 +46,8 @@ public class MatchItemAdapter extends ArrayAdapter<MatchDetails> {
         gamemodeTitle.setText(dta.getGameModeTitleTranslation(m.getGameMode()));
 
         mapName.setText(dta.getMapTitleTranslation(m.getMapName()));
-
-        timeTitle.setText(m.getTime());
+        String timePlay = m.getTime().substring(0, 19).replace("T"," @ ");      //formatting play-time string
+        timeTitle.setText(timePlay);
         if (m.getWon()) {
             winLoseTitle.setText(R.string.victory);
             winLoseTitle.setTextColor(context.getResources().getColor(R.color.colorVictory));
