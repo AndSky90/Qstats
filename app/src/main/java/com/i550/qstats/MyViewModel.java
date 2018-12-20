@@ -112,16 +112,26 @@ public class MyViewModel extends ViewModel {
      String[] fetchSearchResult(String jsonString) {
         String[] result = null;
         if (jsonString != null && jsonString.length() > 0) {
-            JsonParser jsonParser = new JsonParser();
-            JsonArray a = (JsonArray) jsonParser.parse(jsonString);
-            result = new String[a.size()];
-            for (int i = 0; i < a.size(); i++) { //&& i<=20
-                JsonObject o = (JsonObject) a.get(i);
-                JsonPrimitive p = (JsonPrimitive) o.get("entityName");
-                String s = p.getAsString();
-                result[i] = s;
-            } // Log.i(TAG, "result: " + result[0] + " , " + result[1]);
+            try {
+                JsonParser jsonParser = new JsonParser();
+                JsonArray a = (JsonArray) jsonParser.parse(jsonString);
+                result = new String[a.size()];
+                for (int i = 0; i < a.size(); i++) { //&& i<=20
+                    JsonObject o = (JsonObject) a.get(i);
+                    JsonPrimitive p = (JsonPrimitive) o.get("entityName");
+                    String s = p.getAsString();
+                    result[i] = s;
+                } // Log.i(TAG, "result: " + result[0] + " , " + result[1]);
+            } catch (ClassCastException e) {
+                Log.i(TAG, "Incoming error: " + result);
+            }
         }
         return result;
+    }
+
+    @Override
+    protected void onCleared() {
+        emptyDb=true;
+        super.onCleared();
     }
 }

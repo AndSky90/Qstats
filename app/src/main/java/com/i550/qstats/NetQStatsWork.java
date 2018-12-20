@@ -2,6 +2,7 @@ package com.i550.qstats;
 
 import android.net.Uri;
 import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,10 +43,8 @@ class NetQStatsWork {
             Log.i(TAG, "Received JSON: " + jsonString);
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
-            jsonString = null;
         }
-        finally {
-            return jsonString;
-        }
+        return jsonString;
     }
 }
+

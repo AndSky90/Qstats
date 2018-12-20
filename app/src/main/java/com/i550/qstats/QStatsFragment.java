@@ -67,7 +67,7 @@ public class QStatsFragment extends Fragment {
         MyViewModel model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
 
 
-        if (pageNumber==0) {
+        if (pageNumber==0 && model.getDuelLeads().getEntries()!=null && model.getTdmLeads().getEntries()!=null) {
             RecyclerView listViewDuelLeads = result.findViewById(R.id.list_view_duel_leads);
             List<Entry> duelLeads = model.getDuelLeads().getEntries();
             LeadersItemAdapter aDuel = new LeadersItemAdapter(getContext(), duelLeads);
@@ -101,7 +101,7 @@ public class QStatsFragment extends Fragment {
                 listViewChampions.setAdapter(adaptChampions);
                 listViewChampions.setOnItemClickListener((AdapterView<?> adapterView, View view, int i, long l) -> {
                     NUMBER_SELECTED_CHAMPION = i;
-                    Log.i("qStats", "NUMBER_SELECTED_CHAMPION = " + NUMBER_SELECTED_CHAMPION);
+                    Log.i("qStatsFragment", "NUMBER_SELECTED_CHAMPION = " + NUMBER_SELECTED_CHAMPION);
                     ViewPager vp = getActivity().findViewById(R.id.viewpager);
                     vp.getAdapter().notifyDataSetChanged();
                 });
