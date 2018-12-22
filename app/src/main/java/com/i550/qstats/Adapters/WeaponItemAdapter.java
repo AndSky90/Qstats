@@ -3,15 +3,13 @@ package com.i550.qstats.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.Champions;
 import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.DamageStatusList;
 import com.i550.qstats.R;
 
@@ -60,14 +58,9 @@ public class WeaponItemAdapter extends ArrayAdapter<DamageStatusList> {
         accuracy.setText(iAcc + "%");
         killHits.setText(iKillHits + "%");
         killPart.setText(iKillPart + "%");
-        kills.setText(String.valueOf(iKills));
-        double ddd = (double)w.getDamage()/1000;
-        damage.setText(String.format("%.1f" +" K",ddd));
+        kills.setText(NumberFormatter.formatNum(iKills));
+        damage.setText(NumberFormatter.formatNum(w.getDamage()));
         weaponImage.setImageDrawable(dta.getWeaponsImageTranslationIterable(position));
-
-       // Log.i("qStatsWeaponAdapter", " Input search: " + iAcc + " " + iKillHits + " " + iKillPart);
-        //int imageID = context.getResources().getIdentifier(property.getImage(), "drawable", context.getPackageName());
-        //image.setImageResource(imageID);
 
         return view;
     }

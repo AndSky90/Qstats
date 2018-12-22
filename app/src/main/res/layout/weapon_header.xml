@@ -10,36 +10,34 @@
 
     <TextView
         android:id="@+id/weapon_image"
-        android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="4"
+        android:gravity="center"
         android:text="@string/weapon" />
 
     <TextView
         android:id="@+id/accuracy"
-        android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
+        android:gravity="center"
         android:text="@string/accuracy" />
 
     <TextView
         android:id="@+id/kill_hits"
-        android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="2dp"
+        android:layout_weight="2"
+        android:gravity="center"
         android:text="@string/kill_hits" />
 
     <TextView
         android:id="@+id/kill_part"
-        android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="2dp"
+        android:layout_weight="2"
+        android:gravity="center"
         android:text="@string/percent_kills" />
 
     <TextView
@@ -47,8 +45,7 @@
         android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="2dp"
+        android:layout_weight="3"
         android:text="@string/kills" />
 
     <TextView
@@ -56,7 +53,7 @@
         android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:text="@string/damage" />
 
 </LinearLayout>

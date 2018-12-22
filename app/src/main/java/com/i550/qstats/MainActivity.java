@@ -227,13 +227,13 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Animation rotation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotation);
-        FrameLayout iv;
+        FrameLayout iconView;
 
         switch (refreshMode) {
             case update: {
-                iv = (FrameLayout) inflater.inflate(R.layout.refresh_action_view,null);
-                iv.startAnimation(rotation);
-                toolbar.getMenu().findItem(R.id.menu_refresh).setActionView(iv);
+                iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view,null);
+                iconView.startAnimation(rotation);
+                toolbar.getMenu().findItem(R.id.menu_refresh).setActionView(iconView);
                // if (refreshItemView != null)
                     //   refreshItemView.startAnimation(anim);
                     //      refreshItem.setActionView(refreshImageView);
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
             }
             case actual: {
                 toolbar.getMenu().findItem(R.id.menu_refresh).getActionView().clearAnimation();
-                iv = (FrameLayout) inflater.inflate(R.layout.refresh_action_view_actual,null);
+                iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view_actual,null);
                 toolbar.getMenu().findItem(R.id.menu_refresh).setActionView(null);
                 toolbar.getMenu().findItem(R.id.menu_refresh).setIcon(R.drawable.ic_refresh_24dp_actual);
                // if (refreshItemView != null)
@@ -251,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
                     break;
             }
             case outdated: {
+                toolbar.getMenu().findItem(R.id.menu_refresh).setIcon(R.drawable.ic_refresh_24dp);
                 break;
             }
             default: {

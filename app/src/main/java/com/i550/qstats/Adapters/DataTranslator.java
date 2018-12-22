@@ -65,6 +65,7 @@ public class DataTranslator {
         mapTitleTranslator.put("ruins_of_sarnath", "Ruins of Sarnath");
         mapTitleTranslator.put("vale_of_pnath", "Vale of Pnath");
         mapTitleTranslator.put("lockbox", "Lockbox");
+        mapTitleTranslator.put("citadel", "Citadel");
 
 
         AssetManager mAssetManager = context.getAssets();

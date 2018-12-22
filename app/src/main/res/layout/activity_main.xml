@@ -41,7 +41,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:background="@color/colorPrimary"
         android:contentDescription="@string/none" />
 
@@ -71,7 +71,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:background="@color/colorPrimary"
         android:contentDescription="@string/none" />
 
