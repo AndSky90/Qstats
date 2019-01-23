@@ -20,13 +20,12 @@
     <string name="quake_stats_com">Quake.stats.com</string>
     <string name="bethesda_com">Bethesda.com</string>
     <string name="share">Share</string>
-    <string name="match_complete">Match Complete</string>
-    <string name="win_loss_ratio">Win/Loss Ratio</string>
+    <string name="match_complete">Matches</string>
+    <string name="win_loss_ratio">Win/Loss</string>
     <string name="wins">Wins</string>
     <string name="losses">Losses</string>
     <string name="major_pickups">Major Pickups</string>
-    <string name="power_pickups">Power Pickups</string>
-    <string name="time_played">Time Played</string>
+    <string name="power_pickups">Powerups</string>
     <string name="kdr">KDR</string>
     <string name="kills">Kills</string>
     <string name="deaths">Deaths</string>
@@ -47,6 +46,7 @@
     <string name="weapon">Weapon</string>
     <string name="modes">Modes</string>
     <string name="weapons">Weapons</string>
+    <string name="time_played">Time</string>
 
 
 </resources>

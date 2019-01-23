@@ -9,9 +9,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class NetQStatsWork {
-    private static final String TAG = "qStatserNetwork";
-
+public class Networking {
+    private static final String TAG = "qStatsNetwork";
 
     private String getUrlString(String urlQuake) throws IOException {
         URL url = new URL(urlQuake);
@@ -34,7 +33,7 @@ class NetQStatsWork {
         }
     }
 
-    String fetch(String path) { //получает URL, отдает JSON
+    public String fetchJSONFromURL(String path) { //получает URL, отдает JSON
         String jsonString = null;
         try {
             Uri.Builder url = Uri.parse(path).buildUpon();
@@ -42,9 +41,10 @@ class NetQStatsWork {
             jsonString = getUrlString(url.toString());
             Log.i(TAG, "Received JSON: " + jsonString);
         } catch (IOException ioe) {
-            Log.e(TAG, "Failed to fetch items", ioe);
+            Log.e(TAG, "Failed to fetch JSON from URL", ioe);
         }
         return jsonString;
     }
+
 }
 

@@ -6,37 +6,48 @@ import android.graphics.drawable.Drawable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
-
-public class DataTranslator {
+                                                                                // может переделать в статик вместо синглтона?
+public class DataTranslator {                                                   //класс преобразует исходные данные в Title и Drawable для вывода на экран
     private Map<String, String> gameModeTitleTranslator;
     private Map<String, String> mapTitleTranslator;
     private Map<String, Drawable> mapImageTranslator;
     private Map<String, Drawable> gameModeImageTranslator;
     private Map<String, Drawable> championsImageTranslator;
-    private LinkedList<Drawable> weaponsImageTranslatorIterable;
+    private ArrayList<Drawable> weaponsImageTranslatorIterable;
     private LinkedHashMap<String, Drawable> medalsImageTranslator;
-    private LinkedList<Drawable> rangeImageTranslator;
+    private ArrayList<Drawable> rangeImageTranslator;
     private Map<String, Drawable> nameplatesImageTranslator;
     private Map<String, Drawable> iconsImageTranslator;
 
     private static DataTranslator translator;
 
+    private DataTranslator(){}
+
+    public static DataTranslator getInstance(Context context) {
+        if (translator == null) {
+            translator = new DataTranslator(context);
+        }
+        return translator;
+    }
+
     private DataTranslator(Context context) {
 
-        gameModeTitleTranslator = new LinkedHashMap<>();
-        mapTitleTranslator = new LinkedHashMap<>();
-        mapImageTranslator = new LinkedHashMap<>();
-        gameModeImageTranslator = new LinkedHashMap<>();
-        championsImageTranslator = new LinkedHashMap<>();
-        weaponsImageTranslatorIterable = new LinkedList<>();
-        medalsImageTranslator = new LinkedHashMap<>();
-        rangeImageTranslator = new LinkedList<>();
-        nameplatesImageTranslator = new HashMap<>();
-        iconsImageTranslator = new HashMap<>();
+        AssetManager mAssetManager = context.getAssets();
+
+        gameModeTitleTranslator = new HashMap<>(15, 1);          //loadfactor = 1 -> менять capacity если добавляется новое!
+        mapTitleTranslator = new HashMap<>(15, 1);
+        mapImageTranslator = new HashMap<>(15, 1);
+        gameModeImageTranslator = new LinkedHashMap<>(15, 1);
+        championsImageTranslator = new LinkedHashMap<>(17, 1);
+        weaponsImageTranslatorIterable = new ArrayList<>(11);
+        medalsImageTranslator = new LinkedHashMap<>(106, 1);                                  // упорядоченный вывод на экран!
+        rangeImageTranslator = new ArrayList<>(20);
+        nameplatesImageTranslator = new HashMap<>(77, 1);                            // ждать фикс на сайте (не все есть)
+        iconsImageTranslator = new HashMap<>(190, 1);                                                             // ждать фикс на сайте (не все есть)
 
         gameModeTitleTranslator.put("GameModeAll", "All modes");
         gameModeTitleTranslator.put("GameModeFFA", "Deathmatch");
@@ -52,6 +63,7 @@ public class DataTranslator {
         gameModeTitleTranslator.put("GameModeHOLY_TRINITY", "Unholy Trinity");
         gameModeTitleTranslator.put("GameModeCtf", "Capture the flag");
         gameModeTitleTranslator.put("GameModeSlipgate", "Slipgate");
+        gameModeTitleTranslator.put("GameModeAAARENA", "Aaarena");
 
         mapTitleTranslator.put("awoken", "Awoken");
         mapTitleTranslator.put("blood_covenant", "Blood Covenant");
@@ -68,9 +80,7 @@ public class DataTranslator {
         mapTitleTranslator.put("citadel", "Citadel");
 
 
-        AssetManager mAssetManager = context.getAssets();
-
-        String[] files;
+        String[] files;             //преобразуем все ассеты в Drawable заранее, т.к. одновременно очень много выводится на экран
         InputStream inputStream;
         try {
             files = mAssetManager.list("map_images");
@@ -121,50 +131,48 @@ public class DataTranslator {
                 Drawable d = Drawable.createFromStream(inputStream, null);
                 iconsImageTranslator.put(f.replace(".png", ""), d);
             }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //  championsImageTranslatorIterable = new LinkedList<>(championsImageTranslator.values());
-
+        mAssetManager = null;       //больше не нужен
     }
 
-    public static DataTranslator getInstance(Context context) {
-        if (translator == null) {
-            translator = new DataTranslator(context);
-        }
-        return translator;
-    }
 
-     String getMapTitleTranslation(String k) {
+    String getMapTitleTranslation(String k) {
         return mapTitleTranslator.get(k);
     }
 
-     Drawable getMapImageTranslation(String k) {
+    Drawable getMapImageTranslation(String k) {
         return mapImageTranslator.get(k);
     }
 
-     String getGameModeTitleTranslation(String k) {
+    String getGameModeTitleTranslation(String k) {
         return gameModeTitleTranslator.get(k);
     }
 
-     Drawable getGameModeImageTranslation(String k) {
+    Drawable getGameModeImageTranslation(String k) {
         return gameModeImageTranslator.get(k);
     }
 
-     Drawable getChampionsImageTranslation(String k) {
+    Drawable getChampionsImageTranslation(String k) {
         return championsImageTranslator.get(k);
     }
 
-     Drawable getWeaponsImageTranslationIterable(int k) {
-        return weaponsImageTranslatorIterable.get(k);
+    Drawable getWeaponsImageTranslationIterable(int index) {
+        return weaponsImageTranslatorIterable.get(index);
     }
 
-     Map<String, Drawable> getMedalsImageTranslator() {
+    Map<String, Drawable> getMedalsImageTranslator() {
         return medalsImageTranslator;
     }
-     int getSizeMedalsList(){return medalsImageTranslator.size();}
 
-    public Drawable getRangeImageTranslator(int elo) {
+    int getSizeMedalsList() {
+        return medalsImageTranslator.size();
+    }
+
+    public Drawable getRangeImageTranslator(int elo) {          //подставляем нужную иконку рейтинга в зависимости от его значения
         int range = (elo - 775) / 75;
         if (elo < 775) range = 0;
         if (elo > 2200) range = 19;

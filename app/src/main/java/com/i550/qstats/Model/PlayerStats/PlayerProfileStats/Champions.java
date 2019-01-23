@@ -17,16 +17,18 @@ public class Champions {
     @SerializedName("medals")
     private String medals;
 
-    public Champions(){}
+    public Champions(){}        //нужен тк перегрузили конструктор
 
     public Champions(LinkedHashMap<String, GameModes> gameModes, Map<String, DamageStatusList> damageStatusList, String medals) {
         this.gameModes = gameModes;
         this.damageStatusList = damageStatusList;
         this.medals = medals;
     }
+
     public LinkedHashMap<String, GameModes> getGameModes() {
         return gameModes;
     }
+
     public void generateAllGameModes() {
         LinkedHashMap<String, GameModes> allGameModes = new LinkedHashMap<>();
         GameModes value = new GameModes();                    //создаем GameModesAll
@@ -69,6 +71,7 @@ public class Champions {
     public Map<String, DamageStatusList> getDamageStatusList() {
         return damageStatusList;
     }
+
     public List<DamageStatusList> getWeaponsStats() {
         List<DamageStatusList> weapons = new ArrayList<>();
         weapons.add(damageStatusList.get("GAUNTLET"));

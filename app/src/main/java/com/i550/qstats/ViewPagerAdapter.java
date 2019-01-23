@@ -20,6 +20,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         return QStatsFragment.newStatsFragment(position);
     }
+
     public int getItemPosition(@NonNull Object object) {        //здесь нужна магия чтобы обновлялись не все страницы
         return POSITION_NONE;
     }

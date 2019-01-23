@@ -20,18 +20,20 @@ public class MatchItemAdapter extends ArrayAdapter<MatchDetails> {
     private Context context;
     private DataTranslator dta;
     private List<MatchDetails> matchDetails;
+    private LayoutInflater inflater;
 
     public MatchItemAdapter(Context context, int resource, List<MatchDetails> matchDetails) {
         super(context, resource, matchDetails);
         this.context = context;
         this.matchDetails = matchDetails;
         dta = DataTranslator.getInstance(context);
+        inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
 
     @NonNull public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         MatchDetails m = matchDetails.get(position);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
         View view = inflater.inflate(R.layout.matches_item_view_holder, null);
 
         ImageView mapImage = view.findViewById(R.id.map_image);

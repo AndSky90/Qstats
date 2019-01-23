@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UsageAdapter extends BaseAdapter {
-    private Context context;
+public class UsageAdapter extends BaseAdapter {         //глобальная статистика - пока удалено
+
     private DataTranslator dta;
     private Map<String, String> totalData;
     private Map<String, String> changeData;
@@ -30,7 +30,6 @@ public class UsageAdapter extends BaseAdapter {
 
     public UsageAdapter(Context context, Map<String, String> totalData, Map<String, String> changeData) {
         super();
-        this.context = context;
         this.totalData = totalData;
         this.changeData = changeData;
         dta = DataTranslator.getInstance(context);

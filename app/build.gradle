@@ -6,9 +6,9 @@ android {
         applicationId "com.i550.qstats"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 9
-        versionName '0.9'
+        versionName '0.96'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode 10
     }
     buildTypes {
         release {

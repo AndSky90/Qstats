@@ -2,7 +2,7 @@ package com.i550.qstats.Adapters;
 
 import java.util.Locale;
 
-public class NumberFormatter {
+class NumberFormatter {
     private static Locale l = Locale.getDefault();
 
     static String formatNum(int num) {
@@ -23,5 +23,4 @@ public class NumberFormatter {
         }
         return number;
     }
-
 }

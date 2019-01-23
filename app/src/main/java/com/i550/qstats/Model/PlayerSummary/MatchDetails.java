@@ -1,20 +1,19 @@
 package com.i550.qstats.Model.PlayerSummary;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MatchDetails {
-    public String id;
-    public String time;
-    public String mapName;
-    public String  rank;
-    public List<String> score = null;
-    public String gameMode;
-    public Boolean won;
-    public Integer xp;
-    public Float kdr;
-    public Integer totalDamage;
-    public WeaponAccuracy weaponAccuracy;
+    private String id;
+    private String time;
+    private String mapName;
+    private String  rank;
+    private ArrayList<String> score = null;
+    private String gameMode;
+    private Boolean won;
+    private Integer xp;
+    private Float kdr;
+    private Integer totalDamage;
+    private WeaponAccuracy weaponAccuracy;
 
     public String getId() {
         return id;
@@ -32,7 +31,7 @@ public class MatchDetails {
         return rank;
     }
 
-    public List<String> getScore() {
+    public ArrayList<String> getScore() {
         return score;
     }
 

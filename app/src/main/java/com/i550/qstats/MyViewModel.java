@@ -1,7 +1,6 @@
 package com.i550.qstats;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
+
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -20,17 +19,19 @@ import com.i550.qstats.Model.PlayerSummary.PlayerSummary;
 public class MyViewModel extends ViewModel {
 
     private static final String TAG = "qStatserViewModel";
-    //   private Gson gson = new GsonBuilder().registerTypeAdapter(PlayerStats.class, new PlayerStatsDeserializer()).create();
+
     private Gson gson = new Gson();
-    private DataGlobal dataGlobal = new DataGlobal();
+    private DataGlobal dataGlobal = new DataGlobal();           //пока не юзается
     private LeaderBoard tdmLeads = new LeaderBoard();
     private LeaderBoard duelLeads = new LeaderBoard();
     private PlayerStats playerStats = new PlayerStats();
     private PlayerSummary playerSummary = new PlayerSummary();
-    static Boolean emptyDb = true;
+     Boolean emptyDb = true;
 
-    public DataGlobal getDataGlobal() {
-        return dataGlobal;
+    @Override
+    protected void onCleared() {
+        emptyDb=true;
+        super.onCleared();
     }
 
     private void setDataGlobal(DataGlobal dataGlobal) {
@@ -74,8 +75,9 @@ public class MyViewModel extends ViewModel {
         Log.i(TAG, "setPlayerSummary : ");
     }
 
+    // рефлексия и дженерики сделать?
 
-    void fetchDataGlobal(String jsonString) {
+    public void parseDataGlobal(String jsonString) {
         if (jsonString != null) {
             DataGlobal data = gson.fromJson(jsonString, DataGlobal.class);
             Log.i(TAG, "String Object global: " + data.getTotalChampionusage() + "\n");
@@ -83,7 +85,7 @@ public class MyViewModel extends ViewModel {
         }
     }
 
-    void fetchLeaderBoard(String jsonString, Boolean mode) {
+    public void parseLeaderBoard(String jsonString, Boolean mode) {
         if (jsonString != null) {
             LeaderBoard data = gson.fromJson(jsonString, LeaderBoard.class);
             Log.i(TAG, "String Object tdm: " + data.toString());
@@ -92,7 +94,7 @@ public class MyViewModel extends ViewModel {
         }
     }
 
-    void fetchPlayerSummary(String jsonString) {
+    public void parsePlayerSummary(String jsonString) {
         if (jsonString != null) {
             PlayerSummary data = gson.fromJson(jsonString, PlayerSummary.class);
             Log.i(TAG, "String Object summary: " + data.toString());
@@ -100,7 +102,7 @@ public class MyViewModel extends ViewModel {
         }
     }
 
-    void fetchPlayerStats(String jsonString) {
+    public void parsePlayerStats(String jsonString) {
         if (jsonString != null) {
             PlayerStats data = gson.fromJson(jsonString, PlayerStats.class);
             Log.i(TAG, "String Object stats: " + data.toString());
@@ -109,7 +111,7 @@ public class MyViewModel extends ViewModel {
         }
     }
 
-     String[] fetchSearchResult(String jsonString) {
+    public String[] parseSearchResult(String jsonString) {
         String[] result = null;
         if (jsonString != null && jsonString.length() > 0) {
             try {
@@ -123,15 +125,10 @@ public class MyViewModel extends ViewModel {
                     result[i] = s;
                 } // Log.i(TAG, "result: " + result[0] + " , " + result[1]);
             } catch (ClassCastException e) {
-                Log.i(TAG, "Incoming error: " + result);
+                Log.i(TAG, "Incoming error ! List of searched player parsing failed : " + e );
             }
         }
         return result;
     }
 
-    @Override
-    protected void onCleared() {
-        emptyDb=true;
-        super.onCleared();
-    }
 }

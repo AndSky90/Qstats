@@ -29,14 +29,14 @@ public class MedalsItemAdapter extends RecyclerView.Adapter<MedalsItemAdapter.Me
     static class MedalsViewHolder extends RecyclerView.ViewHolder {
         private ImageView medalImage;
         private TextView medalCount;
-        private TextView medalTitle;
+        //private TextView medalTitle;      //название медали снизу - можно вернуть
 
         MedalsViewHolder(LayoutInflater i, ViewGroup parent) {
             super(i.inflate(R.layout.medals_item_view_holder, parent, false));
 
             medalImage = itemView.findViewById(R.id.medal_image);       //itemView - встроенная ссылка на один элемент списка
             medalCount = itemView.findViewById(R.id.medal_count);
-            medalTitle = itemView.findViewById(R.id.medal_title);
+           // medalTitle = itemView.findViewById(R.id.medal_title);
         }
     }
 
@@ -54,7 +54,7 @@ public class MedalsItemAdapter extends RecyclerView.Adapter<MedalsItemAdapter.Me
         String text = medalsTitleList.get(position);
         holder.medalImage.setImageDrawable(imagesMap.get(text));
         text = text.substring(4);                                                                               //cut number out of filename
-        //holder.medalTitle.setText(text.replace("_", " "));                                                    //title of medals disabled (android:text="" add! & 2dp mardin all)
+        //holder.medalTitle.setText(text.replace("_", " "));                                                    //title of medals disabled ( add!!! android:text=""  & 2dp mardin all)
         holder.medalCount.setText(String.valueOf(medalsMap.get("SCORING_EVENT_" + text.toUpperCase())));
     }
 

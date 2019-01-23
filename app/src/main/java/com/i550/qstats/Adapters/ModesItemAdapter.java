@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 
-public class ModesItemAdapter extends ArrayAdapter<GameModes> {
+public class ModesItemAdapter extends ArrayAdapter<GameModes> {         //можно ли это заменить ViewHolder-ом
     private Context context;
     private List<String> gameModesTitles;
     private List<GameModes> gameModesValues;
@@ -79,16 +79,16 @@ public class ModesItemAdapter extends ArrayAdapter<GameModes> {
                 iDeathsCount = 1;                                        //в конце раунда смерть anyway
             int iAvgLifetime = Math.round(iTimePlayedCount / iDeathsCount / 1000);
             SimpleDateFormat dateFormat;
-            if (iTimePlayedCount < 3600_000L) dateFormat = new SimpleDateFormat("m'm 's's' ", Locale.getDefault());
-            else if (iTimePlayedCount < 86_400_000L) dateFormat = new SimpleDateFormat("HH'h 'm'm' ", Locale.getDefault());
+            if (iTimePlayedCount < 3_600_000L) dateFormat = new SimpleDateFormat("m'm 's's'", Locale.getDefault());
+            else if (iTimePlayedCount < 86_400_000L) dateFormat = new SimpleDateFormat("HH'h 'm'm'", Locale.getDefault());
                 else if (iTimePlayedCount < 2_592_000_000L)  dateFormat = new SimpleDateFormat("DD'd 'HH'h'", Locale.getDefault());
                      else if (iTimePlayedCount<31_536_000_000L) dateFormat = new SimpleDateFormat("MM'm 'DD'd'", Locale.getDefault());
-                         else dateFormat = new SimpleDateFormat("YY y. MM m. ", Locale.getDefault());
+                         else dateFormat = new SimpleDateFormat("YY y. MM m.", Locale.getDefault());
 
             dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
             title.setText(dta.getGameModeTitleTranslation(gameModesTitles.get(position)));
-            matchCompleteCount.setText(String.valueOf(iMatchCompleteCount));
+            matchCompleteCount.setText(NumberFormatter.formatNum(iMatchCompleteCount));
             winLoseRatio.setText(String.format("%.3f", dWinLoseRatio));
             winsCount.setText(String.valueOf(iWinsCount));
             losesCount.setText(String.valueOf(iLosesCount));

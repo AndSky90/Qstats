@@ -17,23 +17,20 @@ import java.util.List;
 
 
 public class WeaponItemAdapter extends ArrayAdapter<DamageStatusList> {
-    private Context context;
     private DataTranslator dta;
     private List<DamageStatusList> weapons;
-
+    private LayoutInflater inflater;
 
     public WeaponItemAdapter(Context context, int resource, List<DamageStatusList> weapons) {
         super(context, resource, weapons);
-        this.context = context;
         this.weapons = weapons;
         dta = DataTranslator.getInstance(context);
-
+        inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
 
     @NonNull
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.weapon_item_view_holder, null);
 
         ImageView weaponImage = view.findViewById(R.id.weapon_image);
