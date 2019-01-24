@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
     private SearchView searchView;
     private Toolbar toolbar;
 
-    AsyncTaskGlobal mAsyncTaskGlobal;                                       // для работы асинктаска
+    AsyncTaskGlobal mAsyncTaskGlobal;                                       // для работы асинктаска с configchanges
     AsyncTaskNameSearch mAsyncTaskNameSearch;
     AsyncTaskParseFromCache mAsyncTaskParseFromCache;
 
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
     MyViewModel mViewModel;
 
     @Override
-    public Object onRetainCustomNonConfigurationInstance () {
+    public Object onRetainCustomNonConfigurationInstance() {
         return mAsyncTaskGlobal;
     }
 
@@ -95,18 +95,13 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
         Log.d(TAG, "onRestoreInstanceState");
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        instanceMainActivity=this;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        instanceMainActivity=this;     //сохраняем ссылку
+        instanceMainActivity = this;     //сохраняем ссылку для асинктасков
 
         MainActivity.this.setTitle("");
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -123,16 +118,20 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
 
         createQueryAdapter();
 
-        mViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
-
-        readSharedPreferences();
-
         FragmentManager fm = getSupportFragmentManager();
         vpa = new ViewPagerAdapter(fm);
         viewPager.setAdapter(vpa);
 
+        mViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        readSharedPreferences();
+
         tabLayout.setupWithViewPager(viewPager, false);          //false для того чтобы иконки не исчезали
         configureTabLayout();
+
+        mAsyncTaskGlobal = (AsyncTaskGlobal) getLastCustomNonConfigurationInstance();
+        Log.w("qStatsGlobalAsynctask", "getLastCustomNonConfigurationInstance " + (mAsyncTaskGlobal != null ? mAsyncTaskGlobal.hashCode() : " null object")
+                + ", MainActivity: " + this.hashCode());
+
     }
 
 
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
         final View np = findViewById(R.id.header_nameplate);
         searchView = (SearchView) menuItem.getActionView();
         searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setSuggestionsAdapter(mAdapter);         // on first launch serchview is open
+        searchView.setSuggestionsAdapter(mAdapter);         // on first launch searchview is open
 
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
                 }
                 menuItem.collapseActionView();
                 return true;
-            }                                  // Submit suggestion  ///////////////////
+            }
 
             @Override
             public boolean onQueryTextChange(String query) {
@@ -179,8 +178,8 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
                     }
                 }
                 return true;
-            }                                   // Change suggestion
-        });           ///////////////////
+            }
+        });
         menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
@@ -193,8 +192,8 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
                 np.setVisibility(View.VISIBLE);
                 return true;
             }
-        });         // expand-collapse ---
-        // if (profileName==null) menuItem.expandActionView();             // activate if intended -> serchview is open on first launch
+        });
+        // if (profileName==null) menuItem.expandActionView();             // activate if intended -> searchview is open on first launch
         NavigationView navigationView = findViewById(R.id.navigation_menu_view);
         navigationView.setNavigationItemSelectedListener(MenuItem -> {
             switch (menuItem.getItemId()) {
@@ -206,8 +205,9 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
             return true;
         });             // onClick navigation_menu each item TODO intents //menuItem.setChecked(true);
 
+        if (mAsyncTaskGlobal != null) mAsyncTaskGlobal.link();
         refreshData(null);
-        return true;        //end onCreateOptionsMenu
+        return true;
     }
 
     @Override
@@ -227,20 +227,20 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
         }
         return true;
         //   return super.onOptionsItemSelected(item);
-    }                           //листенеры menu_refresh и mDrawerLayout
+    }
 
     void refreshData(String name) {
         if (name != null) searchName = name;
         else searchName = profileName;
         if (checkInternet()) {
 
-            mAsyncTaskGlobal = (AsyncTaskGlobal) getLastNonConfigurationInstance();
             if (mAsyncTaskGlobal == null) {
                 mAsyncTaskGlobal = new AsyncTaskGlobal();
+                mAsyncTaskGlobal.link();
                 mAsyncTaskGlobal.execute();
             }
         }
-    }                                               ///////////////////
+    }
 
     @Override
     public void OnChangeName(String name) {
@@ -252,35 +252,29 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Animation rotation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotation);
         FrameLayout iconView;
-
+        MenuItem RefrItem = toolbar.getMenu().findItem(R.id.menu_refresh);
         switch (refreshMode) {
             case update: {
-                iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view,null);
+                iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view, null);
                 iconView.startAnimation(rotation);
-                toolbar.getMenu().findItem(R.id.menu_refresh).setActionView(iconView);
-               // if (refreshItemView != null)
-                    //   refreshItemView.startAnimation(anim);
-                    //      refreshItem.setActionView(refreshImageView);
-                    break;
+                RefrItem.setActionView(iconView);
+                break;
             }
             case actual: {
-                toolbar.getMenu().findItem(R.id.menu_refresh).getActionView().clearAnimation();
-                iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view_actual,null);
-                toolbar.getMenu().findItem(R.id.menu_refresh).setActionView(null);
-                toolbar.getMenu().findItem(R.id.menu_refresh).setIcon(R.drawable.ic_refresh_24dp_actual);
-               // if (refreshItemView != null)
-                    //   refreshItemView.clearAnimation();
-                    //          refreshItem.getActionView().clearAnimation();
-                    //         refreshItem.setActionView(null);
-                    break;
+                iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view_actual, null);
+                RefrItem.setActionView(iconView);
+                RefrItem.setIcon(R.drawable.ic_refresh_24dp_actual);
+                break;
             }
             case outdated: {
-                toolbar.getMenu().findItem(R.id.menu_refresh).setIcon(R.drawable.ic_refresh_24dp);
+                if (RefrItem.getActionView() != null) RefrItem.getActionView().clearAnimation();
+                RefrItem.setActionView(null);
+                RefrItem.setIcon(null);
                 break;
             }
             default: {
+
             }
-            //statusStripe.setBackgroundColor(getResources().getColor(R.color.colorRed));
         }
     }
 
@@ -353,18 +347,27 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        setRefreshIcon(RefreshMode.outdated);
+        super.onDestroy();
+    }
 //__________________________________________________________________________________________________
 
     static class AsyncTaskGlobal extends AsyncTask<Void, Void, Void> {
 
         private MyViewModel mViewModel;
+        MainActivity a;
+
+        protected void link() {
+            a = instanceMainActivity;
+        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            instanceMainActivity.setRefreshIcon(MainActivity.RefreshMode.update);
-            mViewModel = instanceMainActivity.mViewModel;
+            a.setRefreshIcon(MainActivity.RefreshMode.update);
+            mViewModel = a.mViewModel;
         }
 
         @Override
@@ -379,11 +382,10 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
             mViewModel.parseLeaderBoard(tdm, false);
             mViewModel.parseLeaderBoard(duel, true);
 
-            SharedPreferences.Editor editor = instanceMainActivity.mSharedPreferences.edit();
+            SharedPreferences.Editor editor = a.mSharedPreferences.edit();
             editor.putString("DataGlobal", dg);
             editor.putString("TdmLeads", tdm);
             editor.putString("DuelLeads", duel);
-
 
             if (searchName != null) {
                 String n = searchName;
@@ -410,7 +412,6 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
 
                         mViewModel.emptyDb = false;
 
-
                         editor.putString("PlayerSummary", summary);
                         editor.putString("PlayerStats", stats);
 
@@ -419,14 +420,17 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
                 }
             }
             editor.apply();
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
-            instanceMainActivity.vpa.notifyDataSetChanged();
-            instanceMainActivity.configureHeader();
-            instanceMainActivity.setRefreshIcon(MainActivity.RefreshMode.actual);
+            a.vpa.notifyDataSetChanged();
+            a.configureHeader();
+            a.setRefreshIcon(RefreshMode.outdated);
+            a.setRefreshIcon(RefreshMode.actual);
+            a.mAsyncTaskGlobal = null;
         }
     }
 
@@ -438,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
             String nameSearchJson = background.fetchJSONFromURL(instanceMainActivity.getString(R.string.url_player_search) + "?term=" + searchName);
             if (nameSearchJson != null) {
                 String[] r = instanceMainActivity.mViewModel.parseSearchResult(nameSearchJson);
-                if ( r != null ) {
+                if (r != null) {
                     if (r.length > 0) instanceMainActivity.searchResult = r;
                 }
             }
@@ -467,7 +471,7 @@ public class MainActivity extends AppCompatActivity implements OnChangeNameFromL
                     mViewModel.parsePlayerStats(mSharedPreferences.getString("PlayerStats", null));
                     mViewModel.emptyDb = false;
                 }
-                Log.i("qStatsParseFromCache", "Prefs: READ DATA : ");                                                       //=====
+                Log.i("qStatsParseFromCache", "Prefs: READ DATA : ");
             }
             return null;
         }

@@ -2,7 +2,6 @@ package com.i550.qstats;
 
 
 import android.arch.lifecycle.ViewModel;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -21,7 +20,7 @@ public class MyViewModel extends ViewModel {
     private static final String TAG = "qStatserViewModel";
 
     private Gson gson = new Gson();
-    private DataGlobal dataGlobal = new DataGlobal();           //пока не юзается
+    private DataGlobal dataGlobal = new DataGlobal();           //пока не юзается нигде
     private LeaderBoard tdmLeads = new LeaderBoard();
     private LeaderBoard duelLeads = new LeaderBoard();
     private PlayerStats playerStats = new PlayerStats();
