@@ -1,5 +1,5 @@
 package com.i550.qstats;
 
-public interface OnChangeNameFromLeaderList {
+public interface OnSelectNameFromLeaderList {
      void OnChangeName(String data);
 }

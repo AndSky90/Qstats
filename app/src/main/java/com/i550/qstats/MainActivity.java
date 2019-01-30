@@ -39,7 +39,7 @@ import java.util.Set;
 
 //__________________________________________________________________________________________________
 
-public class MainActivity extends AppCompatActivity implements OnChangeNameFromLeaderList {
+public class MainActivity extends AppCompatActivity implements OnSelectNameFromLeaderList {
 
     private static MainActivity instanceMainActivity;
     private static final String TAG = "qStats";

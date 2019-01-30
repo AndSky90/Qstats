@@ -25,7 +25,7 @@ public class MyViewModel extends ViewModel {
     private LeaderBoard duelLeads = new LeaderBoard();
     private PlayerStats playerStats = new PlayerStats();
     private PlayerSummary playerSummary = new PlayerSummary();
-     Boolean emptyDb = true;
+    public Boolean emptyDb = true;
 
     @Override
     protected void onCleared() {
@@ -38,7 +38,7 @@ public class MyViewModel extends ViewModel {
         Log.i(TAG, "setDataGlobal: " + dataGlobal.getTotalChampionusage() + "\n");
     }
 
-     LeaderBoard getTdmLeads() {
+    public LeaderBoard getTdmLeads() {
         return tdmLeads;
     }
 
@@ -47,7 +47,7 @@ public class MyViewModel extends ViewModel {
         Log.i(TAG, "setTDMLeads : ");
     }
 
-     LeaderBoard getDuelLeads() {
+     public LeaderBoard getDuelLeads() {
         return duelLeads;
     }
 
@@ -56,7 +56,7 @@ public class MyViewModel extends ViewModel {
         Log.i(TAG, "setDuelLeads : ");
     }
 
-     PlayerStats getPlayerStats() {
+    public PlayerStats getPlayerStats() {
         return playerStats;
     }
 
@@ -65,7 +65,7 @@ public class MyViewModel extends ViewModel {
         Log.i(TAG, "setPlayerStats : ");
     }
 
-     PlayerSummary getPlayerSummary() {
+    public PlayerSummary getPlayerSummary() {
         return playerSummary;
     }
 

@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:divider="@android:color/transparent"
             android:dividerHeight="8dp"
-            android:scrollbars="none" />
+            android:scrollbars="none"/>
 
         <ListView
             android:id="@+id/list_view_modes"

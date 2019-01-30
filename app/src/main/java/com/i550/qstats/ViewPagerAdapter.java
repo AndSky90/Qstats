@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 
-import java.util.Arrays;
-import java.util.List;
+import com.i550.qstats.Fragments.QStatsFragment;
+
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
 
