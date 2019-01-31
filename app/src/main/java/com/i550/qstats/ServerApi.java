@@ -15,22 +15,22 @@ import java.util.ArrayList;
 public interface ServerApi {
 
     @GET("Global")
-    Call<DataGlobal> getGlobalData();
+    Call<DataGlobal> callDataGlobal();
 
     @GET("Leaderboard?from=0&board=duel&season=current")
-    Call<LeaderBoard> getDuelData();
+    Call<LeaderBoard> callDuelLeaderBoard();
 
     @GET("Leaderboard?from=0&board=tdm&season=current")
-    Call<LeaderBoard> getTdmData();
+    Call<LeaderBoard> callTdmLeaderBoard();
 
     @GET("Player/GamesSummary")
-    Call<PlayerSummary> getGamesSummary(@Query("name") String queryName);;
+    Call<PlayerSummary> callPlayerSummary(@Query("name") String queryName);;
 
     @GET("Player/Stats")
-    Call<PlayerStats> getStats(@Query("name") String queryName);
+    Call<PlayerStats> callPlayerStats(@Query("name") String queryName);
 
     @GET("Player/Search")
-    Call<ArrayList<NameSearchEntity>> executeSearch(@Query("term") String queryName);
+    Call<ArrayList<NameSearchEntity>> callPlayerSearch(@Query("term") String queryName);
 
 }
 

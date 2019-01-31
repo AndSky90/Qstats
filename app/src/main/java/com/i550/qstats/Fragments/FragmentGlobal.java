@@ -1,10 +1,15 @@
 package com.i550.qstats.Fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,48 +17,67 @@ import android.view.ViewGroup;
 import com.i550.qstats.Adapters.LeadersItemAdapter;
 import com.i550.qstats.Adapters.RecyclerDecorator;
 import com.i550.qstats.Model.Entry;
+import com.i550.qstats.Model.LeaderBoard;
 import com.i550.qstats.MyViewModel;
-import com.i550.qstats.OnSelectNameFromLeaderList;
+import com.i550.qstats.MainActivityInterface;
 import com.i550.qstats.R;
 
 import java.util.List;
 
 public class FragmentGlobal extends QStatsFragment {
 
-    private OnSelectNameFromLeaderList onSelectNameFromLeaderList;
+    private MainActivityInterface mMainActivityInterface;
+    private List<Entry> duelLeads;
+    private List<Entry> tdmLeads;
+    private LeadersItemAdapter duelAdapter, tdmAdapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View result = inflater.inflate(R.layout.f_global, container, false);
+        RecyclerView listViewDuelLeads = result.findViewById(R.id.list_view_duel_leads);
+        RecyclerView listViewTdmLeads = result.findViewById(R.id.list_view_tdm_leads);
 
+        mMainActivityInterface = (MainActivityInterface) getActivity();
         MyViewModel model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
 
 
-        if ( !model.emptyDb && model.getDuelLeads().getEntries() != null && model.getTdmLeads().getEntries() != null)
-        {
-            onSelectNameFromLeaderList = (OnSelectNameFromLeaderList) getActivity();
-            RecyclerView listViewDuelLeads = result.findViewById(R.id.list_view_duel_leads);
-            List<Entry> duelLeads = model.getDuelLeads().getEntries();
-            LeadersItemAdapter aDuel = new LeadersItemAdapter(getContext(), duelLeads);
-            aDuel.setOnItemClickListener((String name, View v) ->
-                    onSelectNameFromLeaderList.refreshData(name));
-            listViewDuelLeads.setLayoutManager(new LinearLayoutManager(getContext()));
-            listViewDuelLeads.setHasFixedSize(true);
-            listViewDuelLeads.addItemDecoration(new RecyclerDecorator(8));
-            listViewDuelLeads.setAdapter(aDuel);
+        LiveData<LeaderBoard> liveTdmLeaderBoard = model.getTdmLeaderBoard();
+        liveTdmLeaderBoard.observe(this, new Observer<LeaderBoard>() {
+            @Override
+            public void onChanged(LeaderBoard leaderBoard) {
+                tdmLeads = leaderBoard.getEntries();
+                tdmAdapter.notifyDataSetChanged();
+            }
+        });
 
-            RecyclerView listViewTdmLeads = result.findViewById(R.id.list_view_tdm_leads);
-            List<Entry> tdmLeads = model.getTdmLeads().getEntries();
-            LeadersItemAdapter aTdm = new LeadersItemAdapter(getContext(), tdmLeads);
-            aTdm.setOnItemClickListener((String name, View v) ->
-                    onSelectNameFromLeaderList.refreshData(name));
-            listViewTdmLeads.setLayoutManager(new LinearLayoutManager(getContext()));
-            listViewTdmLeads.setHasFixedSize(true);
-            listViewTdmLeads.addItemDecoration(new RecyclerDecorator(8));
-            listViewTdmLeads.setAdapter(aTdm);
-        }
+
+        LiveData<LeaderBoard> liveDuelLeaderBoard = model.getDuelLeaderBoard();
+        liveDuelLeaderBoard.observe(this, new Observer<LeaderBoard>() {
+            @Override
+            public void onChanged(LeaderBoard leaderBoard) {
+                duelLeads = leaderBoard.getEntries();
+                duelAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+        duelAdapter = new LeadersItemAdapter(getContext(), duelLeads);
+        duelAdapter.setOnItemClickListener((String name, View v) ->
+                mMainActivityInterface.refreshData(name));
+        listViewDuelLeads.setLayoutManager(new LinearLayoutManager(getContext()));
+        listViewDuelLeads.setHasFixedSize(true);
+        listViewDuelLeads.addItemDecoration(new RecyclerDecorator(8));
+        listViewDuelLeads.setAdapter(duelAdapter);
+
+        tdmAdapter = new LeadersItemAdapter(getContext(), tdmLeads);
+        tdmAdapter.setOnItemClickListener((String name, View v) ->
+                mMainActivityInterface.refreshData(name));
+        listViewTdmLeads.setLayoutManager(new LinearLayoutManager(getContext()));
+        listViewTdmLeads.setHasFixedSize(true);
+        listViewTdmLeads.addItemDecoration(new RecyclerDecorator(8));
+        listViewTdmLeads.setAdapter(tdmAdapter);
 
         return result;
     }
