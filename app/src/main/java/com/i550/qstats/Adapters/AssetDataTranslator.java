@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
                                                                                 // может переделать в статик вместо синглтона?
-public class DataTranslator {                                                   //класс преобразует исходные данные в Title и Drawable для вывода на экран
+public class AssetDataTranslator {                                                   //класс преобразует исходные данные в Title и Drawable для вывода на экран
     private Map<String, String> gameModeTitleTranslator;
     private Map<String, String> mapTitleTranslator;
     private Map<String, Drawable> mapImageTranslator;
@@ -23,18 +23,18 @@ public class DataTranslator {                                                   
     private Map<String, Drawable> nameplatesImageTranslator;
     private Map<String, Drawable> iconsImageTranslator;
 
-    private static DataTranslator translator;
+    private static AssetDataTranslator translator;
 
-    private DataTranslator(){}
+    private AssetDataTranslator(){}
 
-    public static DataTranslator getInstance(Context context) {
+    public static AssetDataTranslator getInstance(Context context) {
         if (translator == null) {
-            translator = new DataTranslator(context);
+            translator = new AssetDataTranslator(context);
         }
         return translator;
     }
 
-    private DataTranslator(Context context) {
+    private AssetDataTranslator(Context context) {
 
         AssetManager mAssetManager = context.getAssets();
 

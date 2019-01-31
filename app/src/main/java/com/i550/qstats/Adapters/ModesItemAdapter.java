@@ -3,7 +3,6 @@ package com.i550.qstats.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,6 @@ import com.i550.qstats.Model.PlayerStats.PlayerProfileStats.GameModes;
 import com.i550.qstats.R;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Period;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -26,14 +22,14 @@ public class ModesItemAdapter extends ArrayAdapter<GameModes> {         //мож
     private Context context;
     private List<String> gameModesTitles;
     private List<GameModes> gameModesValues;
-    private DataTranslator dta;
+    private AssetDataTranslator dta;
 
     public ModesItemAdapter(Context context, int resource, List<GameModes> gameModesValues, List<String> gameModesTitles) {
         super(context, resource, gameModesValues);
         this.context = context;
         this.gameModesTitles = gameModesTitles;
         this.gameModesValues = gameModesValues;
-        dta = DataTranslator.getInstance(context);
+        dta = AssetDataTranslator.getInstance(context);
     }
 
     @NonNull

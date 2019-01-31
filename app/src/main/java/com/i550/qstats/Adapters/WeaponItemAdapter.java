@@ -17,14 +17,14 @@ import java.util.List;
 
 
 public class WeaponItemAdapter extends ArrayAdapter<DamageStatusList> {
-    private DataTranslator dta;
+    private AssetDataTranslator dta;
     private List<DamageStatusList> weapons;
     private LayoutInflater inflater;
 
     public WeaponItemAdapter(Context context, int resource, List<DamageStatusList> weapons) {
         super(context, resource, weapons);
         this.weapons = weapons;
-        dta = DataTranslator.getInstance(context);
+        dta = AssetDataTranslator.getInstance(context);
         inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
 

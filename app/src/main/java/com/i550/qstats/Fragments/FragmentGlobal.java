@@ -38,7 +38,7 @@ public class FragmentGlobal extends QStatsFragment {
             List<Entry> duelLeads = model.getDuelLeads().getEntries();
             LeadersItemAdapter aDuel = new LeadersItemAdapter(getContext(), duelLeads);
             aDuel.setOnItemClickListener((String name, View v) ->
-                    onSelectNameFromLeaderList.OnChangeName(name));
+                    onSelectNameFromLeaderList.refreshData(name));
             listViewDuelLeads.setLayoutManager(new LinearLayoutManager(getContext()));
             listViewDuelLeads.setHasFixedSize(true);
             listViewDuelLeads.addItemDecoration(new RecyclerDecorator(8));
@@ -48,7 +48,7 @@ public class FragmentGlobal extends QStatsFragment {
             List<Entry> tdmLeads = model.getTdmLeads().getEntries();
             LeadersItemAdapter aTdm = new LeadersItemAdapter(getContext(), tdmLeads);
             aTdm.setOnItemClickListener((String name, View v) ->
-                    onSelectNameFromLeaderList.OnChangeName(name));
+                    onSelectNameFromLeaderList.refreshData(name));
             listViewTdmLeads.setLayoutManager(new LinearLayoutManager(getContext()));
             listViewTdmLeads.setHasFixedSize(true);
             listViewTdmLeads.addItemDecoration(new RecyclerDecorator(8));

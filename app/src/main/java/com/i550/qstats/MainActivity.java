@@ -3,10 +3,10 @@ package com.i550.qstats;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.design.widget.NavigationView;
@@ -32,41 +32,58 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.i550.qstats.Adapters.DataTranslator;
+import com.i550.qstats.Adapters.AssetDataTranslator;
+import com.i550.qstats.Model.DataGlobal;
+import com.i550.qstats.Model.LeaderBoard;
+import com.i550.qstats.Model.NameSearchEntity;
+import com.i550.qstats.Model.PlayerStats.PlayerStats;
+import com.i550.qstats.Model.PlayerSummary.PlayerSummary;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 //__________________________________________________________________________________________________
 
 public class MainActivity extends AppCompatActivity implements OnSelectNameFromLeaderList {
 
-    private static MainActivity instanceMainActivity;
     private static final String TAG = "qStats";
     public static final String PREFS = "prefs";
     public static final String PROFILE_NAMES_LIST = "name_list";
     public static final String LAST_PROFILE_NAME = "last_profile_name";
     private static String profileName;
     private static String searchName;
-    private String[] searchResult;
     private static Set<String> profileNamesList = new HashSet<>();
 
-    private SimpleCursorAdapter mAdapter;
+    private SimpleCursorAdapter mSearchNameAdapter;
     private SharedPreferences mSharedPreferences;
-    private DataTranslator dta;
-    private TabLayout tabLayout;
-    private ViewPagerAdapter vpa;
+    private AssetDataTranslator mAssetDataTranslator;
+
+    @BindView(R.id.tab_layout)
+    private TabLayout mTabLayout;
+    @BindView(R.id.drawer_layout)
     private DrawerLayout mDrawerLayout;
+    @BindView(R.id.toolbar_layout)
+    private Toolbar mToolbar;
+
+    private ViewPagerAdapter vpa;
     private SearchView searchView;
-    private Toolbar toolbar;
 
-    AsyncTaskGlobal mAsyncTaskGlobal;                                       // для работы асинктаска с configchanges
-    AsyncTaskNameSearch mAsyncTaskNameSearch;
-    AsyncTaskParseFromCache mAsyncTaskParseFromCache;
 
-    public enum RefreshMode {update, actual, outdated}
+    MyViewModel mViewModel;
+    ServerApi retrofitService;
 
     MenuItem refreshItem;
+
     private int[] tabIcons = {
             R.drawable.ic_champions,
             R.drawable.ic_modes,
@@ -74,12 +91,9 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
             R.drawable.ic_weapons,
             R.drawable.ic_matches};
 
-    MyViewModel mViewModel;
 
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        return mAsyncTaskGlobal;
-    }
+    public enum RefreshMode {update, actual, outdated}
+
 
     @Override
     protected void onSaveInstanceState(Bundle sis) {
@@ -100,18 +114,23 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        instanceMainActivity = this;     //сохраняем ссылку для асинктасков
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://stats.quake.com/api/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-        MainActivity.this.setTitle("");
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        tabLayout = findViewById(R.id.tab_layout);
-        dta = DataTranslator.getInstance(this);
+        retrofitService = retrofit.create(ServerApi.class);
+
+
+
+
+        mAssetDataTranslator = AssetDataTranslator.getInstance(this);
 
         ViewPager viewPager = findViewById(R.id.viewpager);
 
-        toolbar = findViewById(R.id.toolbar_layout);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
@@ -125,18 +144,15 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
         mViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
         readSharedPreferences();
 
-        tabLayout.setupWithViewPager(viewPager, false);          //false для того чтобы иконки не исчезали
+        mTabLayout.setupWithViewPager(viewPager, false);          //false для того чтобы иконки не исчезали
         configureTabLayout();
 
-        mAsyncTaskGlobal = (AsyncTaskGlobal) getLastCustomNonConfigurationInstance();
-        Log.w("qStatsGlobalAsynctask", "getLastCustomNonConfigurationInstance " + (mAsyncTaskGlobal != null ? mAsyncTaskGlobal.hashCode() : " null object")
-                + ", MainActivity: " + this.hashCode());
 
     }
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {                                              // inflate toolbar & searchView
+    public boolean onCreateOptionsMenu(Menu menu) {                                              // inflate mToolbar & searchView
 
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         final MenuItem menuItem = menu.findItem(R.id.menu_search);
@@ -144,12 +160,16 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
         final View np = findViewById(R.id.header_nameplate);
         searchView = (SearchView) menuItem.getActionView();
         searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setSuggestionsAdapter(mAdapter);         // on first launch searchview is open
+        searchView.setSuggestionsAdapter(mSearchNameAdapter);         // on first launch searchview is open
 
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionClick(int position) {
-                searchView.setQuery(searchResult[position], true);
+
+                Cursor c = mSearchNameAdapter.getCursor();
+                c.moveToPosition(position);
+                String name = c.getString(c.getColumnIndex("name"));
+                searchView.setQuery(name, true);
                 return true;
             }
 
@@ -173,8 +193,7 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
                 if (query != null && query.length() > 0) {
                     searchName = query;
                     if (checkInternet()) {
-                        mAsyncTaskNameSearch = new AsyncTaskNameSearch();
-                        mAsyncTaskNameSearch.execute();
+                        nameSearch();
                     }
                 }
                 return true;
@@ -205,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
             return true;
         });             // onClick navigation_menu each item TODO intents //menuItem.setChecked(true);
 
-        if (mAsyncTaskGlobal != null) mAsyncTaskGlobal.link();
         refreshData(null);
         return true;
     }
@@ -229,22 +247,101 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
         //   return super.onOptionsItemSelected(item);
     }
 
-    void refreshData(String name) {
+    @Override
+    public void refreshData(String name) {
         if (name != null) searchName = name;
         else searchName = profileName;
         if (checkInternet()) {
-
-            if (mAsyncTaskGlobal == null) {
-                mAsyncTaskGlobal = new AsyncTaskGlobal();
-                mAsyncTaskGlobal.link();
-                mAsyncTaskGlobal.execute();
-            }
+            UpdateData();
         }
     }
 
-    @Override
-    public void OnChangeName(String name) {
-        refreshData(name);
+    private void UpdateData() {
+
+        setRefreshIcon(RefreshMode.update);
+
+        Call<DataGlobal> dg = retrofitService.getGlobalData();
+        dg.enqueue(new Callback<DataGlobal>() {
+            @Override
+            public void onResponse(Call<DataGlobal> call, Response<DataGlobal> response) {
+                if (response.isSuccessful()) {
+                    mViewModel.setDataGlobal(response.body());
+                    Log.d(TAG, "onResponse response.body(): " + response.body());
+                } else {
+                    int statusCode = response.code();
+                    try {
+                        Log.e(TAG, "onResponse response.errorBody(): " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DataGlobal> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + call);
+            }
+        });
+
+        Call<LeaderBoard> duelData = retrofitService.getDuelData();
+        duelData.enqueue(new Callback<LeaderBoard>() {
+            @Override
+            public void onResponse(Call<LeaderBoard> call, Response<LeaderBoard> response) {
+                if (response.isSuccessful()) mViewModel.setDuelLeads(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<LeaderBoard> call, Throwable t) {
+
+            }
+        });
+
+        Call<LeaderBoard> tdmData = retrofitService.getTdmData();
+        tdmData.enqueue(new Callback<LeaderBoard>() {
+            @Override
+            public void onResponse(Call<LeaderBoard> call, Response<LeaderBoard> response) {
+                if (response.isSuccessful()) mViewModel.setTDMLeads(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<LeaderBoard> call, Throwable t) {
+
+            }
+        });
+
+        Call<PlayerSummary> gamesSummary = retrofitService.getGamesSummary(searchName);
+        gamesSummary.enqueue(new Callback<PlayerSummary>() {
+            @Override
+            public void onResponse(Call<PlayerSummary> call, Response<PlayerSummary> response) {
+                if (response.isSuccessful()) mViewModel.setPlayerSummary(response.body());
+
+            }
+
+            @Override
+            public void onFailure(Call<PlayerSummary> call, Throwable t) {
+
+            }
+        });
+
+        Call<PlayerStats> stats = retrofitService.getStats(searchName);
+        stats.enqueue(new Callback<PlayerStats>() {
+            @Override
+            public void onResponse(Call<PlayerStats> call, Response<PlayerStats> response) {
+                if (response.isSuccessful())
+                    mViewModel.setPlayerStats(response.body());
+                profileName = searchName;
+                mViewModel.emptyDb = false;                              // временно
+                vpa.notifyDataSetChanged();                              // заменится на
+                configureHeader();                                       // RXJAVA zip observable
+                setRefreshIcon(RefreshMode.outdated);                    //
+                setRefreshIcon(RefreshMode.actual);                      //
+            }
+
+            @Override
+            public void onFailure(Call<PlayerStats> call, Throwable t) {
+
+            }
+        });
     }
 
     public void setRefreshIcon(RefreshMode refreshMode) {
@@ -252,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Animation rotation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotation);
         FrameLayout iconView;
-        MenuItem RefrItem = toolbar.getMenu().findItem(R.id.menu_refresh);
+        MenuItem RefrItem = mToolbar.getMenu().findItem(R.id.menu_refresh);
         switch (refreshMode) {
             case update: {
                 iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view, null);
@@ -278,14 +375,14 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
         }
     }
 
-    private void populateAdapter() {
+    private void populateSuggestionAdapter(String[] searchResult) {
         final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "name"});
         if (searchResult != null && searchResult.length > 0) {
             for (int i = 0; i < searchResult.length; i++) {
                 c.addRow(new Object[]{i, searchResult[i]});
             }
         }
-        mAdapter.changeCursor(c);
+        mSearchNameAdapter.changeCursor(c);
     }                                                   // suggestion cursor adapter
 
 
@@ -297,11 +394,23 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
         if (mSharedPreferences.contains(PROFILE_NAMES_LIST)) {
             profileNamesList = new HashSet<>();
             profileNamesList = mSharedPreferences.getStringSet(PROFILE_NAMES_LIST, new HashSet<>());
-            searchResult = profileNamesList.toArray(new String[profileNamesList.size()]);
         }
         Log.i("QstatsMain", "Prefs: PROFILE_NAMES_LIST: " + profileNamesList + " LAST_PROFILE_NAME: " + profileName);
-        mAsyncTaskParseFromCache = new AsyncTaskParseFromCache();
-        mAsyncTaskParseFromCache.execute();
+
+        if (mSharedPreferences.contains("DataGlobal")) {
+            mViewModel.parseDataGlobal(mSharedPreferences.getString("DataGlobal", null));
+            mViewModel.parseLeaderBoard(mSharedPreferences.getString("TdmLeads", null), false);
+            mViewModel.parseLeaderBoard(mSharedPreferences.getString("DuelLeads", null), true);
+            if (mSharedPreferences.getString("PlayerSummary", null) != null) {
+                mViewModel.parsePlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
+                mViewModel.parsePlayerStats(mSharedPreferences.getString("PlayerStats", null));
+                mViewModel.emptyDb = false;
+            }
+            Log.i("qStatsParseFromCache", "Prefs: READ DATA : ");
+        }
+
+        vpa.notifyDataSetChanged();
+        configureHeader();
     }
 
     private void configureHeader() {
@@ -317,15 +426,15 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
             profileNameH.setText(profileName);
             int elo = mViewModel.getPlayerStats().getPlayerRatings().getDuelRating();
             duelElo.setText(String.valueOf(elo));
-            rangeIconH.setImageDrawable(dta.getRangeImageTranslator(elo));
-            profileIconH.setImageDrawable(dta.getIconsImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getIconId()));
-            namePlateH.setImageDrawable(dta.getNameplatesImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getNamePlateId()));
+            rangeIconH.setImageDrawable(mAssetDataTranslator.getRangeImageTranslator(elo));
+            profileIconH.setImageDrawable(mAssetDataTranslator.getIconsImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getIconId()));
+            namePlateH.setImageDrawable(mAssetDataTranslator.getNameplatesImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getNamePlateId()));
         }
     }
 
     protected void configureTabLayout() {
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
+        for (int i = 0; i < mTabLayout.getTabCount(); i++) {
+            mTabLayout.getTabAt(i).setIcon(tabIcons[i]);
         }
     }       //TODO посмотреть разные методы, с иконкой намутить
 
@@ -338,13 +447,14 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
     private void createQueryAdapter() {
         final String[] from = new String[]{"name"};
         final int[] to = new int[]{android.R.id.text1};
-        mAdapter = new
+        mSearchNameAdapter = new
                 SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_1,
                 null,
                 from,
                 to,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        Log.i("QstatsMain", "ADAPTER " + mSearchNameAdapter);
     }
 
     @Override
@@ -352,136 +462,35 @@ public class MainActivity extends AppCompatActivity implements OnSelectNameFromL
         setRefreshIcon(RefreshMode.outdated);
         super.onDestroy();
     }
-//__________________________________________________________________________________________________
 
-    static class AsyncTaskGlobal extends AsyncTask<Void, Void, Void> {
+    private void nameSearch() {
 
-        private MyViewModel mViewModel;
-        MainActivity a;
+        Call<ArrayList<NameSearchEntity>> executeSearch = retrofitService.executeSearch(searchName);
+        Log.i(TAG, "searchName " + searchName);
+        ArrayList<String> res = new ArrayList<>();
 
-        protected void link() {
-            a = instanceMainActivity;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            a.setRefreshIcon(MainActivity.RefreshMode.update);
-            mViewModel = a.mViewModel;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Networking background = new Networking();
-
-            String dg = background.fetchJSONFromURL(instanceMainActivity.getString(R.string.url_global));
-            String tdm = background.fetchJSONFromURL(instanceMainActivity.getString(R.string.url_tdm_leads));
-            String duel = background.fetchJSONFromURL(instanceMainActivity.getString(R.string.url_duel_leads));
-
-            mViewModel.parseDataGlobal(dg);
-            mViewModel.parseLeaderBoard(tdm, false);
-            mViewModel.parseLeaderBoard(duel, true);
-
-            SharedPreferences.Editor editor = a.mSharedPreferences.edit();
-            editor.putString("DataGlobal", dg);
-            editor.putString("TdmLeads", tdm);
-            editor.putString("DuelLeads", duel);
-
-            if (searchName != null) {
-                String n = searchName;
-                if (searchName.contains("/")) n = searchName.replace("&", "%2F");
-                if (searchName.contains("?")) n = searchName.replace("&", "%3F");
-                if (searchName.contains("=")) n = searchName.replace("&", "%3D");
-                if (searchName.contains("&")) n = searchName.replace("&", "%26");
-                if (searchName.contains("#")) n = searchName.replace("&", "%2523");
-                Log.i("qStatsGlobalAsynctask", "SEARCHNAME: " + n);
-
-                String summary = background.fetchJSONFromURL(instanceMainActivity.getString(R.string.url_player_summary) + "?name=" + n);
-                String stats = background.fetchJSONFromURL(instanceMainActivity.getString(R.string.url_player_stats) + "?name=" + n);
-                Log.i("qStatsGlobalAsynctask", "STATS: " + stats);                                                       //=====
-
-                if (stats != null) {
-                    if (stats.length() > 70) {
-                        mViewModel.parsePlayerSummary(summary);
-                        mViewModel.parsePlayerStats(stats);
-
-                        profileName = searchName;
-                        editor.putString(LAST_PROFILE_NAME, profileName);
-                        profileNamesList.add(profileName);
-                        editor.putStringSet(PROFILE_NAMES_LIST, profileNamesList);
-
-                        mViewModel.emptyDb = false;
-
-                        editor.putString("PlayerSummary", summary);
-                        editor.putString("PlayerStats", stats);
-
-                        Log.i("qStatsGlobalAsynctask", " NEW NAME: " + profileName);
+        executeSearch.enqueue(new Callback<ArrayList<NameSearchEntity>>() {
+            @Override
+            public void onResponse(Call<ArrayList<NameSearchEntity>> call, Response<ArrayList<NameSearchEntity>> response) {
+                if (response.isSuccessful()) {
+                    for (NameSearchEntity nse : response.body()) {
+                        res.add(nse.getEntityName());
                     }
+                    String[] s = res.toArray(new String[res.size()]);
+                    populateSuggestionAdapter(s);
+                    Log.i(TAG, "res q " + response.body());
                 }
             }
-            editor.apply();
 
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            a.vpa.notifyDataSetChanged();
-            a.configureHeader();
-            a.setRefreshIcon(RefreshMode.outdated);
-            a.setRefreshIcon(RefreshMode.actual);
-            a.mAsyncTaskGlobal = null;
-        }
-    }
-
-    static class AsyncTaskNameSearch extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Networking background = new Networking();
-            String nameSearchJson = background.fetchJSONFromURL(instanceMainActivity.getString(R.string.url_player_search) + "?term=" + searchName);
-            if (nameSearchJson != null) {
-                String[] r = instanceMainActivity.mViewModel.parseSearchResult(nameSearchJson);
-                if (r != null) {
-                    if (r.length > 0) instanceMainActivity.searchResult = r;
-                }
+            @Override
+            public void onFailure(Call<ArrayList<NameSearchEntity>> call, Throwable t) {
+                Log.i(TAG, "wtf " + t);
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            instanceMainActivity.populateAdapter();
-        }
+        });
     }
 
-    static class AsyncTaskParseFromCache extends AsyncTask<Void, Void, Void> {
 
-        SharedPreferences mSharedPreferences = instanceMainActivity.mSharedPreferences;
-        MyViewModel mViewModel = instanceMainActivity.mViewModel;
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            if (mSharedPreferences.contains("DataGlobal")) {
-                mViewModel.parseDataGlobal(mSharedPreferences.getString("DataGlobal", null));
-                mViewModel.parseLeaderBoard(mSharedPreferences.getString("TdmLeads", null), false);
-                mViewModel.parseLeaderBoard(mSharedPreferences.getString("DuelLeads", null), true);
-                if (mSharedPreferences.getString("PlayerSummary", null) != null) {
-                    mViewModel.parsePlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
-                    mViewModel.parsePlayerStats(mSharedPreferences.getString("PlayerStats", null));
-                    mViewModel.emptyDb = false;
-                }
-                Log.i("qStatsParseFromCache", "Prefs: READ DATA : ");
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            instanceMainActivity.vpa.notifyDataSetChanged();
-            instanceMainActivity.configureHeader();
-        }
-    }
 }
+
 
 

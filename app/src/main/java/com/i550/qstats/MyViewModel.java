@@ -33,7 +33,7 @@ public class MyViewModel extends ViewModel {
         super.onCleared();
     }
 
-    private void setDataGlobal(DataGlobal dataGlobal) {
+    public void setDataGlobal(DataGlobal dataGlobal) {
         this.dataGlobal = dataGlobal;
         Log.i(TAG, "setDataGlobal: " + dataGlobal.getTotalChampionusage() + "\n");
     }
@@ -42,7 +42,7 @@ public class MyViewModel extends ViewModel {
         return tdmLeads;
     }
 
-    private void setTDMLeads(LeaderBoard tdmLeads) {
+    public void setTDMLeads(LeaderBoard tdmLeads) {
         this.tdmLeads = tdmLeads;
         Log.i(TAG, "setTDMLeads : ");
     }
@@ -51,7 +51,7 @@ public class MyViewModel extends ViewModel {
         return duelLeads;
     }
 
-    private void setDuelLeads(LeaderBoard duelLeads) {
+    public void setDuelLeads(LeaderBoard duelLeads) {
         this.duelLeads = duelLeads;
         Log.i(TAG, "setDuelLeads : ");
     }
@@ -60,7 +60,7 @@ public class MyViewModel extends ViewModel {
         return playerStats;
     }
 
-    private void setPlayerStats(PlayerStats playerStats) {
+    public void setPlayerStats(PlayerStats playerStats) {
         this.playerStats = playerStats;
         Log.i(TAG, "setPlayerStats : ");
     }
@@ -69,7 +69,7 @@ public class MyViewModel extends ViewModel {
         return playerSummary;
     }
 
-    private void setPlayerSummary(PlayerSummary playerSummary) {
+    public void setPlayerSummary(PlayerSummary playerSummary) {
         this.playerSummary = playerSummary;
         Log.i(TAG, "setPlayerSummary : ");
     }

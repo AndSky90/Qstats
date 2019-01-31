@@ -15,7 +15,7 @@ import com.i550.qstats.R;
 import java.util.List;
 
 public class ChampionsAdapter extends ArrayAdapter<String> {
-    private DataTranslator dta;
+    private AssetDataTranslator dta;
     private List<String> names;
     private int selectedChampion;
     private LayoutInflater inflater;
@@ -25,7 +25,7 @@ public class ChampionsAdapter extends ArrayAdapter<String> {
         super(context, resource, names);
         this.names = names;
         this.selectedChampion = selectedChampion;
-        dta = DataTranslator.getInstance(context);
+        dta = AssetDataTranslator.getInstance(context);
         inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         colorOfSelectedItem = context.getResources().getColor(R.color.shotGun);
     }

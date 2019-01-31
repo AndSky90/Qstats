@@ -19,13 +19,13 @@ public class LeadersItemAdapter extends RecyclerView.Adapter<LeadersItemAdapter.
 {
     private static ClickListener clickListener;
     private Context context;
-    private DataTranslator dta;
+    private AssetDataTranslator dta;
     private List<Entry> leadsList;
 
     public LeadersItemAdapter(Context context, List<Entry> leadsList) {
         this.context = context;
         this.leadsList = leadsList;
-        dta = DataTranslator.getInstance(context);
+        dta = AssetDataTranslator.getInstance(context);
     }
 
     static class LeadersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

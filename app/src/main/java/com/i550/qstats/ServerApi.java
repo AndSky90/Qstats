@@ -2,46 +2,35 @@ package com.i550.qstats;
 
 import com.i550.qstats.Model.DataGlobal;
 import com.i550.qstats.Model.LeaderBoard;
+import com.i550.qstats.Model.NameSearchEntity;
 import com.i550.qstats.Model.PlayerStats.PlayerStats;
 import com.i550.qstats.Model.PlayerSummary.PlayerSummary;
 
-import retrofit2.http.GET;
+import retrofit2.http.*;
 import retrofit2.Call;
 
-import java.util.List;
-
+import java.util.ArrayList;
 
 
 public interface ServerApi {
 
-
-    //    https://stats.quake.com/api/v2/
-//      Global
-//      Leaderboard?from=0&board=duel&season=current
-//      Leaderboard?from=0&board=tdm&season=current
-// Player/Stats?name=XF8ShaggyStoned
-// Player/GamesSummary?name=XF8ShaggyStoned
-// Player/Search?term=XF
-
-
-
     @GET("Global")
-    DataGlobal getGlobal();
+    Call<DataGlobal> getGlobalData();
 
     @GET("Leaderboard?from=0&board=duel&season=current")
-    LeaderBoard getDuel();
+    Call<LeaderBoard> getDuelData();
 
     @GET("Leaderboard?from=0&board=tdm&season=current")
-    LeaderBoard getTdm();
+    Call<LeaderBoard> getTdmData();
 
-    @GET("getGamesSummary")
-    PlayerSummary getGamesSummary();
+    @GET("Player/GamesSummary")
+    Call<PlayerSummary> getGamesSummary(@Query("name") String queryName);;
 
-    @GET("getStats")
-    PlayerStats getStats();
+    @GET("Player/Stats")
+    Call<PlayerStats> getStats(@Query("name") String queryName);
 
-    @GET("Search")
-    String[] Search();
+    @GET("Player/Search")
+    Call<ArrayList<NameSearchEntity>> executeSearch(@Query("term") String queryName);
 
 }
 

@@ -6,23 +6,19 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.i550.qstats.Adapters.DataTranslator;
 import com.i550.qstats.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class UsageAdapter extends BaseAdapter {         //глобальная статистика - пока удалено
 
-    private DataTranslator dta;
+    private AssetDataTranslator dta;
     private Map<String, String> totalData;
     private Map<String, String> changeData;
     private ArrayList<String> orderedNames;
@@ -32,7 +28,7 @@ public class UsageAdapter extends BaseAdapter {         //глобальная �
         super();
         this.totalData = totalData;
         this.changeData = changeData;
-        dta = DataTranslator.getInstance(context);
+        dta = AssetDataTranslator.getInstance(context);
         inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         orderedNames = new ArrayList<>(totalData.keySet());
     }

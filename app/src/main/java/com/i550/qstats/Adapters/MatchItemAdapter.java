@@ -18,7 +18,7 @@ import java.util.List;
 
 public class MatchItemAdapter extends ArrayAdapter<MatchDetails> {
     private Context context;
-    private DataTranslator dta;
+    private AssetDataTranslator dta;
     private List<MatchDetails> matchDetails;
     private LayoutInflater inflater;
 
@@ -26,7 +26,7 @@ public class MatchItemAdapter extends ArrayAdapter<MatchDetails> {
         super(context, resource, matchDetails);
         this.context = context;
         this.matchDetails = matchDetails;
-        dta = DataTranslator.getInstance(context);
+        dta = AssetDataTranslator.getInstance(context);
         inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
 

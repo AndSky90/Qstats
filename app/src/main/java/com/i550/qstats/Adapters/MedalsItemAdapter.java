@@ -18,12 +18,12 @@ import java.util.Map;
 public class MedalsItemAdapter extends RecyclerView.Adapter<MedalsItemAdapter.MedalsViewHolder> {
     private Context context;
     private Map<String, Integer> medalsMap;
-    private DataTranslator dta;
+    private AssetDataTranslator dta;
 
     public MedalsItemAdapter(Context context, Map<String, Integer> medalsMap) {
         this.context = context;
         this.medalsMap = medalsMap;
-        dta = DataTranslator.getInstance(context);
+        dta = AssetDataTranslator.getInstance(context);
     }
 
     static class MedalsViewHolder extends RecyclerView.ViewHolder {
