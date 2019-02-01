@@ -3,8 +3,11 @@ package com.i550.qstats.Fragments;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import com.i550.qstats.Model.PlayerSummary.PlayerSummary;
 import com.i550.qstats.MyViewModel;
 import com.i550.qstats.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentMatches extends QStatsFragment {
@@ -34,19 +38,20 @@ public class FragmentMatches extends QStatsFragment {
 
         MyViewModel model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
 
+        matchDetails = new ArrayList<>();
+        matchDetailsAdapter = new MatchItemAdapter(getContext(), 0, matchDetails);
+        listView.setAdapter(matchDetailsAdapter);
+
 
         LiveData<PlayerSummary> livePlayerStats = model.getPlayerSummary();
         livePlayerStats.observe(this, new Observer<PlayerSummary>() {
             @Override
             public void onChanged(PlayerSummary playerSummary) {
-                matchDetails = playerSummary.getMatch();
+                matchDetails.clear();
+                matchDetails.addAll(playerSummary.getMatch());
                 matchDetailsAdapter.notifyDataSetChanged();
             }
         });
-
-            matchDetailsAdapter = new MatchItemAdapter(getContext(), 0, matchDetails);
-            listView.setAdapter(matchDetailsAdapter);
-
         return result;
     }
 }

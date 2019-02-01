@@ -24,6 +24,7 @@ import com.i550.qstats.Model.PlayerStats.PlayerStats;
 import com.i550.qstats.MyViewModel;
 import com.i550.qstats.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentWeapons extends QStatsFragment {
@@ -45,31 +46,33 @@ public class FragmentWeapons extends QStatsFragment {
         mMainActivityInterface = (MainActivityInterface) getActivity();
         MyViewModel model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
 
+        championsNames = new ArrayList<>();
+        championsAdapter = new ChampionsAdapter(getContext(), 0, championsNames, NUMBER_SELECTED_CHAMPION);
+        listViewChampions.setAdapter(championsAdapter);
+        listViewChampions.setOnItemClickListener((AdapterView<?> adapterView, View view, int i, long l) -> {
+            NUMBER_SELECTED_CHAMPION = i;
+            Log.i("qStatsFragment", "NUMBER_SELECTED_CHAMPION = " + NUMBER_SELECTED_CHAMPION);
+            mMainActivityInterface.notifyViewPager();
+        });
+
+        currentChampionWeapons = new ArrayList<>();
+        weaponsAdapter = new WeaponItemAdapter(getContext(), 0, currentChampionWeapons);
+        listViewWeapons.setAdapter(weaponsAdapter);
+
 
         LiveData<PlayerStats> livePlayerStats = model.getPlayerStats();
         livePlayerStats.observe(this, new Observer<PlayerStats>() {
             @Override
             public void onChanged(PlayerStats playerStats) {
-                currentChampionWeapons = playerStats.getPlayerProfileStats().getChampionsValuesArray().get(NUMBER_SELECTED_CHAMPION).getWeaponsStats();
-                championsNames = playerStats.getPlayerProfileStats().getChampionsNamesArray();
+                currentChampionWeapons.clear();
+                currentChampionWeapons.addAll(playerStats.getPlayerProfileStats().getChampionsValuesArray().get(NUMBER_SELECTED_CHAMPION).getWeaponsStats());
+                championsNames.clear();
+                championsNames.addAll(playerStats.getPlayerProfileStats().getChampionsNamesArray());
                 championsAdapter.notifyDataSetChanged();
                 weaponsAdapter.notifyDataSetChanged();
             }
         });
 
-
-        championsAdapter = new ChampionsAdapter(getContext(), 0, championsNames, NUMBER_SELECTED_CHAMPION);
-        if (listViewChampions != null) {
-            listViewChampions.setAdapter(championsAdapter);
-            listViewChampions.setOnItemClickListener((AdapterView<?> adapterView, View view, int i, long l) -> {
-                NUMBER_SELECTED_CHAMPION = i;
-                Log.i("qStatsFragment", "NUMBER_SELECTED_CHAMPION = " + NUMBER_SELECTED_CHAMPION);
-                mMainActivityInterface.notifyViewPager();
-            });
-        }
-
-        weaponsAdapter = new WeaponItemAdapter(getContext(), 0, currentChampionWeapons);
-        listViewWeapons.setAdapter(weaponsAdapter);
 
         return result;
     }

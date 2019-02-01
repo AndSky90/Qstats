@@ -2,8 +2,10 @@ package com.i550.qstats.Adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -36,7 +38,7 @@ public class MedalsItemAdapter extends RecyclerView.Adapter<MedalsItemAdapter.Me
 
             medalImage = itemView.findViewById(R.id.medal_image);       //itemView - встроенная ссылка на один элемент списка
             medalCount = itemView.findViewById(R.id.medal_count);
-           // medalTitle = itemView.findViewById(R.id.medal_title);
+            // medalTitle = itemView.findViewById(R.id.medal_title);
         }
     }
 

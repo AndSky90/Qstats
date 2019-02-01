@@ -37,6 +37,9 @@ public class FragmentModes extends QStatsFragment {
     private ArrayAdapter<String> championsAdapter;
     private ArrayAdapter<GameModes> gameModesAdapter;
 
+    ArrayList<String> gameModesTitles;
+    ArrayList<GameModes> gameModesValues;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -49,33 +52,38 @@ public class FragmentModes extends QStatsFragment {
         MyViewModel model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
 
 
+        championsNames = new ArrayList<>();
+        championsAdapter = new ChampionsAdapter(getContext(), 0, championsNames, NUMBER_SELECTED_CHAMPION);
+        listViewChampions.setAdapter(championsAdapter);
+        listViewChampions.setOnItemClickListener((AdapterView<?> adapterView, View view, int i, long l) -> {
+            NUMBER_SELECTED_CHAMPION = i;
+            Log.i("qStatsFragment", "NUMBER_SELECTED_CHAMPION = " + NUMBER_SELECTED_CHAMPION);
+            mMainActivityInterface.notifyViewPager();
+        });
+
+
+        gameModesTitles = new ArrayList<>();
+        gameModesValues = new ArrayList<>();
+        gameModesAdapter = new ModesItemAdapter(getContext(), 0, gameModesValues, gameModesTitles);
+        listViewModes.setAdapter(gameModesAdapter);
+        listViewModes.setHeaderDividersEnabled(true);
+
+
         LiveData<PlayerStats> livePlayerStats = model.getPlayerStats();
         livePlayerStats.observe(this, new Observer<PlayerStats>() {
             @Override
             public void onChanged(PlayerStats playerStats) {
                 currentChampion = playerStats.getPlayerProfileStats().getChampionsValuesArray().get(NUMBER_SELECTED_CHAMPION);
-                championsNames = playerStats.getPlayerProfileStats().getChampionsNamesArray();
+                gameModesTitles.clear();
+                gameModesTitles.addAll(currentChampion.getGameModesTitles());
+                gameModesValues.clear();
+                gameModesValues.addAll(currentChampion.getGameModesValues());
+                championsNames.clear();
+                championsNames.addAll(playerStats.getPlayerProfileStats().getChampionsNamesArray());
                 championsAdapter.notifyDataSetChanged();
                 gameModesAdapter.notifyDataSetChanged();
             }
         });
-
-
-        championsAdapter = new ChampionsAdapter(getContext(), 0, championsNames, NUMBER_SELECTED_CHAMPION);
-        if (listViewChampions != null) {
-            listViewChampions.setAdapter(championsAdapter);
-            listViewChampions.setOnItemClickListener((AdapterView<?> adapterView, View view, int i, long l) -> {
-                NUMBER_SELECTED_CHAMPION = i;
-                Log.i("qStatsFragment", "NUMBER_SELECTED_CHAMPION = " + NUMBER_SELECTED_CHAMPION);
-                mMainActivityInterface.notifyViewPager();
-            });
-        }
-
-        ArrayList<String> gameModesTitles = currentChampion.getGameModesTitles();
-        ArrayList<GameModes> gameModesValues = currentChampion.getGameModesValues();
-        gameModesAdapter = new ModesItemAdapter(getContext(), 0, gameModesValues, gameModesTitles);
-        listViewModes.setAdapter(gameModesAdapter);
-        listViewModes.setHeaderDividersEnabled(true);
 
         return result;
     }

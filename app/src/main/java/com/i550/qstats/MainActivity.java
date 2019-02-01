@@ -1,5 +1,7 @@
 package com.i550.qstats;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
@@ -37,37 +39,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.i550.qstats.Adapters.AssetDataTranslator;
-import com.i550.qstats.Model.DataGlobal;
-import com.i550.qstats.Model.LeaderBoard;
+
 import com.i550.qstats.Model.NameSearchEntity;
 import com.i550.qstats.Model.PlayerStats.PlayerStats;
-import com.i550.qstats.Model.PlayerSummary.PlayerSummary;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 //__________________________________________________________________________________________________
 
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
 
-    private static final String TAG = "qStats";
+    public static final String LOG_D_TAG = "qStatsLogs";
     public static final String PREFS = "prefs";
     public static final String CURSOR_PROFILE_NAME = "name";
-    public static final String PROFILE_NAMES_LIST = "name_list";
-    public static final String LAST_PROFILE_NAME = "last_profile_name";
-    private static String profileName;
-    private static String searchName;
-    private static Set<String> profileNamesList = new HashSet<>();
 
     private SimpleCursorAdapter mSearchNameAdapter;
     private SharedPreferences mSharedPreferences;
@@ -79,13 +69,25 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     DrawerLayout mDrawerLayout;
     @BindView(R.id.toolbar_layout)
     Toolbar mToolbar;
+    @BindView(R.id.viewpager)
+    ViewPager mViewPager;
+    @BindView(R.id.namelpate)
+    ImageView namePlateH;
+    @BindView(R.id.profile_icon)
+    ImageView profileIconH;
+    @BindView(R.id.range_icon)
+    ImageView rangeIconH;
+    @BindView(R.id.profile_name)
+    TextView profileNameH;
+    @BindView(R.id.duel_elo)
+    TextView duelEloH;
 
-    private ViewPagerAdapter vpa;
-    private SearchView searchView;
+    private ViewPagerAdapter mViewPagerAdapter;
+    private SearchView mSearchView;
 
     MyViewModel mViewModel;
 
-    MenuItem refreshItem;
+    MenuItem refreshMenuItem;
 
     private int[] tabIcons = {
             R.drawable.ic_champions,
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     public enum RefreshState {update, actual, outdated}
 
 
-    @Override
+/*    @Override
     protected void onSaveInstanceState(Bundle sis) {
         super.onSaveInstanceState(sis);
         sis.putString("profileName", profileName);
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     protected void onRestoreInstanceState(Bundle sis) {
         super.onRestoreInstanceState(sis);
         profileName = sis.getString("profileName");
-    }
+    }*/
 
 
     @Override
@@ -120,45 +122,59 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
 
         mAssetDataTranslator = AssetDataTranslator.getInstance(this);
 
-        ViewPager viewPager = findViewById(R.id.viewpager);
         setSupportActionBar(mToolbar);
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
         createQueryAdapter();
 
         FragmentManager fm = getSupportFragmentManager();
-        vpa = new ViewPagerAdapter(fm);
-        viewPager.setAdapter(vpa);
+        mViewPagerAdapter = new ViewPagerAdapter(fm);
+        mViewPager.setAdapter(mViewPagerAdapter);
 
         mViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
         readSharedPreferences();
 
-        mTabLayout.setupWithViewPager(viewPager, false);                                    //false для того чтобы иконки не исчезали
+        mTabLayout.setupWithViewPager(mViewPager, false);                                    //false для того чтобы иконки не исчезали
         configureTabLayout();
+
+        LiveData<PlayerStats> livePlayerStats = mViewModel.getPlayerStats();
+        livePlayerStats.observe(this, new Observer<PlayerStats>() {
+            @Override
+            public void onChanged(PlayerStats playerStats) {
+
+                String name = playerStats.getName();
+                profileNameH.setText(name);
+                int elo = playerStats.getPlayerRatings().getDuelRating();
+                duelEloH.setText(String.valueOf(elo));
+                rangeIconH.setImageDrawable(mAssetDataTranslator.getRangeImageTranslator(elo));
+                profileIconH.setImageDrawable(mAssetDataTranslator.getIconsImageTranslator(playerStats.getPlayerLoadOut().getIconId()));
+                namePlateH.setImageDrawable(mAssetDataTranslator.getNameplatesImageTranslator(playerStats.getPlayerLoadOut().getNamePlateId()));
+            }
+        });
 
     }
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {                                                     // inflate mToolbar & searchView
+    public boolean onCreateOptionsMenu(Menu menu) {                                                     // inflate mToolbar & mSearchView
 
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         final MenuItem menuItem = menu.findItem(R.id.menu_search);
-        refreshItem = menu.findItem(R.id.menu_refresh);
-        final View np = findViewById(R.id.header_nameplate);
-        searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setSuggestionsAdapter(mSearchNameAdapter);
+        refreshMenuItem = menu.findItem(R.id.menu_refresh);
+        final View header = findViewById(R.id.header_nameplate);
+        mSearchView = (SearchView) menuItem.getActionView();
+        mSearchView.setQueryHint(getString(R.string.search_hint));
+        mSearchView.setSuggestionsAdapter(mSearchNameAdapter);
 
-        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+        mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionClick(int position) {
-                Cursor c = mSearchNameAdapter.getCursor();
+                Cursor c = mSearchNameAdapter.getCursor();      //TODO getSuggAdapter??
                 c.moveToPosition(position);
-                String name = c.getString(c.getColumnIndex(CURSOR_PROFILE_NAME));
-                searchView.setQuery(name, true);
+                String query = c.getString(c.getColumnIndex(CURSOR_PROFILE_NAME));
+                mSearchView.setQuery(query, true);
                 return true;
             }
 
@@ -168,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
             }
         });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 refreshData(query);
@@ -179,9 +195,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
             @Override
             public boolean onQueryTextChange(String query) {
                 if (query != null && query.length() > 0) {
-                    searchName = query;
                     if (checkInternet()) {
-                        nameSearch();
+                        nameSearch(query);
                     }
                 }
                 return true;
@@ -190,13 +205,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                np.setVisibility(View.GONE);
+                header.setVisibility(View.GONE);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                np.setVisibility(View.VISIBLE);
+                header.setVisibility(View.VISIBLE);
                 return true;
             }
         });
@@ -212,13 +227,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
             return true;
         });             // onClick navigation_menu each item TODO intents //menuItem.setChecked(true);
 
+        ObserveRefreshState();
+
         refreshData(null);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i("qStats", "MenuItem ID pressed: " + item.getItemId());
+        Log.d(LOG_D_TAG, "onOptionsItemSelected: MenuItem ID pressed: " + item.getItemId());
         switch (item.getItemId()) {
             case R.id.menu_refresh: {
                 refreshData(null);
@@ -245,67 +262,50 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         mSearchNameAdapter.changeCursor(c);
     }
 
-    @Override
-    public void refreshData(String name) {
-        if (name != null) searchName = name;
-        else searchName = profileName;
-        if (checkInternet()) {
-            UpdateData();
-        }
-    }
-
-    @Override
-    public void notifyViewPager() {
-        vpa.notifyDataSetChanged();
-    }
-
-    private void UpdateData() {
-
-    }
-
-    public void setRefreshIcon(RefreshState refreshState) {
+    void ObserveRefreshState() {
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        Animation rotation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotation);
-        FrameLayout iconView;
-        MenuItem refreshItem = mToolbar.getMenu().findItem(R.id.menu_refresh);
-        switch (refreshState) {
-            case update: {
-                iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view, null);
-                iconView.startAnimation(rotation);
-                refreshItem.setActionView(iconView);
-                break;
-            }
-            case actual: {
-                iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view_actual, null);
-                refreshItem.setActionView(iconView);
-                refreshItem.setIcon(R.drawable.ic_refresh_24dp_actual);
-                break;
-            }
-            case outdated: {
-                if (refreshItem.getActionView() != null)
-                    refreshItem.getActionView().clearAnimation();
-                refreshItem.setActionView(null);
-                refreshItem.setIcon(null);
-                break;
-            }
-            default: {
+        LiveData<RefreshState> liveRefreshState = mViewModel.getRefreshState();
+        liveRefreshState.observe(this, new Observer<RefreshState>() {
+            @Override
+            public void onChanged(RefreshState state) {
 
+                Log.d(LOG_D_TAG, "Refresh State observe: " + state);
+                Animation rotation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotation);
+                FrameLayout iconView;
+                MenuItem refreshItem = mToolbar.getMenu().findItem(R.id.menu_refresh);
+
+                switch (state) {
+                    case update: {
+                        iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view, null);
+                        iconView.startAnimation(rotation);
+                        refreshItem.setActionView(iconView);
+                        break;
+                    }
+                    case actual: {
+                        iconView = (FrameLayout) inflater.inflate(R.layout.refresh_action_view_actual, null);
+                        refreshItem.setActionView(iconView);
+                        refreshItem.setIcon(R.drawable.ic_refresh_24dp_actual);
+                        break;
+                    }
+                    case outdated: {
+                        if (refreshItem.getActionView() != null) {
+                            refreshItem.getActionView().clearAnimation();
+                        }
+                        refreshItem.setActionView(null);
+                        refreshItem.setIcon(null);
+                        break;
+                    }
+                    default: {
+                    }
+                }
             }
-        }
+        });
     }
 
 
     private void readSharedPreferences() {
         mSharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        if (mSharedPreferences.contains(LAST_PROFILE_NAME)) {
-            profileName = mSharedPreferences.getString(LAST_PROFILE_NAME, null);
-        }
-        if (mSharedPreferences.contains(PROFILE_NAMES_LIST)) {
-            profileNamesList = new HashSet<>();
-            profileNamesList = mSharedPreferences.getStringSet(PROFILE_NAMES_LIST, new HashSet<>());
-        }
-        Log.i("QstatsMain", "Prefs: PROFILE_NAMES_LIST: " + profileNamesList + " LAST_PROFILE_NAME: " + profileName);
 
         if (mSharedPreferences.contains("DataGlobal")) {
             mViewModel.parseDataGlobal(mSharedPreferences.getString("DataGlobal", null));
@@ -314,33 +314,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
             if (mSharedPreferences.getString("PlayerSummary", null) != null) {
                 mViewModel.parsePlayerSummary(mSharedPreferences.getString("PlayerSummary", null));
                 mViewModel.parsePlayerStats(mSharedPreferences.getString("PlayerStats", null));
-                mViewModel.emptyDb = false;
             }
             Log.i("qStatsParseFromCache", "Prefs: READ DATA : ");
         }
 
-        vpa.notifyDataSetChanged();
-        configureHeader();
+        mViewPagerAdapter.notifyDataSetChanged();
+
     }
 
-    private void configureHeader() {
-        if (!mViewModel.emptyDb) {
-            ImageView namePlateH = findViewById(R.id.namelpate);
-            ImageView profileIconH = findViewById(R.id.profile_icon);
-            ImageView rangeIconH = findViewById(R.id.range_icon);
-            TextView profileNameH = findViewById(R.id.profile_name);
-            TextView duelElo = findViewById(R.id.duel_elo);
-
-
-            profileName = mViewModel.getPlayerStats().getName();
-            profileNameH.setText(profileName);
-            int elo = mViewModel.getPlayerStats().getPlayerRatings().getDuelRating();
-            duelElo.setText(String.valueOf(elo));
-            rangeIconH.setImageDrawable(mAssetDataTranslator.getRangeImageTranslator(elo));
-            profileIconH.setImageDrawable(mAssetDataTranslator.getIconsImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getIconId()));
-            namePlateH.setImageDrawable(mAssetDataTranslator.getNameplatesImageTranslator(mViewModel.getPlayerStats().getPlayerLoadOut().getNamePlateId()));
-        }
-    }
 
     protected void configureTabLayout() {
         for (int i = 0; i < mTabLayout.getTabCount(); i++) {
@@ -364,19 +345,25 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
                 from,
                 to,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        Log.i("QstatsMain", "ADAPTER " + mSearchNameAdapter);
+        Log.d(LOG_D_TAG, "createQueryAdapter: " + mSearchNameAdapter);
     }
 
     @Override
-    protected void onDestroy() {
-        setRefreshIcon(RefreshState.outdated);
-        super.onDestroy();
+    public void notifyViewPager() {
+        mViewPagerAdapter.notifyDataSetChanged();
     }
 
-    private void nameSearch() {
+    @Override
+    public void refreshData(String name) {
+        if (checkInternet()) {
+            mViewModel.refreshAllData(name);
+        }
+    }
 
-        Call<ArrayList<NameSearchEntity>> executeSearch = retrofitService.executeSearch(searchName);
-        Log.i(TAG, "searchName " + searchName);
+    private void nameSearch(String query) {
+
+        Call<ArrayList<NameSearchEntity>> executeSearch = mViewModel.retrofitApi.callPlayerSearch(query);
+        Log.d(LOG_D_TAG, "nameSearch Query: " + query);
         ArrayList<String> res = new ArrayList<>();
 
         executeSearch.enqueue(new Callback<ArrayList<NameSearchEntity>>() {
@@ -388,13 +375,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
                     }
                     String[] s = res.toArray(new String[res.size()]);
                     populateSuggestionAdapter(s);
-                    Log.i(TAG, "res q " + response.body());
+                    Log.d(LOG_D_TAG, "nameSearch Responce:" + response.body());
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<NameSearchEntity>> call, Throwable t) {
-                Log.i(TAG, "wtf " + t);
+                Log.d(LOG_D_TAG, "nameSearch Failure: " + t);
             }
         });
     }

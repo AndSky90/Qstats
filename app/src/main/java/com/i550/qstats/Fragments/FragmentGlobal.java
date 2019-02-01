@@ -22,6 +22,7 @@ import com.i550.qstats.MyViewModel;
 import com.i550.qstats.MainActivityInterface;
 import com.i550.qstats.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentGlobal extends QStatsFragment {
@@ -41,26 +42,8 @@ public class FragmentGlobal extends QStatsFragment {
 
         mMainActivityInterface = (MainActivityInterface) getActivity();
         MyViewModel model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-
-
-        LiveData<LeaderBoard> liveTdmLeaderBoard = model.getTdmLeaderBoard();
-        liveTdmLeaderBoard.observe(this, new Observer<LeaderBoard>() {
-            @Override
-            public void onChanged(LeaderBoard leaderBoard) {
-                tdmLeads = leaderBoard.getEntries();
-                tdmAdapter.notifyDataSetChanged();
-            }
-        });
-
-
-        LiveData<LeaderBoard> liveDuelLeaderBoard = model.getDuelLeaderBoard();
-        liveDuelLeaderBoard.observe(this, new Observer<LeaderBoard>() {
-            @Override
-            public void onChanged(LeaderBoard leaderBoard) {
-                duelLeads = leaderBoard.getEntries();
-                duelAdapter.notifyDataSetChanged();
-            }
-        });
+        duelLeads = new ArrayList<>();
+        tdmLeads = new ArrayList<>();
 
 
         duelAdapter = new LeadersItemAdapter(getContext(), duelLeads);
@@ -78,6 +61,27 @@ public class FragmentGlobal extends QStatsFragment {
         listViewTdmLeads.setHasFixedSize(true);
         listViewTdmLeads.addItemDecoration(new RecyclerDecorator(8));
         listViewTdmLeads.setAdapter(tdmAdapter);
+
+
+        LiveData<LeaderBoard> liveTdmLeaderBoard = model.getTdmLeaderBoard();
+        liveTdmLeaderBoard.observe(this, new Observer<LeaderBoard>() {
+            @Override
+            public void onChanged(LeaderBoard leaderBoard) {
+                tdmLeads.clear();
+                tdmLeads.addAll(leaderBoard.getEntries());
+                tdmAdapter.notifyDataSetChanged();
+            }
+        });
+
+        LiveData<LeaderBoard> liveDuelLeaderBoard = model.getDuelLeaderBoard();
+        liveDuelLeaderBoard.observe(this, new Observer<LeaderBoard>() {
+            @Override
+            public void onChanged(LeaderBoard leaderBoard) {
+                duelLeads.clear();
+                duelLeads.addAll(leaderBoard.getEntries());
+                duelAdapter.notifyDataSetChanged();
+            }
+        });
 
         return result;
     }
